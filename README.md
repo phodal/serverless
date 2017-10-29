@@ -17,7 +17,7 @@ Serverless 框架 hello, world
 
 先让我们按官网的 demo，进行实验。开始之前，除了拥有一台电脑，你还需要有一个 AWS 账号。AWS 提供一年的免费试用，你所需要做的就是办一张支持 visa 的信用卡。
 
-###一、安装  serverless 框架
+### 一、安装  serverless 框架
 
 ```
 npm install -g serverless
@@ -29,13 +29,13 @@ npm install -g serverless
 yarn global add serverless
 ```
 
-###二、设置 aws 凭证。
+### 二、设置 aws 凭证。
 
 1.登录 AWS 账号，然后点击进入 IAM  (即，Identity & Access Management)。
 
 2.点击用户，然后添加用户，如 serveless-admin，并在『选择 AWS 访问类型』里，勾上**编程访问**。
 
-![编程访问 serverless](enable-programming.png)
+![编程访问 serverless](images/enable-programming.png)
 
 3.点击**下一步权限**，选择『直接附加现有策略』，输入**AdministratorAccess**，然后创建用户。
 
@@ -60,7 +60,7 @@ serverless deploy
 serverless config credentials --provider aws --key AKIAIOSFODNN7EXAMPLE --secret wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
 ```
 
-###三、创建 hello-world 服务
+### 三、创建 hello-world 服务
 
 ```
 serverless create --template aws-nodejs --path hello-world
@@ -83,7 +83,7 @@ Serverless: Successfully generated boilerplate for template: "aws-nodejs"
 
 生成两个文件；
 
-````
+```
 ├── handler.js
 └── serverless.yml
 ```
