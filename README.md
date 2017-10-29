@@ -1,5 +1,29 @@
-无服务器架构开发指南 - a guide of serverless with demos
+Serverless（无服务器架构）应用开发指南
 ===
+
+- [[Serverless 应用开发指南：serverless 的 hello, world](https://www.phodal.com/blog/serverless-development-guid-serverless-framework-hello-world/)](#-serverless--------serverless---hello--world--https---wwwphodalcom-blog-serverless-development-guid-serverless-framework-hello-world--)
+  * [Serverless 框架 hello, world](#serverless----hello--world)
+    + [一、安装  serverless 框架](#------serverless---)
+    + [二、设置 aws 凭证。](#-----aws----)
+    + [三、创建 hello-world 服务](#-----hello-world---)
+    + [四、部署及测试：](#--------)
+- [[Serverless 应用开发指南： Node.js 编程返回动态 HTML](https://www.phodal.com/blog/serverless-development-guide-nodejs-create-dymamic-html/)](#-serverless---------nodejs--------html--https---wwwphodalcom-blog-serverless-development-guide-nodejs-create-dymamic-html--)
+- [[Serverless 应用开发指南：API Gateway + S3 + AWS Lambda 打造 CRUD](https://www.phodal.com/blog/serverless-development-guide-use-s3-api-gateway-create-crud/)](#-serverless--------api-gateway---s3---aws-lambda----crud--https---wwwphodalcom-blog-serverless-development-guide-use-s3-api-gateway-create-crud--)
+  * [概念：API Gateway 与 S3](#---api-gateway---s3)
+  * [基于 S3 的 Serverless CRUD](#---s3---serverless-crud)
+  * [上传原理](#----)
+  * [Serverless S3 CRUD 示例](#serverless-s3-crud---)
+- [[Serverless 开发指南：AWS IoT 服务开发](https://www.phodal.com/blog/serverless-guide-development-aws-iot-serverless-example/)](#-serverless------aws-iot-------https---wwwphodalcom-blog-serverless-guide-development-aws-iot-serverless-example--)
+  * [Serverless 框架安装服务](#serverless-------)
+  * [部署 AWS IoT Serverless 服务](#---aws-iot-serverless---)
+  * [查看日志](#----)
+- [[Serverless 应用开发指南：使用 S3 部署静态网站](https://www.phodal.com/blog/serverless-development-guide-use-serverless-finch-deploy-s3-static-html/)](#-serverless-----------s3---------https---wwwphodalcom-blog-serverless-development-guide-use-serverless-finch-deploy-s3-static-html--)
+  * [配置 serverless-finch](#---serverless-finch)
+  * [静态内容](#----)
+  * [License](#license)
+
+<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
+
 
 [Serverless 应用开发指南：serverless 的 hello, world](https://www.phodal.com/blog/serverless-development-guid-serverless-framework-hello-world/)
 ===
