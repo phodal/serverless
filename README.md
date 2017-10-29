@@ -24,6 +24,12 @@ Serverless（无服务器架构）应用开发指南
   * [配置 serverless-finch](#---serverless-finch)
   * [静态内容](#----)
   * [License](#license)
+- [Serverless 应用开发指南：Lambda + API Gateway + DynamoDB 制作 REST API](#serverless--------lambda---api-gateway---dynamodb----rest-api)
+  * [Serverless DynamoDB 示例配置](#serverless-dynamodb-----)
+  * [Serverless DynamoDB 示例代码](#serverless-dynamodb-----)
+  * [Serverless DynamoDB 部署](#serverless-dynamodb---)
+  * [Serverless DynamoDB 测试](#serverless-dynamodb---)
+  * [其它操作](#----)
 
 <small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
 
