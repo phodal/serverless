@@ -1,0 +1,77 @@
+service: serverless-crud-s3
+
+plugins:
+  - serverless-offline
+
+provider:
+  name: aws
+  runtime: nodejs4.3
+  region: us-east-1
+  cfLogs: true
+  stage: dev
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - s3:ListBucket
+      Resource: "arn:aws:s3:::form-response"
+    - Effect: Allow
+      Action:
+        - s3:PutObject
+        - s3:GetObject
+        - s3:DeleteObject
+      Resource: "arn:aws:s3:::form-response/*"
+
+functions:
+  create:
+    handler: handler.create
+    events:
+      - http:
+          path: form-response/{id}
+          method: post
+          cors: true
+  list:
+    handler: handler.list
+    events:
+      - http:
+          path: form-response
+          method: get
+          cors: true
+  readAll:
+    handler: handler.readAll
+    events:
+      - http:
+          path: form-response/readAll
+          method: get
+          cors: true
+  readOne:
+    handler: handler.readOne
+    events:
+      - http:
+          path: form-response/{id}
+          method: get
+          cors: true
+  update:
+    handler: handler.update
+    events:
+      - http:
+          path: form-response/{id}
+          method: put
+          cors: true
+  delete:
+    handler: handler.delete
+    events:
+      - http:
+          path: form-response/{id}
+          method: delete
+          cors: true
+
+resources:
+  Resources:
+    MyBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: form-response
+        AccessControl: PublicReadWrite
+        WebsiteConfiguration:
+          IndexDocument: index.html
+          ErrorDocument: error.html

@@ -1,0 +1,8 @@
+.serverless
+npm-debug.*
+dist
+node_modules
+.DS_Store
+.tmp
+.env
+data/form-response/*

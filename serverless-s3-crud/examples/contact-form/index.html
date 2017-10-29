@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Serverless S3 CRUD</title>
+  </head>
+  <body>
+    <form id="simple-form">
+      <input type="text" name="firstName" />
+      <input type="text" name="lastName" />
+      <input type="password" name="password" />
+      <input type="number" name="number" />
+      <input type="file" name="file" />
+      <input type="date" name="date" />
+      <input type="email" name="email" />
+      <input type="color" name="color" />
+      <input type="range" name="range" min="0" max="10" />
+      <input type="tel" name="tel" />
+      <input type="search" name="search" />
+      <input type="url" name="url" />
+      <input type="radio" name="gender" value="female" /><label>Female</label>
+      <input type="radio" name="gender" value="male" checked /><label>Male</label>
+      <input type="checkbox" name="cool" checked />
+      <textarea name="textarea">Test</textarea>
+      <br />
+      <button type="submit">Submit</button>
+    </form>
+
+    <script>
+      // Get input values from a form.
+      // {@param} form
+      function getInputValues(form) {
+        var inputData = {}
+        Array.prototype.forEach.call(form.querySelectorAll('[name]'), function(el) {
+          var key = el.name
+          var value = ''
+          if (el.type === 'text') {
+            inputData[key] = el.value
+          } else if (el.type === 'radio' && el.checked) {
+            inputData[key] = el.value
+          } else if (el.type === 'checkbox') {
+            inputData[key] = el.checked
+          } else if (el.type === 'file') {
+            inputData[key] = el.files.length > 1 ? el.files : el.files[0]
+          } else if (el.type !== 'radio') {
+            inputData[key] = el.value
+          }
+        })
+        return inputData
+      }
+
+
+      var form = document.querySelector('#simple-form')
+      form.addEventListener('submit', function(e) {
+        var data = getInputValues(form)
+        console.log(data)
+
+        e.preventDefault()
+        var d = {}
+        var formData = new FormData(form)
+        formData.forEach(function(value, name) {
+          d[name] = value
+        })
+        console.log(d)
+
+        var id = new Date().getTime()
+        fetch('http://localhost:3000/form-response/' + id, {
+            method: 'POST',
+            body: formData
+          })
+          .then(function(res) {
+            return res.json()
+          }).then(function(data) {
+            console.log(data)
+          })
+      })
+    </script>
+  </body>
+</html>
