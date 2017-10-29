@@ -1,0 +1,13 @@
+service: s3-static-file
+
+
+plugins:
+  - serverless-finch
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+
+custom:
+  client:
+    bucketName: wdsm.io
