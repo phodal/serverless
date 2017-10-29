@@ -10,7 +10,7 @@ const fetch = require('isomorphic-fetch')
 
 const IS_PROD = true
 const prefix = 'test-'
-const host = 'jw6pr5u674.execute-api.us-east-1.amazonaws.com'
+const host = 'xc1iprfbsg.execute-api.us-east-1.amazonaws.com'
 const apiEndpoint = IS_PROD
   ? 'https://' + host + '/dev/form-response/'
   : 'http://localhost:3000/form-response/'

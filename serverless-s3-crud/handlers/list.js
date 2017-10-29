@@ -5,7 +5,7 @@ const S3 = new AWS.S3(require('../s3config.js')())
 
 module.exports = (event, callback) => {
   S3.listObjectsV2({
-    Bucket: 'form-response',
+    Bucket: 'phodal-serverless',
   }, (err, res) => {
     console.log(err, res)
     callback(err, res)

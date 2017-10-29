@@ -5,7 +5,7 @@ const S3 = new AWS.S3(require('../s3config.js')())
 
 module.exports = (event, callback) => {
   S3.listObjectsV2({
-    Bucket: 'form-response',
+    Bucket: 'phodal-serverless',
   }, (err, res) => {
     if (res.Contents) {
       const length = res.Contents.length
@@ -14,7 +14,7 @@ module.exports = (event, callback) => {
       res.Contents.forEach((item) => {
         const key = item.Key
         S3.getObject({
-          Bucket: 'form-response',
+          Bucket: 'phodal-serverless',
           Key: key,
         }, (err, data) => {
           count++

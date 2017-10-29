@@ -13,13 +13,13 @@ provider:
     - Effect: Allow
       Action:
         - s3:ListBucket
-      Resource: "arn:aws:s3:::form-response"
+      Resource: "arn:aws:s3:::phodal-serverless"
     - Effect: Allow
       Action:
         - s3:PutObject
         - s3:GetObject
         - s3:DeleteObject
-      Resource: "arn:aws:s3:::form-response/*"
+      Resource: "arn:aws:s3:::phodal-serverless/*"
 
 functions:
   create:
@@ -70,7 +70,7 @@ resources:
     MyBucket:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: form-response
+        BucketName: phodal-serverless
         AccessControl: PublicReadWrite
         WebsiteConfiguration:
           IndexDocument: index.html
