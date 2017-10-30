@@ -18,38 +18,41 @@ Achitecture
 
 目录
 ---
-*   [前言](#前言)
-*   [Serverless 应用开发指南：serverless 的 hello, world](https://www.phodal.com/blog/serverless-development-guid-serverless-framework-hello-world/)
+
+*   [Serverless 应用开发指南：serverless 的 hello, world](#serverless-应用开发指南serverless-的-hello-world)
     *   [Serverless 框架 hello, world](#serverless-框架-hello-world)
         *   [一、安装 serverless 框架](#一安装-serverless-框架)
         *   [二、设置 aws 凭证。](#二设置-aws-凭证)
         *   [三、创建 hello-world 服务](#三创建-hello-world-服务)
         *   [四、部署及测试：](#四部署及测试)
-*   [Serverless 应用开发指南： Node.js 编程返回动态 HTML](https://www.phodal.com/blog/serverless-development-guide-nodejs-create-dymamic-html/)
-*   [Serverless 应用开发指南：API Gateway + S3 + AWS Lambda 打造 CRUD](https://www.phodal.com/blog/serverless-development-guide-use-s3-api-gateway-create-crud/)
+*   [Serverless 应用开发指南： Node.js 编程返回动态 HTML](#serverless-应用开发指南-node.js-编程返回动态-html)
+*   [Serverless 应用开发指南：API Gateway + S3 + AWS Lambda 打造 CRUD](#serverless-应用开发指南api-gateway-s3-aws-lambda-打造-crud)
     *   [概念：API Gateway 与 S3](#概念api-gateway-与-s3)
     *   [基于 S3 的 Serverless CRUD](#基于-s3-的-serverless-crud)
     *   [上传原理](#上传原理)
     *   [Serverless S3 CRUD 示例](#serverless-s3-crud-示例)
-*   [Serverless 开发指南：AWS IoT 服务开发](https://www.phodal.com/blog/serverless-guide-development-aws-iot-serverless-example/)
+*   [Serverless 开发指南：AWS IoT 服务开发](#serverless-开发指南aws-iot-服务开发)
     *   [Serverless 框架安装服务](#serverless-框架安装服务)
     *   [部署 AWS IoT Serverless 服务](#部署-aws-iot-serverless-服务)
     *   [查看日志](#查看日志)
-*   [Serverless 应用开发指南：使用 S3 部署静态网站](https://www.phodal.com/blog/serverless-development-guide-use-serverless-finch-deploy-s3-static-html/)
+*   [Serverless 应用开发指南：使用 S3 部署静态网站](#serverless-应用开发指南使用-s3-部署静态网站)
     *   [配置 serverless-finch](#配置-serverless-finch)
     *   [静态内容](#静态内容)
-*   [Serverless 应用开发指南：Lambda + API Gateway + DynamoDB 制作 REST API](https://www.phodal.com/blog/serverless-developement-gui-lambda-api-gateway-dynamodb-create-restful-services/)
+*   [Serverless 应用开发指南：Lambda + API Gateway + DynamoDB 制作 REST API](#serverless-应用开发指南lambda-api-gateway-dynamodb-制作-rest-api)
     *   [Serverless DynamoDB 示例配置](#serverless-dynamodb-示例配置)
     *   [Serverless DynamoDB 示例代码](#serverless-dynamodb-示例代码)
     *   [Serverless DynamoDB 部署](#serverless-dynamodb-部署)
     *   [Serverless DynamoDB 测试](#serverless-dynamodb-测试)
     *   [其它操作](#其它操作)
-*   [Serverless 应用开发指南：Serverless + Express 的 React 服务端渲染](https://www.phodal.com/blog/serverless-development-guide-express-react-build-server-side-rendering/)
+*   [Serverless 应用开发指南：Serverless + Express 的 React 服务端渲染](#serverless-应用开发指南serverless-express-的-react-服务端渲染)
     *   [Serverless + Express](#serverless-express)
     *   [Express + React 进行服务端渲染](#express-react-进行服务端渲染)
 
-[Serverless 应用开发指南：serverless 的 hello, world](https://www.phodal.com/blog/serverless-development-guid-serverless-framework-hello-world/)
+
+Serverless 应用开发指南：serverless 的 hello, world
 ===
+
+原文链接：[Serverless 应用开发指南：serverless 的 hello, world](https://www.phodal.com/blog/serverless-development-guid-serverless-framework-hello-world/)
 
 在翻译了几篇 serverless 与物联网相关的文章之后，我开始想着好好掌握一下 serverless 的相关知识。
 
@@ -235,8 +238,11 @@ REPORT RequestId: 041138f9-bc81-11e7-aa63-0dbab83f773d	Duration: 2.49 ms	Billed 
 serverless logs -f hello -t
 ```
 
-[Serverless 应用开发指南： Node.js 编程返回动态 HTML](https://www.phodal.com/blog/serverless-development-guide-nodejs-create-dymamic-html/)
+Serverless 应用开发指南： Node.js 编程返回动态 HTML
 ===
+
+原文链接：[Serverless 应用开发指南： Node.js 编程返回动态 HTML](https://www.phodal.com/blog/serverless-development-guide-nodejs-create-dymamic-html/)
+
 
 在我们进行 Serverless + SPA 应用开发之前，先看看官方的相应 DEMO。
 
@@ -337,8 +343,10 @@ Landing Page
 Hey phodal!
 ```
 
-[Serverless 应用开发指南：API Gateway + S3 + AWS Lambda 打造 CRUD](https://www.phodal.com/blog/serverless-development-guide-use-s3-api-gateway-create-crud/)
+Serverless 应用开发指南：API Gateway + S3 + AWS Lambda 打造 CRUD
 ===
+
+原文链接：[Serverless 应用开发指南：API Gateway + S3 + AWS Lambda 打造 CRUD](https://www.phodal.com/blog/serverless-development-guide-use-s3-api-gateway-create-crud/)
 
 在前两篇文章《Serverless 应用开发指南： serverless 的 hello, world》和 《[Serverless 开发指南：AWS IoT 服务开发](https://www.phodal.com/blog/serverless-guide-development-aws-iot-serverless-example/)》 里，我们简单地介绍了如何用 Serverless 和 AWS IoT 开发入门级的 Serverless 应用。
 
@@ -553,8 +561,10 @@ curl https://xc1iprfbsg.execute-api.us-east-1.amazonaws.com/dev/form-response
 如果只是测试用途，可以在执行完成后执行 serverless remove 来删除对应的服务，以减少开支。
 
 
-[Serverless 开发指南：AWS IoT 服务开发](https://www.phodal.com/blog/serverless-guide-development-aws-iot-serverless-example/)
+Serverless 开发指南：AWS IoT 服务开发
 ===
+
+原文链接：[Serverless 开发指南：AWS IoT 服务开发](https://www.phodal.com/blog/serverless-guide-development-aws-iot-serverless-example/)
 
 在我开发一个完整的 Serverless 应用之前，我决定尝试一下不同的 Serverless 服务。这次我打算结合一下 AWS IoT，作为我对云服务与物联网结合的探索。
 
@@ -665,8 +675,10 @@ REPORT RequestId: 76ad40d4-bc84-11e7-885a-6182fb121f8c	Duration: 68.80 ms	Billed
 
 如果只是测试用途，可以在执行完成后执行 ``serverless remove`` 来删除对应的服务，以减少开支。
 
-[Serverless 应用开发指南：使用 S3 部署静态网站](https://www.phodal.com/blog/serverless-development-guide-use-serverless-finch-deploy-s3-static-html/)
+Serverless 应用开发指南：使用 S3 部署静态网站
 ===
+
+原文链接：[Serverless 应用开发指南：使用 S3 部署静态网站](https://www.phodal.com/blog/serverless-development-guide-use-serverless-finch-deploy-s3-static-html/)
 
 在尝试了使用 Router53 路由到 S3 后，并想试试能否使用 serverless 框架来上传静态内容。在探索官方的 DEMO 后，找到了一个 ``serverless-finch`` 插件可以做相应的事情。
 
@@ -775,8 +787,10 @@ Serverless: If successful this should be deployed at: https://s3.amazonaws.com/w
 
 并且，对应的删除命令也变成了：``serverless client remove``。
 
-[Serverless 应用开发指南：Lambda + API Gateway + DynamoDB 制作 REST API](https://www.phodal.com/blog/serverless-developement-gui-lambda-api-gateway-dynamodb-create-restful-services/)
+Serverless 应用开发指南：Lambda + API Gateway + DynamoDB 制作 REST API
 ===
+
+原文链接：[Serverless 应用开发指南：Lambda + API Gateway + DynamoDB 制作 REST API](https://www.phodal.com/blog/serverless-developement-gui-lambda-api-gateway-dynamodb-create-restful-services/)
 
 本文将介绍如何用 AWS Lambda + API Gateway + DynamoDB 创建一个 RESTful API 的示例。文中的示例是一个 TODO API 的示例，支持 GET、POST、PUT、DELETE 请求，即常规的 CRUD。
 
@@ -994,8 +1008,10 @@ curl -X DELETE https://dw5y1epmsj.execute-api.us-east-1.amazonaws.com/dev/todos/
 serverless remove
 ```
 
-[Serverless 应用开发指南：Serverless + Express 的 React 服务端渲染](https://www.phodal.com/blog/serverless-development-guide-express-react-build-server-side-rendering/)  
+Serverless 应用开发指南：Serverless + Express 的 React 服务端渲染
 ===
+
+原文链接：[Serverless 应用开发指南：Serverless + Express 的 React 服务端渲染](https://www.phodal.com/blog/serverless-development-guide-express-react-build-server-side-rendering/)  
 
 我们已经可以用 AWS Lambda 来动态返回 HTML 了。在阅读了一系列的文章后，也发现了 Express 可以在 Lambda 上运行。当我们可以运行 Express 的时候，也意味着，它可以进行服务端渲染，即我们可以做  React 的服务端渲染。
 
