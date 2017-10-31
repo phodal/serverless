@@ -1,0 +1,12 @@
+{
+  "name": "github-webhook",
+  "version": "1.0.0",
+  "description": "Extend your github repositories with this github webhook listener",
+  "main": "handler.js",
+  "scripts": {
+    "deploy": "serverless deploy",
+    "logs": "serverless logs -f githubWebhookListener -t"
+  },
+  "author": "David Wells",
+  "license": "MIT"
+}
