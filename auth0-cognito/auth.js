@@ -8,7 +8,7 @@ const request = require('request');
 // refer to:        http://bit.ly/2hoeRXk
 // For AWS Cognito: https://cognito-idp.<region>.amazonaws.com/<user pool id>/
 // refer to:        http://amzn.to/2fo77UI
-const iss = 'https://cognito-idp.us-east-1.amazonaws.com/serverless-auth/';
+const iss = 'https://phodal.auth0.com/';
 
 // Generate policy to allow this user on this API:
 const generatePolicy = (principalId, effect, resource) => {
