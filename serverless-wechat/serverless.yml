@@ -13,3 +13,7 @@ functions:
     events:
       - http: ANY /
       - http: 'ANY {proxy+}'
+    environment:
+      TOKEN: ${file(./config.yml):TOKEN}
+      APP_ID: ${file(./config.yml):TOKEN}
+      AESKey: ${file(./config.yml):TOKEN}
