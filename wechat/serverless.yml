@@ -18,8 +18,8 @@ functions:
       - http: 'ANY {proxy+}'
     environment:
       TOKEN: ${file(./config.yml):TOKEN}
-      APP_ID: ${file(./config.yml):TOKEN}
-      AESKey: ${file(./config.yml):TOKEN}
+      APP_ID: ${file(./config.yml):APP_ID}
+      AESKey: ${file(./config.yml):AESKey}
 
 custom:
   customDomain:
