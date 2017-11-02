@@ -12,7 +12,7 @@ provider:
 
 functions:
   runserver:
-    handler: lambda.runserver
+    handler: handler.runserver
     events:
       - http: ANY /
       - http: 'ANY {proxy+}'
