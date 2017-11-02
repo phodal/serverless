@@ -1,15 +1,18 @@
 service: serverless-wechat
 
+plugins:
+  - serverless-domain-manager
+
 provider:
   name: aws
   runtime: nodejs6.10
   memorySize: 128
   timeout: 120
-  region: ap-northeast-2
+  region: us-east-1
 
 functions:
-  lambda:
-    handler: lambda.handler
+  runserver:
+    handler: lambda.runserver
     events:
       - http: ANY /
       - http: 'ANY {proxy+}'
@@ -17,3 +20,10 @@ functions:
       TOKEN: ${file(./config.yml):TOKEN}
       APP_ID: ${file(./config.yml):TOKEN}
       AESKey: ${file(./config.yml):TOKEN}
+
+custom:
+  customDomain:
+    domainName: wechat.wdsm.io
+    basePath: ''
+    stage: ${self:provider.stage}
+    createRoute53Record: true
