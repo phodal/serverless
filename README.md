@@ -59,8 +59,8 @@ License
 [![Phodal's Article](http://brand.phodal.com/shields/article-small.svg)](https://www.phodal.com/) [![Phodal's Book](http://brand.phodal.com/shields/book-small.svg)](https://www.phodal.com/)
 
 
-© 2017 [Phodal Huang](https://www.phodal.com). The **code** is distributed under the Creative Commons Attribution-Noncommercial-No Derivative Works 3.0  License. See `LICENSE` in this directory.
+© 2017 [Phodal Huang](https://www.phodal.com). The **code** is distributed under the MIT License. See `LICENSE` in this directory.
 
-© 2017 [Phodal Huang](https://www.phodal.com). The **content** is distributed under the Creative Commons Attribution-Noncommercial-No Derivative Works 3.0  License. See `LICENSE` in this directory.
+© 2017 [Phodal Huang](https://www.phodal.com). The **content** is distributed under the Creative Commons Attribution-Noncommercial-No Derivative Works 3.0 License. See `LICENSE` in this directory.
 
 [待我代码编成，娶你为妻可好](http://www.xuntayizhan.com/blog/ji-ke-ai-qing-zhi-er-shi-dai-wo-dai-ma-bian-cheng-qu-ni-wei-qi-ke-hao-wan/)
