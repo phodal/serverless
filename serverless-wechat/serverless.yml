@@ -8,5 +8,8 @@ provider:
   region: ap-northeast-2
 
 functions:
-  hello:
-    handler: handler.hello
+  lambda:
+    handler: lambda.handler
+    events:
+      - http: ANY /
+      - http: 'ANY {proxy+}'
