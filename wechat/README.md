@@ -1,3 +1,5 @@
+Serverless API Gateway Route 53 自定义域名
+===
 
 在 Route 53 上注册有域名，如果没有的话，需要转到 Route 53。
 
@@ -28,3 +30,59 @@ custom:
     stage: ${self:provider.stage}
     createRoute53Record: true
 ```
+
+```
+serverless create_domain
+```
+
+日志：
+
+
+```
+Serverless: Domain was created, may take up to 40 mins to be initialized.
+```
+
+AWS CLI 查看：
+
+```
+{
+    "items": [
+        {
+            "certificateArn": "arn:aws:acm:us-east-1:706605665335:certificate/278c252a-7aaf-41df-bcf1-adc279347557",
+            "distributionDomainName": "d1pp7oijqquj95.cloudfront.net",
+            "certificateUploadDate": 1509592737,
+            "domainName": "wechat.wdsm.io"
+        }
+    ]
+}
+```
+
+```
+serverless deploy
+```
+
+```
+....................................
+Serverless: Stack update finished...
+Service Information
+service: serverless-wechat
+stage: dev
+region: us-east-1
+stack: serverless-wechat-dev
+api keys:
+  None
+endpoints:
+  ANY - https://e8tct5f0v2.execute-api.us-east-1.amazonaws.com/dev
+  ANY - https://e8tct5f0v2.execute-api.us-east-1.amazonaws.com/dev/{proxy+}
+functions:
+  runserver: serverless-wechat-dev-runserver
+Serverless Domain Manager Summary
+Domain Name
+  wechat.wdsm.io
+Distribution Domain Name
+  d1pp7oijqquj95.cloudfront.net
+```
+
+Serverless 微信公号
+===
+
