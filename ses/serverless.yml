@@ -3,8 +3,8 @@ service: aws-ses
 provider:
   name: aws
   runtime: nodejs6.10
-  stage: development
-  region: ap-northeast-1
+  stage: dev
+  region: us-east-1
 
 plugins:
   - serverless-webpack
@@ -13,7 +13,7 @@ functions:
   sendMail:
     handler: handler.sendMail
     description: Send email using SES service.
-    memorySize: 1024
+    memorySize: 128
     timeout: 5
     events:
       - http:
