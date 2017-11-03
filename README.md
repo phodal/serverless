@@ -52,7 +52,15 @@ Achitecture
         *   [rate 表达式](https://phodal.github.io/serverless-guide/#rate-表达式)
         *   [cron 表达式](https://phodal.github.io/serverless-guide/#cron-表达式)
     *   [部署](https://phodal.github.io/serverless-guide/#部署)
-
+*   [Serverless 应用开发指南： API Gateway 与 Route53 自定义域名](https://phodal.github.io/serverless-guide/#serverless-应用开发指南-api-gateway-与-route53-自定义域名)
+    *   [Serveress Domain Manager](https://phodal.github.io/serverless-guide/#serveress-domain-manager)
+*   [Serverless 应用开发指南：基于 Serverless 与 Lambda 的微信公共平台](https://phodal.github.io/serverless-guide/#serverless-应用开发指南基于-serverless-与-lambda-的微信公共平台)
+    *   [创建 Serverless 服务](https://phodal.github.io/serverless-guide/#创建-serverless-服务)
+    *   [引入 node-wechat](https://phodal.github.io/serverless-guide/#引入-node-wechat)
+    *   [配置 APP_ID 和 TOKEN 等](https://phodal.github.io/serverless-guide/#配置-app_id-和-token-等)
+    *   [配置 Route 53 与 API Gateway](https://phodal.github.io/serverless-guide/#配置-route-53-与-api-gateway)
+    *   [添加微信公众平号服务](https://phodal.github.io/serverless-guide/#添加微信公众平号服务)
+    *   [部署](https://phodal.github.io/serverless-guide/#部署-1)
 License
 ---
 
