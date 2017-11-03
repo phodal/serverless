@@ -1,0 +1,63 @@
+service: track
+custom:
+  table: owntracks
+provider:
+  name: aws
+  runtime: nodejs4.3
+  environment:
+    table: '${self:custom.table}'
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:DescribeTable
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "arn:aws:dynamodb:us-east-1:*:*"
+functions:
+  pub:
+    handler: handler.pub
+    events:
+      - http:
+          path: pub
+          method: post
+  geojson-points:
+    handler: handler.points
+    events:
+      - http:
+          path: '{tid}/geojson/points'
+          method: get
+          cors: true
+  geojson-linestring:
+    handler: handler.linestring
+    events:
+      - http:
+          path: '{tid}/geojson/linestring'
+          method: get
+          cors: true
+resources:
+  Resources:
+    OwntracksDynamoDbTable:
+      Type: 'AWS::DynamoDB::Table'
+      Properties:
+        AttributeDefinitions:
+          -
+           AttributeName: "tid"
+           AttributeType: "S"
+          -
+           AttributeName: "tst"
+           AttributeType: "N"
+        KeySchema: 
+          -
+           AttributeName: "tid"
+           KeyType: "HASH"
+          -
+           AttributeName: "tst"
+           KeyType: "RANGE"
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: '${self:custom.table}'

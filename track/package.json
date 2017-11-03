@@ -1,0 +1,32 @@
+{
+  "name": "track",
+  "version": "1.0.0",
+  "description": "A serverless backend for OwnTracks!",
+  "main": "handler.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dschep/owntracks-serverless.git"
+  },
+  "keywords": [
+    "owntracks",
+    "serverless",
+    "aws",
+    "lambda",
+    "gps",
+    "location"
+  ],
+  "author": "Daniel Schep <dschep@gmail.com> (http://schep.me)",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/dschep/owntracks-serverless/issues"
+  },
+  "homepage": "https://github.com/dschep/owntracks-serverless#readme",
+  "dependencies": {
+    "aws-sdk": "^2.7.13",
+    "bluebird": "^3.4.6",
+    "lodash": "^4.17.2"
+  }
+}
