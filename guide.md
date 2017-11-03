@@ -1694,3 +1694,8 @@ cp config.yml.template config.yml
 最后，就可以愉快地部署了。
 
 如果你是为测试，你可以执行 ``serverless remove`` 来删除服务。
+
+最后效果见我的微信公众号：phodal-weixin
+
+![微信](./images/phodal-wechat.jpg)
+
