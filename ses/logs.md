@@ -101,3 +101,20 @@ Serverless: Invoke aws:deploy:finalize
 登录 SNS，验证一个邮箱。
 
 ![验证邮箱](./images/verify-email)
+
+试了 gmszone@qq.com 、网易邮箱都不行，最后用了 Google 的。
+
+```
+{
+	"bccEmailAddresses": [],
+	"ccEmailAddresses": [],
+	"toEmailAddresses": ["gmszone@gmail.com"],
+	"bodyData": "Hey test message buddy!! From AWS SES",
+	"bodyCharset": "UTF-8",
+	"subjectdata": "AWS SES",
+	"subjectCharset": "UTF-8",
+	"sourceEmail": "gmszone@gmail.com",
+	"replyToAddresses": ["gmszone@gmail.com"]
+}
+```
+
