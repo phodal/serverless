@@ -87,6 +87,14 @@
 <li><a href="#serverless-应用开发指南-api-gateway-与-route53-自定义域名">Serverless 应用开发指南： API Gateway 与 Route53 自定义域名</a><ul>
 <li><a href="#serveress-domain-manager">Serveress Domain Manager</a></li>
 </ul></li>
+<li><a href="#serverless-应用开发指南基于-serverless-与-lambda-的微信公共平台">Serverless 应用开发指南：基于 Serverless 与 Lambda 的微信公共平台</a><ul>
+<li><a href="#创建-serverless-服务">创建 Serverless 服务</a></li>
+<li><a href="#引入-node-wechat">引入 node-wechat</a></li>
+<li><a href="#配置-app_id-和-token-等">配置 APP_ID 和 TOKEN 等</a></li>
+<li><a href="#配置-route-53-与-api-gateway">配置 Route 53 与 API Gateway</a></li>
+<li><a href="#添加微信公众平号服务">添加微信公众平号服务</a></li>
+<li><a href="#部署-1">部署</a></li>
+</ul></li>
 </ul>
 </nav>
 <h1 id="serverless无服务器架构应用开发指南">Serverless（无服务器架构）应用开发指南</h1>
@@ -1045,6 +1053,171 @@ Domain Name
 Distribution Domain Name
   d1pp7oijqquj95.cloudfront.net</code></pre>
 <p>现在，你就可以使用自己定义的域名来访问了 API Gateway 了。</p>
+<h1 id="serverless-应用开发指南基于-serverless-与-lambda-的微信公共平台">Serverless 应用开发指南：基于 Serverless 与 Lambda 的微信公共平台</h1>
+<p>原文链接：<a href="https://www.phodal.com/blog/serverless-development-guide-serverless-lambda-wechat-public-platform/">Serverless 应用开发指南：基于 Serverless 与 Lambda 的微信公共平台</a></p>
+<p>Serverless 在事件驱动方面具有天然的优势，其中之一就是聊天机器人。可要做聊天机器人不是一件容易的事，微信和 QQ 都只能用 Hack 的方式进行。</p>
+<p>于是，便想到微信公众号是不是一个更好的选择。当用户输入一个关键词时，做出相应的回复。总体上来说，他们之间是差不多的。这个时候，就可以开始尝试一个在线上运行的 Serverless 服务。</p>
+<p>在这件事上，有这么几个步骤：</p>
+<ul>
+<li>创建 Serverless 服务</li>
+<li>引入 node-wechat</li>
+<li>配置 APP_ID 和 TOKEN 等</li>
+<li>配置 Route 53 与 API Gateway</li>
+<li>添加微信公众平号服务</li>
+<li>部署</li>
+</ul>
+<h2 id="创建-serverless-服务">创建 Serverless 服务</h2>
+<p>首先，让我们创建我们的服务：</p>
+<pre><code>serverless create --template aws-nodejs --path serverless-wechat</code></pre>
+<p>这个步骤依旧是这么的简单。</p>
+<h2 id="引入-node-wechat">引入 node-wechat</h2>
+<p>然后我找到了 node-wechat 库，它使用 express 来做路由，示例如下：</p>
+<pre><code>const express = require(&#39;express&#39;);
+const app = express();
+var wechat = require(&#39;wechat&#39;);
+var config = {
+  token: &#39;token&#39;,
+  appid: &#39;appid&#39;,
+  encodingAESKey: &#39;encodinAESKey&#39;,
+  checkSignature: true // 可选，默认为true。由于微信公众平台接口调试工具在明文模式下不发送签名，所以如要使用该测试工具，请将其设置为false
+};
+
+app.use(express.query());
+app.use(&#39;/wechat&#39;, wechat(config, function (req, res, next) {
+  // 微信输入信息都在req.weixin上
+  var message = req.weixin;
+  if (message.FromUserName === &#39;diaosi&#39;) {
+    // 回复屌丝(普通回复)
+    res.reply(&#39;hehe&#39;);
+  }
+}));</code></pre>
+<p>上面便是我们的 <code>index.js</code> 文件。</p>
+<p>然后就是使用类似于《<a href="https://www.phodal.com/blog/serverless-development-guide-express-react-build-server-side-rendering/">Serverless 应用开发指南：Serverless + Express 的 React 服务端渲染</a>》中的方法，使用 <code>aws-serverless-express</code> 来做出一层代理：</p>
+<pre><code>const awsServerlessExpress = require(&#39;aws-serverless-express&#39;);
+const app = require(&#39;./index&#39;);
+const server = awsServerlessExpress.createServer(app);
+
+exports.runserver = (event, context) =&gt; {
+   console.log(&quot;EVENT: &quot; + JSON.stringify(event));
+   awsServerlessExpress.proxy(server, event, context)
+}</code></pre>
+<p>接下来就是进行相关的配置。</p>
+<h2 id="配置-app_id-和-token-等">配置 APP_ID 和 TOKEN 等</h2>
+<p>首先，修改我们的 <code>index.js</code> 文件中的配置相关代码：</p>
+<pre><code>let config = {
+  token: process.env.TOKEN,
+  appid: process.env.APP_ID,
+  encodingAESKey: process.env.AESKey,
+  checkSignature: true
+};</code></pre>
+<p>token、id、encodingAESKey 将从 <code>serverless.yml</code> 文件中读取。我们的 <code>serverless.yml</code> 文件将从另外的文件中读取：</p>
+<pre><code>
+functions:
+  runserver:
+    handler: handler.runserver
+    events:
+      - http: ANY /
+      - http: &#39;ANY {proxy+}&#39;
+    environment:
+      TOKEN: ${file(./config.yml):TOKEN}
+      APP_ID: ${file(./config.yml):APP_ID}
+      AESKey: ${file(./config.yml):AESKey}</code></pre>
+<p>即从 <code>config.yml</code> 中读取：</p>
+<pre><code>TOKEN: TOKEN
+APP_ID: APP_ID
+AESKey: AESKey</code></pre>
+<p>这是为了确保我们可以保护密钥的安全。</p>
+<p>一切准备就绪，执行：</p>
+<pre><code>serverless deploy</code></pre>
+<p>就会生成对应的 API：</p>
+<pre><code>stack: serverless-wechat-dev
+api keys:
+  None
+endpoints:
+  ANY - https://e8tct5f0v2.execute-api.us-east-1.amazonaws.com/dev
+  ANY - https://e8tct5f0v2.execute-api.us-east-1.amazonaws.com/dev/{proxy+}
+functions:
+  runserver: serverless-wechat-dev-runserver</code></pre>
+<p>于是，我将这个地址填到了公众号后台，发现公号不支持 API Gateway。只能想办法使用自定义的域名，随后就需要使用 Route 53 来创建了。</p>
+<h2 id="配置-route-53-与-api-gateway">配置 Route 53 与 API Gateway</h2>
+<p>如之前在《<a href="https://www.phodal.com/blog/serverless-development-guide-api-gateway-and-route53-custom-domain/">Serverless 应用开发指南： API Gateway 与 Route53 自定义域名</a>》中所说，按下面的步骤就可以配置 Route 53 了。</p>
+<p>在 Route 53 上注册有域名，如果没有的话，需要转到 Route 53。</p>
+<p>然后，才能为你的域名请求一个证书</p>
+<p>需要选择的区域是 <code>us-east-1</code>，这个 region 才能与 API Gateway 一起工作。</p>
+<p>在这个过程中，需要验证域名的所有权。所以，你需要先找个地方注册域名邮箱，如我使用的是网易的域名邮箱。</p>
+<pre><code>$ yarn add --dev serverless-domain-manager</code></pre>
+<p>或者</p>
+<pre><code>$ npm install serverless-domain-manager --save-dev</code></pre>
+<pre><code>plugins:
+  - serverless-domain-manager
+
+custom:
+  customDomain:
+    domainName: wechat.wdsm.io
+    basePath: &#39;&#39;
+    stage: ${self:provider.stage}
+    createRoute53Record: true</code></pre>
+<pre><code>serverless create_domain</code></pre>
+<p>日志：</p>
+<pre><code>Serverless: Domain was created, may take up to 40 mins to be initialized.</code></pre>
+<p>AWS CLI 查看：</p>
+<pre><code>{
+    &quot;items&quot;: [
+        {
+            &quot;certificateArn&quot;: &quot;arn:aws:acm:us-east-1:706605665335:certificate/278c252a-7aaf-41df-bcf1-adc279347557&quot;,
+            &quot;distributionDomainName&quot;: &quot;d1pp7oijqquj95.cloudfront.net&quot;,
+            &quot;certificateUploadDate&quot;: 1509592737,
+            &quot;domainName&quot;: &quot;wechat.wdsm.io&quot;
+        }
+    ]
+}</code></pre>
+<p>现在，再执行 <code>serverless deploy</code> 就可以完成整个步骤了。</p>
+<h2 id="添加微信公众平号服务">添加微信公众平号服务</h2>
+<p>然后，我们可以创建几个简单的服务，比如从 Google 搜索内容：</p>
+<pre><code>google(keyword, function (err, res) {
+  let result = R.map(R.compose(updateItemField, R.values, R.pick([&#39;title&#39;, &#39;link&#39;])))(res.links);
+  response.reply(&#39;你想要在 Google 上搜索的内容有： &#39; + result);
+});</code></pre>
+<p>又或者是，搜索我博客的相关内容：</p>
+<pre><code>request.get(&#39;https://www.phodal.com/api/app/blog_detail/?search=&#39; + keyword, {
+  headers: {
+    &#39;User-Agent&#39;: &#39;google&#39;
+  }
+}, function (error, res, body) {
+  if (res.statusCode === 200) {
+    let parsed = JSON.parse(body);
+    const data = parsed;
+    var result = R.map(R.compose(updatePhodalItemField, R.values, R.pick([&#39;title&#39;, &#39;slug&#39;])))(data);
+    response.reply({
+      content: &#39;在『 phodal.com 』上有 x 个结果，前 10 个如下：&#39; + result,
+      type: &#39;text&#39;
+    });
+  }
+});</code></pre>
+<p>最后代码见：<a href="https://github.com/phodal/mp/blob/master/index.js" class="uri">https://github.com/phodal/mp/blob/master/index.js</a></p>
+<h2 id="部署-1">部署</h2>
+<p>最后，让我们愉快地执行 <code>serverless deploy</code>，对应的日志如下：</p>
+<pre><code>stack: serverless-wechat-dev
+api keys:
+  None
+endpoints:
+  ANY - https://e8tct5f0v2.execute-api.us-east-1.amazonaws.com/dev
+  ANY - https://e8tct5f0v2.execute-api.us-east-1.amazonaws.com/dev/{proxy+}
+functions:
+  runserver: serverless-wechat-dev-runserver
+Serverless Domain Manager Summary
+Domain Name
+  wechat.wdsm.io
+Distribution Domain Name
+  d1pp7oijqquj95.cloudfront.net</code></pre>
+<p>结果你想用这个服务，那么只需要：</p>
+<pre><code>serverless install -u https://github.com/phodal/mp -mp</code></pre>
+<p>执行：</p>
+<pre><code>yarn install</code></pre>
+<p>再创建你的 <code>config.yml</code> 文件：</p>
+<pre><code>cp config.yml.template config.yml</code></pre>
+<p>最后，就可以愉快地部署了。</p>
+<p>如果你是为测试，你可以执行 <code>serverless remove</code> 来删除服务。</p>
 <section class="footnotes">
 <hr />
 <ol>
