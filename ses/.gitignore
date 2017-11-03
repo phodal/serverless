@@ -1,0 +1,13 @@
+# package directories
+node_modules
+jspm_packages
+
+# Serverless directories
+.serverless
+config.json
+
+# OSX stupid annoying stuff
+.DS_Store
+
+# unwanted
+react-contactform

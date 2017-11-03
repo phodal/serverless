@@ -1,0 +1,26 @@
+service: aws-ses
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  stage: development
+  region: ap-northeast-1
+
+plugins:
+  - serverless-webpack
+
+functions:
+  sendMail:
+    handler: handler.sendMail
+    description: Send email using SES service.
+    memorySize: 1024
+    timeout: 5
+    events:
+      - http:
+          path: sendMail
+          method: post
+          integration: lambda
+          cors: true
+          response:
+            headers:
+              Access-Control-Allow-Origin: "'*'"

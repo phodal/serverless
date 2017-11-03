@@ -1,0 +1,9 @@
+{
+  "aws": {
+    "accessKeyId": "",
+    "secretAccessKey": "",
+    "region": ""
+  },
+  "slackWebhook": ""
+
+}
