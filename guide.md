@@ -1697,5 +1697,5 @@ cp config.yml.template config.yml
 
 最后效果见我的微信公众号：phodal-weixin
 
-![微信](./images/phodal-wechat.jpg)
+![微信](images/phodal-wechat.jpg)
 
