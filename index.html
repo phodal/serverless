@@ -84,6 +84,9 @@
 </ul></li>
 <li><a href="#部署">部署</a></li>
 </ul></li>
+<li><a href="#serverless-应用开发指南-api-gateway-与-route53-自定义域名">Serverless 应用开发指南： API Gateway 与 Route53 自定义域名</a><ul>
+<li><a href="#serveress-domain-manager">Serveress Domain Manager</a></li>
+</ul></li>
 </ul>
 </nav>
 <h1 id="serverless无服务器架构应用开发指南">Serverless（无服务器架构）应用开发指南</h1>
@@ -980,6 +983,68 @@ REPORT RequestId: 8ea1a80f-bee0-11e7-a0c9-331175998dc2  Duration: 4.08 ms Billed
 <p>当我们想做一个 Serverless 的爬虫定期执行某个任务，这样做可以帮我们节省大量的成本。</p>
 <p>末了，记得执行：</p>
 <pre><code>$ serverless remove</code></pre>
+<h1 id="serverless-应用开发指南-api-gateway-与-route53-自定义域名">Serverless 应用开发指南： API Gateway 与 Route53 自定义域名</h1>
+<p>原文链接：<a href="https://www.phodal.com/blog/serverless-development-guide-api-gateway-and-route53-custom-domain/">Serverless 应用开发指南： API Gateway 与 Route53 自定义域名</a></p>
+<p>在测试使用 Serverless + Node-wechat 制作微信公众号后台的时候，发现微信不能直接使用 API Gateway 的 API 地址。于是，就需要使用自己的域名。</p>
+<p>首先，在 Route 53 上注册有域名，如果没有的话，需要转到 Route 53。</p>
+<p>然后，在后台为你的域名请求一个证书。</p>
+<p>需要注意的是：选择的区域是 <code>us-east-1</code>，这个 region 才能与 API Gateway 一起工作。</p>
+<p>在这个过程中，需要验证域名的所有权。所以，你需要先找个地方注册域名邮箱，如我使用的是网易的域名邮箱。</p>
+<h2 id="serveress-domain-manager">Serveress Domain Manager</h2>
+<p>在这里我们要用到 serverless-domain-manager 插件：</p>
+<pre><code>$ yarn add --dev serverless-domain-manager</code></pre>
+<p>或者</p>
+<pre><code>$ npm install serverless-domain-manager --save-dev</code></pre>
+<p>将这个插件配置好 serverless.yml 文件中：</p>
+<pre><code>plugins:
+  - serverless-domain-manager
+
+custom:
+  customDomain:
+    domainName: wechat.wdsm.io
+    basePath: &#39;&#39;
+    stage: ${self:provider.stage}
+    createRoute53Record: true</code></pre>
+<p>然后执行创建域名：</p>
+<pre><code>serverless create_domain</code></pre>
+<p>相应的日志如下：</p>
+<pre><code>Serverless: Domain was created, may take up to 40 mins to be initialized.</code></pre>
+<p>可以使用 AWS CLI 查看日志的创建状态：</p>
+<pre><code>$ aws apigateway get-domain-names
+
+{
+    &quot;items&quot;: [
+        {
+            &quot;certificateArn&quot;: &quot;arn:aws:acm:us-east-1:706605665335:certificate/278c252a-7aaf-41df-bcf1-adc279347557&quot;,
+            &quot;distributionDomainName&quot;: &quot;d1pp7oijqquj95.cloudfront.net&quot;,
+            &quot;certificateUploadDate&quot;: 1509592737,
+            &quot;domainName&quot;: &quot;wechat.wdsm.io&quot;
+        }
+    ]
+}</code></pre>
+<p>然后就可以执行部署了：</p>
+<pre><code>serverless deploy</code></pre>
+<p>日志如下：</p>
+<pre><code>....................................
+Serverless: Stack update finished...
+Service Information
+service: serverless-wechat
+stage: dev
+region: us-east-1
+stack: serverless-wechat-dev
+api keys:
+  None
+endpoints:
+  ANY - https://e8tct5f0v2.execute-api.us-east-1.amazonaws.com/dev
+  ANY - https://e8tct5f0v2.execute-api.us-east-1.amazonaws.com/dev/{proxy+}
+functions:
+  runserver: serverless-wechat-dev-runserver
+Serverless Domain Manager Summary
+Domain Name
+  wechat.wdsm.io
+Distribution Domain Name
+  d1pp7oijqquj95.cloudfront.net</code></pre>
+<p>现在，你就可以使用自己定义的域名来访问了 API Gateway 了。</p>
 <section class="footnotes">
 <hr />
 <ol>
