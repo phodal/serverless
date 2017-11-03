@@ -118,3 +118,5 @@ Serverless: Invoke aws:deploy:finalize
 }
 ```
 
+> 对于 Amazon SES 新用户 – 如果您尚未申请提高发送限制，则仍将处于沙箱环境中，且只能发送电子邮件至您之前验证过的地址。要验证新电子邮件地址或域，请参阅 Amazon SES 控制台的身份管理部分。
+
