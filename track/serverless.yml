@@ -1,6 +1,8 @@
 service: track
+
 custom:
   table: owntracks
+
 provider:
   name: aws
   runtime: nodejs4.3
@@ -17,6 +19,7 @@ provider:
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
       Resource: "arn:aws:dynamodb:us-east-1:*:*"
+
 functions:
   pub:
     handler: handler.pub
