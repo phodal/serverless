@@ -1,0 +1,20 @@
+service: kinesis-streams
+
+provider:
+  name: aws
+  runtime: nodejs4.3
+  region: us-east-1
+  stage: dev
+  iamRoleStatements:
+    - Effect: "Allow"
+      Resource: "*"
+      Action:
+        - "kinesis:*"
+
+functions:
+  dataReceiver:
+    handler: handler.dataReceiver
+  logger:
+    handler: handler.logger
+    events:
+      - stream: arn:aws:kinesis:<region>:<account-id>:stream/data-receiver
