@@ -1,0 +1,13 @@
+{
+  "name": "kinesis-streams",
+  "version": "0.1.0",
+  "description": "Serverless service to showcase Kinesis stream support",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "uuid": "^2.0.3"
+  }
+}
