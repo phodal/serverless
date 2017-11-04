@@ -4,8 +4,8 @@
 const AUTH0_CLIENT_ID = 'YFJn64T6OJ7SyU0yVK5WEJdY22OowYXj';
 const AUTH0_DOMAIN = 'phodal.auth0.com';
 const AUTH0_CALLBACK_URL = window.location.href; // eslint-disable-line
-const PUBLIC_ENDPOINT = 'https://fy0qtq1r8c.execute-api.us-east-1.amazonaws.com/dev/api/public';
-const PRIVATE_ENDPOINT = 'https://fy0qtq1r8c.execute-api.us-east-1.amazonaws.com/dev/api/private';
+const PUBLIC_ENDPOINT = 'https://9ut7x3hc2d.execute-api.us-east-1.amazonaws.com/dev/api/public';
+const PRIVATE_ENDPOINT = 'https://9ut7x3hc2d.execute-api.us-east-1.amazonaws.com/dev/api/private';
 
 // initialize auth0 lock
 const lock = new Auth0Lock(AUTH0_CLIENT_ID, AUTH0_DOMAIN); // eslint-disable-line

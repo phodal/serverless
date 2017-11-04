@@ -21,6 +21,34 @@
 
 然后，创建一个用户，我们将用这个账户进行测试。
 
+代码
+---
+
+### Auth0 代码
+
+```
+lock.show((err, profile, token) => {
+    if (err) {
+      // Error callback
+      console.error('Something went wrong: ', err);
+      alert('Something went wrong, check the Console errors'); // eslint-disable-line no-alert
+    } else {
+      // Success calback
+      console.log(token);
+
+      // Save the JWT token.
+      localStorage.setItem('userToken', token);
+
+      // Save the profile
+      localStorage.setItem('profile', JSON.stringify(profile));
+
+      document.getElementById('btn-login').style.display = 'none';
+      document.getElementById('btn-logout').style.display = 'flex';
+      document.getElementById('nick').textContent = profile.nickname;
+    }
+  });
+```  
+
 配置
 ---
 
