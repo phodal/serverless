@@ -1,6 +1,13 @@
 
 service: auth0-frontend
 
+plugins:
+  - serverless-finch
+
+custom:
+  client:
+    bucketName: auth.wdsm.io
+
 provider:
   name: aws
   runtime: nodejs4.3
