@@ -1,57 +1,55 @@
+Serverless 应用开发指南：使用 SES 创建邮件发送接口
+===
+
+当你有一个不成熟的 Idea 时，作为一个受精益思想影响的开发者，那么你可能会学习 Dropbox 创建一个 Landing Page 来验证你的想法。如下图所示：
+
+![Launch Page](launch-page.jpg)
+
+这个时候，你只需要大胆地公布出你的 Idea。等待用户的到来、在网页上提交他们的邮箱 blabla。然后在产品准备得差不多的时候，就可以大声地告诉全世界，你们可以来试用了。不过，这只里我们只讨论如何来发送邮件。
+
+对于诸如邮件发送、短信发送等服务的业务场景来说，采用 Serverless 特别合适——当然，如果你也使用 AWS 服务就更好了。我们只需要将相关的参数，发送到对应的接口即可。
+
+这次我们要用到的 AWS 服务是 SES（Simple Email Service）。
+
+> Amazon Simple Email Service (Amazon SES) 为基于云端的电子邮件发送服务，旨在帮助数字营销师和应用程序开发师发送营销、通知和业务电子邮件。对于使用电子邮件联系客户的所有规模的企业来说，它是一种可靠且经济实用的服务。
+
+说了这么多，还不如动手操作一下。
+
+Serverless Email 发送
+---
+
+笔者创建的服务最初是基于：[AWS-SES-Serverless-Example](https://github.com/lakshmantgld/aws-ses-serverless-example.git)。
+
+好了，下面让我们安装这个 Serverless 服务：
+
 ```
-Serverless: Packaging service...
-Serverless: Excluding development dependencies...
-Serverless: Invoke aws:package:finalize
-Serverless: Invoke aws:common:moveArtifactsToPackage
-Serverless: Invoke aws:common:validate
-Serverless: Invoke aws:deploy:deploy
-Serverless: Creating Stack...
-Serverless: Checking Stack create progress...
-CloudFormation - CREATE_IN_PROGRESS - AWS::CloudFormation::Stack - aws-ses-dev
-CloudFormation - CREATE_IN_PROGRESS - AWS::S3::Bucket - ServerlessDeploymentBucket
-CloudFormation - CREATE_IN_PROGRESS - AWS::S3::Bucket - ServerlessDeploymentBucket
-CloudFormation - CREATE_COMPLETE - AWS::S3::Bucket - ServerlessDeploymentBucket
-CloudFormation - CREATE_COMPLETE - AWS::CloudFormation::Stack - aws-ses-dev
-Serverless: Stack create finished...
-Serverless: Uploading CloudFormation file to S3...
-Serverless: Uploading artifacts...
-Serverless: Uploading service .zip file to S3 (342.07 KB)...
-Serverless: Validating template...
-Serverless: Updating Stack...
-Serverless: Checking Stack update progress...
-CloudFormation - UPDATE_IN_PROGRESS - AWS::CloudFormation::Stack - aws-ses-dev
-CloudFormation - CREATE_IN_PROGRESS - AWS::Logs::LogGroup - SendMailLogGroup
-CloudFormation - CREATE_IN_PROGRESS - AWS::ApiGateway::RestApi - ApiGatewayRestApi
-CloudFormation - CREATE_IN_PROGRESS - AWS::IAM::Role - IamRoleLambdaExecution
-CloudFormation - CREATE_IN_PROGRESS - AWS::Logs::LogGroup - SendMailLogGroup
-CloudFormation - CREATE_IN_PROGRESS - AWS::ApiGateway::RestApi - ApiGatewayRestApi
-CloudFormation - CREATE_IN_PROGRESS - AWS::IAM::Role - IamRoleLambdaExecution
-CloudFormation - CREATE_COMPLETE - AWS::Logs::LogGroup - SendMailLogGroup
-CloudFormation - CREATE_COMPLETE - AWS::ApiGateway::RestApi - ApiGatewayRestApi
-CloudFormation - CREATE_IN_PROGRESS - AWS::ApiGateway::Resource - ApiGatewayResourceSendmail
-CloudFormation - CREATE_IN_PROGRESS - AWS::ApiGateway::Resource - ApiGatewayResourceSendmail
-CloudFormation - CREATE_COMPLETE - AWS::ApiGateway::Resource - ApiGatewayResourceSendmail
-CloudFormation - CREATE_IN_PROGRESS - AWS::ApiGateway::Method - ApiGatewayMethodSendmailOptions
-CloudFormation - CREATE_IN_PROGRESS - AWS::ApiGateway::Method - ApiGatewayMethodSendmailOptions
-CloudFormation - CREATE_COMPLETE - AWS::ApiGateway::Method - ApiGatewayMethodSendmailOptions
-CloudFormation - CREATE_COMPLETE - AWS::IAM::Role - IamRoleLambdaExecution
-CloudFormation - CREATE_IN_PROGRESS - AWS::Lambda::Function - SendMailLambdaFunction
-CloudFormation - CREATE_IN_PROGRESS - AWS::Lambda::Function - SendMailLambdaFunction
-CloudFormation - CREATE_COMPLETE - AWS::Lambda::Function - SendMailLambdaFunction
-CloudFormation - CREATE_IN_PROGRESS - AWS::ApiGateway::Method - ApiGatewayMethodSendmailPost
-CloudFormation - CREATE_IN_PROGRESS - AWS::Lambda::Permission - SendMailLambdaPermissionApiGateway
-CloudFormation - CREATE_IN_PROGRESS - AWS::ApiGateway::Method - ApiGatewayMethodSendmailPost
-CloudFormation - CREATE_IN_PROGRESS - AWS::Lambda::Version - SendMailLambdaVersionL8TaA7BYiH8VrqoP1h3UxwkMCv4YzAoqr3eCeL5g4E
-CloudFormation - CREATE_IN_PROGRESS - AWS::Lambda::Permission - SendMailLambdaPermissionApiGateway
-CloudFormation - CREATE_IN_PROGRESS - AWS::Lambda::Version - SendMailLambdaVersionL8TaA7BYiH8VrqoP1h3UxwkMCv4YzAoqr3eCeL5g4E
-CloudFormation - CREATE_COMPLETE - AWS::Lambda::Version - SendMailLambdaVersionL8TaA7BYiH8VrqoP1h3UxwkMCv4YzAoqr3eCeL5g4E
-CloudFormation - CREATE_COMPLETE - AWS::ApiGateway::Method - ApiGatewayMethodSendmailPost
-CloudFormation - CREATE_IN_PROGRESS - AWS::ApiGateway::Deployment - ApiGatewayDeployment1509695084499
-CloudFormation - CREATE_IN_PROGRESS - AWS::ApiGateway::Deployment - ApiGatewayDeployment1509695084499
-CloudFormation - CREATE_COMPLETE - AWS::ApiGateway::Deployment - ApiGatewayDeployment1509695084499
-CloudFormation - CREATE_COMPLETE - AWS::Lambda::Permission - SendMailLambdaPermissionApiGateway
-CloudFormation - UPDATE_COMPLETE_CLEANUP_IN_PROGRESS - AWS::CloudFormation::Stack - aws-ses-dev
-CloudFormation - UPDATE_COMPLETE - AWS::CloudFormation::Stack - aws-ses-dev
+serverless install -u https://github.com/phodal/serverless-guide/tree/master/ses -n ses
+```
+
+然后执行：
+
+```
+yarn install
+```
+
+接着复制一份 ``config.copy.json`` 为 ``config.json``，然后在其中配置上相关的内容：
+
+```
+{
+  "aws": {
+    "accessKeyId": "",
+    "secretAccessKey": "",
+    "region": ""
+  }
+}
+```
+
+就可以愉快地部署了：
+
+```
+$ serverless deploy
+
+...
 Serverless: Stack update finished...
 Serverless: Invoke aws:info
 Service Information
@@ -74,7 +72,56 @@ ServerlessDeploymentBucketName: aws-ses-dev-serverlessdeploymentbucket-14jvptxer
 Serverless: Invoke aws:deploy:finalize
 ```
 
+这次的代码也很简单，主要是通过 aws-sdk 中的 SES 来发送邮件：
+
+```
+import AWS from 'aws-sdk';
+let ses = new AWS.SES();
+
+module.exports.sendMail = (event, context, callback) => {
+  ...
+  ses.sendEmail(emailParams, function (err, data) {
+      if (err) {
+          console.log(err, err.stack);
+          callback(err);
+      } else {
+        console.log("SES successful");
+        console.log(data);
+
+        callback(null, response);
+      }
+  });
+}
+```
+
+代码中便是直接调用相关的参数的。
+
+接下来就是测试时间了。
+
+Serverless Email 发送测试
+---
+
+我按照项目的参数配置：
+
+```
+{
+    "bccEmailAddresses": [],
+    "ccEmailAddresses": [],
+    "toEmailAddresses": ["xxx@qq.com"],
+    "bodyData": "Hey test message buddy!! From AWS SES",
+    "bodyCharset": "UTF-8",
+    "subjectdata": "AWS SES",
+    "subjectCharset": "UTF-8",
+    "sourceEmail": "xxx@qq.com",
+    "replyToAddresses": ["xxx@qq.com"]
+}
+```
+
+在 PostMan 上进行了测试：
+
 ![PostMan 示例](./images/post-man-example.png)
+
+然后报错了：
 
 ```
 {
@@ -98,25 +145,15 @@ Serverless: Invoke aws:deploy:finalize
 }
 ```
 
-登录 SNS，验证一个邮箱。
+后来，才发现 SES 上有一行解释。
+
+> 对于 Amazon SES 新用户 – 如果您尚未申请提高发送限制，则仍将处于沙箱环境中，且只能发送电子邮件至您之前验证过的地址。要验证新电子邮件地址或域，请参阅 Amazon SES 控制台的身份管理部分。
+
+于是便登录 SNS，新增了一个验证邮箱。
 
 ![验证邮箱](./images/verify-email)
 
 试了 gmszone@qq.com 、网易邮箱都不行，最后用了 Google 的。
 
-```
-{
-	"bccEmailAddresses": [],
-	"ccEmailAddresses": [],
-	"toEmailAddresses": ["gmszone@gmail.com"],
-	"bodyData": "Hey test message buddy!! From AWS SES",
-	"bodyCharset": "UTF-8",
-	"subjectdata": "AWS SES",
-	"subjectCharset": "UTF-8",
-	"sourceEmail": "gmszone@gmail.com",
-	"replyToAddresses": ["gmszone@gmail.com"]
-}
-```
-
-> 对于 Amazon SES 新用户 – 如果您尚未申请提高发送限制，则仍将处于沙箱环境中，且只能发送电子邮件至您之前验证过的地址。要验证新电子邮件地址或域，请参阅 Amazon SES 控制台的身份管理部分。
+最后，终于可以接收到邮件了。
 
