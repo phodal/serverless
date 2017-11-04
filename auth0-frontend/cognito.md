@@ -49,5 +49,68 @@ functions:
   privateEndpoint: auth0-frontend-dev-privateEndpoint
 ```
 
+将生成的 API Gateway 的地方放入到 **client/dist/app.js** 文件中：
+
+再执行：
+
+```
+$ serverless client deploy
+```
+以部署我们的静态文件。
+
+```
+Serverless: Deploying client to stage "dev" in region "us-east-1"...
+Serverless: Creating bucket auth.wdsm.io...
+Serverless: Configuring website bucket auth.wdsm.io...
+Serverless: Configuring policy for bucket auth.wdsm.io...
+Serverless: Configuring CORS policy for bucket auth.wdsm.io...
+Serverless: Uploading file app.css to bucket auth.wdsm.io...
+Serverless: If successful this should be deployed at: https://s3.amazonaws.com/auth.wdsm.io/app.css
+Serverless: Uploading file app.js to bucket auth.wdsm.io...
+Serverless: If successful this should be deployed at: https://s3.amazonaws.com/auth.wdsm.io/app.js
+Serverless: Uploading file index.html to bucket auth.wdsm.io...
+Serverless: If successful this should be deployed at: https://s3.amazonaws.com/auth.wdsm.io/index.html
+```
+
+然后打开 [https://s3.amazonaws.com/auth.wdsm.io/index.html](https://s3.amazonaws.com/auth.wdsm.io/index.html) 就可以尝试授权。
+
+不过，在那之间，我们需要填写对应平台的授权信息：
+
+![](./images/auth0-github-example.png)
+
+接着，点击上面的 GitHub 『！』号，会提示我们填写对应的授权信息。
+
+打开我们的 GitHub ，申请一个新的 OAuth 应用，地址：[https://github.com/settings/applications/new](https://github.com/settings/applications/new)
+
+详细的信息见：[https://auth0.com/docs/github-clientid](https://auth0.com/docs/github-clientid)。
+
+如我的配置是：
+
+Homepage URL:	https://phodal.auth0.com
+
+Authorization callback URL	https://phodal.auth0.com/login/callback
+
+完成后，把生成的 GitHub ID 和 Client Secret 填入。点击 Save，Auth0 就会自动帮我们测试。
+
+接着，再到我们的页面上尝试使用 GitHub 登录，还是报了个错：
+
+```
+app.js:26 Something went wrong:  Error: error: invalid origin: https://s3.amazonaws.com
+    at new LoginError (lock-9.0.min.js:9)
+    at lock-9.0.min.js:9
+    at onMessage (lock-9.0.min.js:10)
+```
+
+漏掉了在 Auth0 的设置页的 `Allowed Callback URL` 和 `Allowed Origins` 上加上用于登录的地址，用于允许跨域请求了。在这里，我的地址是：
+
+```
+https://s3.amazonaws.com/auth.wdsm.io/index.html
+```
+
+![CORS 配置](./images/auth0-cors-configure-example.png)
+
+然后，再测试一下登录：
+
+![Auth0 测试登录](./images/auth0-login-ui-example.png)
 
 
