@@ -1,17 +1,14 @@
 Serverless 应用开发指南：基于 Kinesis Streams 的数据流分析（上） 
 ===
 
-Serverless 适合用于事件驱动型应用，以及定时任务。
+Serverless 适合用于事件驱动型应用，以及定时任务。今天，让我们来看看一个事件驱动的例子。
 
 在之前的那篇《[Serverless 应用开发指南：CRON 定时执行 Lambda 任务](https://www.phodal.com/blog/serverless-development-guide-cron-scheduled-job/)》中，我们介绍了如何调度的示例。
-
-在今天，让我们来看看一个事件驱动的例子。
 
 最初我想的是通过 Lambda + DynamoDB 来自定义数据格式，后来发现使用 Kinesis Streams 是一种更简单的方案。
 
 Amazon Kinesis Streams
 ---
-
 
 今天，我们要学习的组件是 Amazon Kinesis Streams。引自官网的介绍：
 
@@ -70,6 +67,8 @@ functions:
 Serverless: Removing old service versions...
 ```
 
+完成后，就可以测试一下了。
+
 ```
 $ serverless invoke --function dataReceiver --path event.json                                                                
 
@@ -78,6 +77,8 @@ $ serverless invoke --function dataReceiver --path event.json                   
     "message": "Data successfully written to Kinesis stream \"data-receiver\""
 }
 ```
+
+然后，通过相应的日志，我们就可以看到数据流向了：Kinesis stream 
 
 ```
 $ serverless logs --function logger                                                                                          
@@ -95,3 +96,7 @@ START RequestId: 3776bac6-612f-45dd-a8ac-156007f8e49b Version: $LATEST
 END RequestId: 3776bac6-612f-45dd-a8ac-156007f8e49b
 REPORT RequestId: 3776bac6-612f-45dd-a8ac-156007f8e49b	Duration: 72.07 ms	Billed Duration: 100 ms 	Memory Size: 128 MB	Max Memory Used: 33 MB
 ```
+
+但是光把数据流向 Kinesis stream ，并没有什么用，我们需要对数据进行处理。比如说，直接将数据存储到 S3，或者是 DynamoDB。
+
+So，请期待我们的下一篇文章。
