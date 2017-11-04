@@ -1,19 +1,16 @@
 'use strict';
 
 const AWS = require('aws-sdk');
-const uuid = require('uuid');
 
-module.exports.dataReceiver = (event, context, callback) => {
+module.exports.receiver = (event, context, callback) => {
   const data = event.data;
-
   const firehose = new AWS.Firehose();
 
-  const partitionKey = uuid.v1();
-
   const params = {
-    Data: data,
-    PartitionKey: partitionKey,
-    StreamName: 'kinesis-streams-stream'
+    Record: {
+      Data: data
+    },
+    DeliveryStreamName: 'serverless-firehose'
   };
 
   return firehose.putRecord(params, (error, data) => {
@@ -22,11 +19,4 @@ module.exports.dataReceiver = (event, context, callback) => {
     }
     callback(null, { message: 'Data successfully written to Kinesis stream "data-receiver"' });
   });
-};
-
-module.exports.logger = (event, context, callback) => {
-  // print out the event information on the console (so that we can see it in the CloudWatch logs)
-  console.log(`The following data was written to the Kinesis stream "data-receiver":\n${JSON.stringify(event.Records[0].kinesis, null, 2)}`);
-
-  callback(null, { event });
 };

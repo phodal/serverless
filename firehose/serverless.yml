@@ -1,9 +1,5 @@
 service: serverless-firehose
 
-custom:
-  names:
-    kinesis: ${self:service}-stream
-
 provider:
   name: aws
   runtime: nodejs4.3
@@ -19,21 +15,58 @@ provider:
         - "firehose:*"
 
 functions:
-  dataReceiver:
-    handler: handler.dataReceiver
-  logger:
-    handler: handler.logger
-    events:
-      - stream:
-          type: kinesis
-          arn:
-            Fn::GetAtt:
-              - KinesisStream
-              - Arn
+  receiver:
+    handler: handler.receiver
+    # events:
+    #   - http:
+    #       path: /receiver
+    #       method: post
+
 resources:
   Resources:
-    KinesisStream:
-      Type: AWS::Kinesis::Stream
+    FirehoseToS3Role:
+      Type: AWS::IAM::Role
       Properties:
-        Name: ${self:custom.names.kinesis}
-        ShardCount: 1
+        RoleName: FirehoseToS3Role
+        AssumeRolePolicyDocument:
+          Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+              - firehose.amazonaws.com
+            Action:
+            - sts:AssumeRole
+        Policies:
+        - PolicyName: FirehoseToS3Policy
+          PolicyDocument:
+            Statement:
+              - Effect: Allow
+                Action:
+                - s3:AbortMultipartUpload
+                - s3:GetBucketLocation
+                - s3:GetObject
+                - s3:ListBucket
+                - s3:ListBucketMultipartUploads
+                - s3:PutObject
+                Resource: '*'
+    ServerlessKinesisFirehoseBucket:
+      Type: AWS::S3::Bucket
+      DeletionPolicy: Retain
+      Properties:
+        BucketName: serverless-firehose-bucket
+    ServerlessKinesisFirehose:
+      Type: AWS::KinesisFirehose::DeliveryStream
+      Properties:
+        DeliveryStreamName: serverless-firehose
+        S3DestinationConfiguration:
+          BucketARN:
+            Fn::Join:
+            - ''
+            - - 'arn:aws:s3:::'
+              - Ref: ServerlessKinesisFirehoseBucket
+          BufferingHints:
+            IntervalInSeconds: "60"
+            SizeInMBs: "1"
+          CompressionFormat: "UNCOMPRESSED"
+          Prefix: "raw/"
+          RoleARN: { Fn::GetAtt: [ FirehoseToS3Role, Arn ] }

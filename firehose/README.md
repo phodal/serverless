@@ -24,10 +24,9 @@ npm install
 serverless deploy
 ```
 
-## How to use
-
-1. Run `serverless invoke --function dataReceiver --path event.json` to send data to the Kinesis stream
-2. Run `serverless logs --function logger` to see the which data was send to the Kinesis `date-receiver` stream
+```
+serverless invoke --function receiver --path event.json
+```
 
 ## AWS services used
 
