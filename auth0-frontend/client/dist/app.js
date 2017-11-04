@@ -1,8 +1,8 @@
 /* global window document localStorage fetch alert */
 
 // Fill in with your values
-const AUTH0_CLIENT_ID = 'your-auth0-client-id-here';
-const AUTH0_DOMAIN = 'your-auth0-domain-here.auth0.com';
+const AUTH0_CLIENT_ID = 'YFJn64T6OJ7SyU0yVK5WEJdY22OowYXj';
+const AUTH0_DOMAIN = 'phodal.auth0.com';
 const AUTH0_CALLBACK_URL = window.location.href; // eslint-disable-line
 const PUBLIC_ENDPOINT = 'https://your-aws-endpoint-here.amazonaws.com/dev/api/public';
 const PRIVATE_ENDPOINT = 'https://your-aws-endpoint-here.us-east-1.amazonaws.com/dev/api/private';

@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 
-const AUTH0_CLIENT_ID = 'your-auth0-client-id-here';
-const AUTH0_CLIENT_SECRET = 'your-auth0-client-secret-here';
+const AUTH0_CLIENT_ID = process.env.AUTH0_ID;
+const AUTH0_CLIENT_SECRET = process.env.AUTH0_SECRET;
 
 // Policy helper function
 const generatePolicy = (principalId, effect, resource) => {

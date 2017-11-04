@@ -15,6 +15,10 @@ provider:
 functions:
   auth:
     handler: handler.auth
+    environment:
+      AUTH0_ID: ${file(./config.yml):AUTH0_ID}
+      AUTH0_SECRET: ${file(./config.yml):AUTH0_SECRET}
+
   publicEndpoint:
     handler: handler.publicEndpoint
     events:
