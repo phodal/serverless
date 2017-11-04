@@ -113,4 +113,11 @@ https://s3.amazonaws.com/auth.wdsm.io/index.html
 
 ![Auth0 测试登录](./images/auth0-login-ui-example.png)
 
+清理
+---
+
+ - 删除 Auth0 的应用
+ - 删除 GitHub 的应用
+ - 清空 Bucket：``serverless client remove``
+ - 清空 Lambda：``serverless remove``
 
