@@ -2,16 +2,27 @@
 
 Serverless service to showcase Kinesis stream support.
 
+based on:[serverless-kinesis-streams](https://github.com/pmuens/serverless-kinesis-streams), but auto create Kinesis streams
+
 ## Installation
 
-Make sure that you use Serverless v1.
+1.install
 
-1. Run `serverless install --url https://github.com/pmuens/serverless-kinesis-streams` to install the service in your current working directory
-2. Next up cd into the service with `cd serverless-kinesis-streams`
-3. Run `npm install`
-4. Create a new Kinesis stream called `data-receiver`
-5. Update the stream ARN property in the `serverless.yml` file with the stream ARN of your `data-receiver` stream
-6. Deploy with `serverless deploy`
+```
+npm install -u https://github.com/phodal/serverless-guide/tree/master/kinesis-streams -n kinesis-streams
+```
+
+2.install
+
+```
+npm install
+```
+
+3.deploy
+
+```
+serverless deploy
+```
 
 ## How to use
 

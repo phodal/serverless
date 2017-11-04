@@ -13,7 +13,7 @@ module.exports.dataReceiver = (event, context, callback) => {
   const params = {
     Data: data,
     PartitionKey: partitionKey,
-    StreamName: 'data-receiver'
+    StreamName: 'kinesis-streams-stream'
   };
 
   return kinesis.putRecord(params, (error, data) => {

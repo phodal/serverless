@@ -1,15 +1,21 @@
 service: kinesis-streams
 
+custom:
+  names:
+    kinesis: ${self:service}-stream
+
 provider:
   name: aws
   runtime: nodejs4.3
   region: us-east-1
   stage: dev
+  memorySize: 128
   iamRoleStatements:
     - Effect: "Allow"
       Resource: "*"
       Action:
         - "kinesis:*"
+        - "logs:*"
 
 functions:
   dataReceiver:
@@ -17,4 +23,16 @@ functions:
   logger:
     handler: handler.logger
     events:
-      - stream: arn:aws:kinesis:<region>:<account-id>:stream/data-receiver
+      - stream:
+          type: kinesis
+          arn:
+            Fn::GetAtt:
+              - KinesisStream
+              - Arn
+resources:
+  Resources:
+    KinesisStream:
+      Type: AWS::Kinesis::Stream
+      Properties:
+        Name: ${self:custom.names.kinesis}
+        ShardCount: 1
