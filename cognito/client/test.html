@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+
+  <!-- AWS Cognito SDK -->
+  <script src='js/aws-sdk.min.js'></script>
+  <script src='js/aws-cognito-sdk.min.js'></script>
+  <!-- AWS Cognito Identity SDK -->
+  <script src='js/amazon-cognito-identity.min.js'></script>
+
+  <title>Cognito Test Page</title>
+
+  <script type="text/javascript">
+
+  function doIt() {
+
+    AWS.config.region = 'us-east-1'; // Region
+    AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+      IdentityPoolId: 'us-east-1:13f8c946-90b6-4efc-bcd1-252deee5a7a5'
+    });
+
+    const poolData = {
+      UserPoolId : 'us-east-1_8d4WuTofe',
+      ClientId : '5r4b16pfrd119hoj36jnf3ss3o'
+    };
+    const userPool = new AWSCognito.CognitoIdentityServiceProvider.CognitoUserPool(poolData);
+
+    var attributeList = [];
+
+    var dataEmail = {
+        Name : 'email',
+        Value : 'h@phodal.com'
+    };
+    var attributeEmail = new AWSCognito.CognitoIdentityServiceProvider.CognitoUserAttribute(dataEmail);
+    attributeList.push(attributeEmail);
+
+    userPool.signUp('h@phodal.com', 'phodal', attributeList, null, function(err, result){
+        if (err) {
+            console.log(err);
+            alert(err);
+            return;
+        }
+        console.log(result);
+    });
+
+  }
+
+  </script>
+
+</head>
+<body onLoad="doIt();">
+  <p>Test Page</p>
+
+</body>
+</html>

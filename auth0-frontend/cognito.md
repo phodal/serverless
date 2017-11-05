@@ -21,6 +21,21 @@
 
 然后，创建一个用户，我们将用这个账户进行测试。
 
+创建『联合身份』
+---
+
+官方文档：[开始使用 Amazon Cognito 联合身份](http://docs.aws.amazon.com/zh_cn/cognito/latest/developerguide/getting-started-with-identity-pools.html)
+
+登录 Amazon Cognito 控制台，选择 Manage Federated Identities，然后选择 Create new identity pool。
+
+键入您的身份池的名称，选择 Enable access to unauthenticated identities。
+
+如果需要，请在 Authentication providers 部分中配置身份验证提供商。有关更多信息，请参阅下面的 整合身份提供商。
+
+选择 Create Pool。
+
+选择 Allow 以创建两个与您的身份池关联的默认角色，一个用于未经身份验证的用户，另一个用于经过身份验证的用户。
+
 代码
 ---
 
