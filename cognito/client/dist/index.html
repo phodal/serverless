@@ -161,10 +161,10 @@
 	function initCognitoSDK() {
 		var authData = {
 			ClientId : '5r4b16pfrd119hoj36jnf3ss3o', // Your client id here
-			AppWebDomain : '<TODO: your app web domain here>',
+			AppWebDomain : 'https://s3.amazonaws.com/cognito.wdsm.io/',
 			TokenScopesArray : ['email'],
-			RedirectUriSignIn : '<TODO: your redirect url when signed in here>',
-			RedirectUriSignOut : '<TODO: your redirect url when signed out here>'
+			RedirectUriSignIn : 'https://s3.amazonaws.com/cognito.wdsm.io/',
+			RedirectUriSignOut : 'https://s3.amazonaws.com/cognito.wdsm.io/'
 		};
 		var auth = new AWSCognito.CognitoIdentityServiceProvider.CognitoAuth(authData);
 		auth.userhandler = {
