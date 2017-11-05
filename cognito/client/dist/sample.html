@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+	<title>Cognito Auth JS SDK Sample</title>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" href="css/sample.css">
+	<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+	<script src="js/aws-cognito-sdk.min.js"></script>
+	<script src="js/amazon-cognito-auth.min.js"></script>
+</head>
+
+<body  onload="onLoad()">
+	<ul>
+	  <li><a href="https://aws.amazon.com/cognito/" target="_blank"
+           title="Go to AWS Cognito Console">Cognito Console</a></li>
+	  <li><a href="http://docs.aws.amazon.com/cognito/latest/developerguide/what-is-amazon-cognito.html"
+           target="_blank" title="See Cognito developer docs">Docs</a></li>
+	</ul>
+
+	<h1>
+		<a href="http://docs.aws.amazon.com/cognito/latest/developerguide/what-is-amazon-cognito.html" target="_blank">
+		Amazon Cognito Auth Demo
+	</h1>
+
+	<div class="centeredText">
+		<p id="introPara" title="About this demo">
+      This sample web page demonstrates how to use the Amazon Cognito Auth SDK for JavaScript.
+      This SDK simplifies adding sign-up, sign-in functionality in your apps.
+      With this SDK, you can use Cognito User Pools’ app integration and federation features,
+      with a customizable UI hosted by AWS to sign up and sign in users, and with built-in federation
+      for external identity providers via SAML.
+      These features are currently (as of 6/1/2017) in <b>public beta</b>, and to learn more
+      see our <a href="http://docs.aws.amazon.com/cognito/latest/developerguide/what-is-amazon-cognito.html">Developer Guide</a>.<br>
+      <br>
+      This sample will initialize a CognitoAuth object and initiate the sign up / sign in flow.
+      You will need to substitute your own Cognito User Pool configuration values to make it work.
+      Look at the source for this page and read the comments to learn more.
+      You can also view the README.md of this sample page and the README.md of the Cognito Auth JavaScript SDK.
+		</p>
+	</div>
+
+  <div><br></div>
+  <div>
+      <p id="statusNotAuth" title="Status">
+          Sign-In to Continue
+      </p>
+      <p id="statusAuth" title="Status">
+          You have Signed-In
+      </p>
+  </div>
+
+	<div class="tabsWell">
+		<div id="startButtons">
+			<div class="button">
+				<a class="nav-tabs" id="signInButton" href="javascript:void(0)" title="Sign in">Sign In</a>
+			</div>
+		</div>
+		<div class="tab-content">
+			<div class="tab-pane" id="userdetails">
+				<p class="text-icon" title="Minimize" id="tabIcon" onclick="toggleTab('usertab');">_</p>
+				<br>
+				<h2 id="usertabtitle">Tokens</h2>
+				<div class="user-form" id="usertab">
+					<p id="idtoken"> ... </p>
+          <p id="acctoken"> ... </p>
+          <p id="reftoken"> ... </p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script>
+	// Operations when the web page is loaded.
+	function onLoad() {
+		var i, items, tabs;
+		items = document.getElementsByClassName("tab-pane");
+		for (i = 0; i < items.length; i++) {
+			items[i].style.display = 'none';
+		}
+		document.getElementById("statusNotAuth").style.display = 'block';
+		document.getElementById("statusAuth").style.display = 'none';
+		// Initiatlize CognitoAuth object
+		var auth = initCognitoSDK();
+		document.getElementById("signInButton").addEventListener("click", function() {
+			userButton(auth);
+		});
+		var curUrl = window.location.href;
+		auth.parseCognitoWebResponse(curUrl);
+	}
+  // Operation when tab is closed.
+	function closeTab(tabName) {
+	  document.getElementById(tabName).style.display = 'none';
+	}
+  // Operation when tab is opened.
+  function openTab(tabName) {
+		document.getElementById(tabName).style.display = 'block';
+	}
+  // Operations about toggle tab.
+	function toggleTab(tabName) {
+		if (document.getElementById("usertab").style.display == 'none') {
+			document.getElementById("usertab").style.display = 'block';
+			document.getElementById("tabIcon").innerHTML = '_';
+		} else {
+			document.getElementById("usertab").style.display = 'none';
+			document.getElementById("tabIcon").innerHTML = '+';
+		}
+	}
+  // Operations when showing message.
+	function showMessage(msgTitle, msgText, msgDetail) {
+		var msgTab = document.getElementById('message');
+		document.getElementById('messageTitle').innerHTML = msgTitle;
+		document.getElementById('messageText').innerHTML = msgText;
+		document.getElementById('messageDetail').innerHTML = msgDetail;
+		msgTab.style.display = "block";
+	}
+  // Perform user operations.
+	function userButton(auth) {
+		var state = document.getElementById('signInButton').innerHTML;
+		if (state === "Sign Out") {
+			document.getElementById("signInButton").innerHTML = "Sign In";
+			auth.signOut();
+			showSignedOut();
+		} else {
+			auth.getSession();
+		}
+	}
+	// Operations when signed in.
+  function showSignedIn(session) {
+		document.getElementById("statusNotAuth").style.display = 'none';
+		document.getElementById("statusAuth").style.display = 'block';
+		document.getElementById("signInButton").innerHTML = "Sign Out";
+		if (session) {
+			var idToken = session.getIdToken().getJwtToken();
+			if (idToken) {
+				var payload = idToken.split('.')[1];
+				var formatted = JSON.stringify(atob(payload), null, 4);
+				document.getElementById('idtoken').innerHTML = formatted;
+			}
+			var accToken = session.getAccessToken().getJwtToken();
+			if (accToken) {
+				var payload = accToken.split('.')[1];
+				var formatted = JSON.stringify(atob(payload), null, 4);
+				document.getElementById('acctoken').innerHTML = formatted;
+			}
+			var refToken = session.getRefreshToken().getToken();
+			if (refToken) {
+				document.getElementById('reftoken').innerHTML = refToken.substring(1, 20);
+			}
+		}
+		openTab("userdetails");
+	}
+	// Operations when signed out.
+	function showSignedOut() {
+		document.getElementById("statusNotAuth").style.display = 'block';
+		document.getElementById("statusAuth").style.display = 'none';
+		document.getElementById('idtoken').innerHTML = " ... ";
+		document.getElementById('acctoken').innerHTML = " ... ";
+		document.getElementById('reftoken').innerHTML = " ... ";
+		closeTab("userdetails");
+	}
+  // Initialize a cognito auth object.
+	function initCognitoSDK() {
+		var authData = {
+			ClientId : '5r4b16pfrd119hoj36jnf3ss3o', // Your client id here
+			AppWebDomain : '<TODO: your app web domain here>',
+			TokenScopesArray : ['email'],
+			RedirectUriSignIn : '<TODO: your redirect url when signed in here>',
+			RedirectUriSignOut : '<TODO: your redirect url when signed out here>'
+		};
+		var auth = new AWSCognito.CognitoIdentityServiceProvider.CognitoAuth(authData);
+		auth.userhandler = {
+			onSuccess: function(result) {
+				consoel.log(result)
+				showSignedIn(result);
+			},
+			onFailure: function(err) {
+				alert("Error!" + err);
+			}
+		};
+		return auth;
+	}
+	</script>
+</body>
+</html>

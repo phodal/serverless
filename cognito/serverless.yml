@@ -7,7 +7,7 @@ plugins:
 
 custom:
   client:
-    bucketName: auth.wdsm.io
+    bucketName: cognito.wdsm.io
 
 provider:
   name: aws
