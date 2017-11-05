@@ -163,8 +163,8 @@
 			ClientId : '5r4b16pfrd119hoj36jnf3ss3o', // Your client id here
 			AppWebDomain : 'phodal.auth.us-east-1.amazoncognito.com',
 			TokenScopesArray : ['email'],
-			RedirectUriSignIn : 'https://s3.amazonaws.com/cognito.wdsm.io/',
-			RedirectUriSignOut : 'https://s3.amazonaws.com/cognito.wdsm.io/'
+			RedirectUriSignIn : 'https://s3.amazonaws.com/cognito.wdsm.io/index.html',
+			RedirectUriSignOut : 'https://s3.amazonaws.com/cognito.wdsm.io/index.html'
 		};
 		var auth = new AWSCognito.CognitoIdentityServiceProvider.CognitoAuth(authData);
 		auth.userhandler = {
