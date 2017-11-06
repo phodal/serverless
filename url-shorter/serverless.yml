@@ -41,6 +41,7 @@ resources:
   Resources:
     LinkDB:
       Type: "AWS::DynamoDB::Table"
+      DeletionPolicy: Retain
       Properties:
         AttributeDefinitions:
           - AttributeName: slug
@@ -51,3 +52,4 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
+        TableName: ${self:provider.environment.DYNAMODB_TABLE}
