@@ -1,30 +1,131 @@
-代码
+Serverless 应用开发指南：基于 Auth0 授权的 Serverless 应用
+===
+
+在多次尝试了使用 Amazon Cognito 前端授权无果，我转而使用和其它教程类似的 Auth0 授权登录。虽然 Amazon 提供了一个用于 Cognito 授权的前端组件，但是它仍然不是很成熟。在浏览器端，好像用得不是很普遍，而 Auth0 则是一个更通用的方案。
+
+> Auth0 是一家“身份验证即服务”提供商，旨在为开发人员提供简单易用的身份管理服务。为了保持灵活性和可扩展性，Auth0 身份管理平台允许开发人员在身份验证和授权管道中增加自定义代码。
+
+最后的代码见：[auth0-frontend](https://github.com/phodal/serverless-guide/tree/master/auth0-frontend)
+
+代码的执行逻辑如下所示：
+
+ - 由前端使用 Auth0 的 lock.js 调出授权框，进行用户授权
+ - 用户可以选择使用第三方授权服务登录，如 Google、GitHub
+ - 用户登录完后，会获取一个 Auth0 的 Token，通过该 Token 去请求数据
+ - 后台接到数据后，先验证 Token 是否有效的，然后返回相应的结果
+
+因此，对于我们而言，我们需要做这么一些事：
+
+ - 创建一个 Serverless 服务
+ - 创建一个验证 Token 的 Lambda 函数 
+ - 注册 Auth0 账户
+ - 绑定 Auth0 的 GitHub 授权
+
+这里我们采用的是 Serverless Framework 的官方示例 Demo。稍有不同的是，代码中对静态文件和 S3 部分进行了一些优化——官方的 DEMO，无法直接部署到 S3 上。
+
+Serverless Auth0 前端代码
 ---
 
-### Auth0 代码
+在这次的教程里，代码分为两部分：前端和后台。
+
+这里的前端代码，是一个纯前端的代码。
+
+先让我们看看授权部分：
 
 ```
+const lock = new Auth0Lock(AUTH0_CLIENT_ID, AUTH0_DOMAIN);
+
+...
+
 lock.show((err, profile, token) => {
     if (err) {
-      // Error callback
       console.error('Something went wrong: ', err);
-      alert('Something went wrong, check the Console errors'); // eslint-disable-line no-alert
     } else {
-      // Success calback
-      console.log(token);
-
-      // Save the JWT token.
       localStorage.setItem('userToken', token);
-
-      // Save the profile
       localStorage.setItem('profile', JSON.stringify(profile));
-
-      document.getElementById('btn-login').style.display = 'none';
-      document.getElementById('btn-logout').style.display = 'flex';
-      document.getElementById('nick').textContent = profile.nickname;
+      ...
     }
   });
 ```  
+
+首先，我们创建了一个 Auth0Lock 对象，并在参数中转入了对应的 ID 和 Auth0 域名。然后使用 lock.show 方法将调出 Auth0 的登录页面，当用户登录成功的时候，就会从后台取到 token 和 profile，然后我们在上面的代码中保存用户的 token 和 profile 到 localstorage 中。
+
+然后在发送 fetch 请求的时候，我们会带上这个 Token：
+
+```
+const token = localStorage.getItem('userToken');
+if (!token) {
+  return false;
+}
+const getdata = fetch(PRIVATE_ENDPOINT, {
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+  method: 'GET',
+  cache: 'no-store',
+});
+
+getdata.then((response) => {
+  response.json().then((data) => {
+    console.log('Token:', data);
+  });
+});
+```
+
+主要的前端逻辑代码就是这么简单。
+
+Serverless Auth0 后台代码
+---
+
+首先，先让我们看一眼 serverless.yml 配置。
+
+### serverless.yml 配置
+
+```
+functions:
+  auth:
+    handler: handler.auth
+    environment:
+      AUTH0_ID: ${file(./config.yml):AUTH0_ID}
+      AUTH0_SECRET: ${file(./config.yml):AUTH0_SECRET}
+
+  publicEndpoint:
+    handler: handler.publicEndpoint
+    events:
+      - http:
+          path: api/public
+          method: get
+          integration: lambda
+          cors: true
+  privateEndpoint:
+    handler: handler.privateEndpoint
+    events:
+      - http:
+          path: api/private
+          method: get
+          integration: lambda
+          authorizer: auth # See custom authorizer docs here: http://bit.ly/2gXw9pO
+          cors:
+            origins:
+              - '*'
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+```
+
+配置中定义了三个 lambda 函数：
+
+ - auth，用于对用户传过来的 Token 进行校验
+ - publicEndpoint，一个公开的 API 结点
+ - privateEndpoint，一个需授权才能访问的 API
+
+[使用 API Gateway 自定义授权方](http://docs.aws.amazon.com/zh_cn/apigateway/latest/developerguide/use-custom-authorizer.html)
+
+### Auth0 代码
+
 
 配置
 ---
