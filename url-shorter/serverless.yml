@@ -1,12 +1,23 @@
 service: url-shorter
 
+
+plugins:
+  - serverless-domain-manager
+
 custom:
   stage: ${opt:stage, self:provider.stage}
+  customDomain:
+    domainName: l.wdsm.io
+    basePath: ''
+    stage: ${self:provider.stage}
+    createRoute53Record: true
 
 provider:
   name: aws
   runtime: nodejs6.10
   region: us-east-1
+  memorySize: 128
+  timeout: 5
   environment:
     DYNAMODB_TABLE: ${self:service}-${opt:stage, self:provider.stage}
     SLS_STAGE: ${self:custom.stage}

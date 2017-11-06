@@ -1,0 +1,15 @@
+{
+  "name": "url-shorter",
+  "version": "1.0.0",
+  "description": "URL shortener experiment built with [Serverless framework](https://serverless.com)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "serverless-domain-manager": "^1.1.16"
+  }
+}
