@@ -61,6 +61,13 @@ Achitecture
     *   [配置 Route 53 与 API Gateway](https://phodal.github.io/serverless-guide/#配置-route-53-与-api-gateway)
     *   [添加微信公众平号服务](https://phodal.github.io/serverless-guide/#添加微信公众平号服务)
     *   [部署](https://phodal.github.io/serverless-guide/#部署-1)
+*   [Serverless 应用开发指南：基于 Kinesis Streams 的数据流分析（上）](https://phodal.github.io/serverless-guide/#serverless-应用开发指南基于-kinesis-streams-的数据流分析上)
+    *   [Amazon Kinesis Streams](https://phodal.github.io/serverless-guide/#amazon-kinesis-streams)
+*   [Serverless 应用开发指南：使用 SES 创建邮件发送接口](https://phodal.github.io/serverless-guide/#serverless-应用开发指南使用-ses-创建邮件发送接口)
+    *   [Serverless Email 发送](https://phodal.github.io/serverless-guide/#serverless-email-发送)
+    *   [Serverless Email 发送测试](https://phodal.github.io/serverless-guide/#serverless-email-发送测试)
+    *   [Serverless + Kinesis Streams](https://phodal.github.io/serverless-guide/#serverless-kinesis-streams)
+
 License
 ---
 

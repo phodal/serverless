@@ -95,6 +95,14 @@
 <li><a href="#添加微信公众平号服务">添加微信公众平号服务</a></li>
 <li><a href="#部署-1">部署</a></li>
 </ul></li>
+<li><a href="#serverless-应用开发指南基于-kinesis-streams-的数据流分析上">Serverless 应用开发指南：基于 Kinesis Streams 的数据流分析（上）</a><ul>
+<li><a href="#amazon-kinesis-streams">Amazon Kinesis Streams</a></li>
+</ul></li>
+<li><a href="#serverless-应用开发指南使用-ses-创建邮件发送接口">Serverless 应用开发指南：使用 SES 创建邮件发送接口</a><ul>
+<li><a href="#serverless-email-发送">Serverless Email 发送</a></li>
+<li><a href="#serverless-email-发送测试">Serverless Email 发送测试</a></li>
+<li><a href="#serverless-kinesis-streams">Serverless + Kinesis Streams</a></li>
+</ul></li>
 </ul>
 </nav>
 <h1 id="serverless无服务器架构应用开发指南">Serverless（无服务器架构）应用开发指南</h1>
@@ -1222,6 +1230,194 @@ Distribution Domain Name
 <figure>
 <img src="images/phodal-wechat.jpg" alt="微信" /><figcaption>微信</figcaption>
 </figure>
+<h1 id="serverless-应用开发指南基于-kinesis-streams-的数据流分析上">Serverless 应用开发指南：基于 Kinesis Streams 的数据流分析（上）</h1>
+<p>Serverless 适合用于事件驱动型应用，以及定时任务。今天，让我们来看看一个事件驱动的例子。</p>
+<p>在之前的那篇《<a href="https://www.phodal.com/blog/serverless-development-guide-cron-scheduled-job/">Serverless 应用开发指南：CRON 定时执行 Lambda 任务</a>》中，我们介绍了如何调度的示例。</p>
+<p>最初我想的是通过 Lambda + DynamoDB 来自定义数据格式，后来发现使用 Kinesis Streams 是一种更简单的方案。</p>
+<h2 id="amazon-kinesis-streams">Amazon Kinesis Streams</h2>
+<p>今天，我们要学习的组件是 Amazon Kinesis Streams。引自官网的介绍：</p>
+<blockquote>
+<p>借助 Amazon Kinesis Streams，您可以构建用于处理或分析流数据的自定义应用程序，以满足特定需求。Kinesis Streams 每小时可从数十万种来源 (如网站点击流、财务交易、社交媒体源、IT 日志和定位追踪事件) 中持续捕获和存储数 TB 数据。借助 Kinesis Client Library (KCL)，您可以构建 Amazon Kinesis 应用程序，并能使用流数据为实时控制面板提供强力支持、生成警报、实施动态定价和广告等等。您还可以将数据从 Kinesis Streams 发送到其他 AWS 服务中，如 Amazon Simple Storage Service (Amazon S3)、Amazon Redshift、Amazon EMR 和 AWS Lambda。</p>
+</blockquote>
+<p>简单的来说，用于收集日志事件数据的功能，还可以用于实时数据分析。</p>
+<h1 id="serverless-应用开发指南使用-ses-创建邮件发送接口">Serverless 应用开发指南：使用 SES 创建邮件发送接口</h1>
+<p>当你有一个不成熟的 Idea 时，作为一个受精益思想影响的开发者，那么你可能会学习 Dropbox 创建一个 Landing Page 来验证你的想法。如下图所示：</p>
+<figure>
+<img src="launch-page.jpg" alt="Launch Page" /><figcaption>Launch Page</figcaption>
+</figure>
+<p>这个时候，你只需要大胆地公布出你的 Idea。等待用户的到来、在网页上提交他们的邮箱 blabla。然后在产品准备得差不多的时候，就可以大声地告诉全世界，你们可以来试用了。不过，这只里我们只讨论如何来发送邮件。</p>
+<p>对于诸如邮件发送、短信发送等服务的业务场景来说，采用 Serverless 特别合适——当然，如果你也使用 AWS 服务就更好了。我们只需要将相关的参数，发送到对应的接口即可。</p>
+<p>这次我们要用到的 AWS 服务是 SES（Simple Email Service）。</p>
+<blockquote>
+<p>Amazon Simple Email Service (Amazon SES) 为基于云端的电子邮件发送服务，旨在帮助数字营销师和应用程序开发师发送营销、通知和业务电子邮件。对于使用电子邮件联系客户的所有规模的企业来说，它是一种可靠且经济实用的服务。</p>
+</blockquote>
+<p>说了这么多，还不如动手操作一下。</p>
+<h2 id="serverless-email-发送">Serverless Email 发送</h2>
+<p>笔者创建的服务最初是基于：<a href="https://github.com/lakshmantgld/aws-ses-serverless-example.git">AWS-SES-Serverless-Example</a>。</p>
+<p>好了，下面让我们安装这个 Serverless 服务：</p>
+<pre><code>serverless install -u https://github.com/phodal/serverless-guide/tree/master/ses -n ses</code></pre>
+<p>然后执行：</p>
+<pre><code>yarn install</code></pre>
+<p>接着复制一份 <code>config.copy.json</code> 为 <code>config.json</code>，然后在其中配置上相关的内容：</p>
+<pre><code>{
+  &quot;aws&quot;: {
+    &quot;accessKeyId&quot;: &quot;&quot;,
+    &quot;secretAccessKey&quot;: &quot;&quot;,
+    &quot;region&quot;: &quot;&quot;
+  }
+}</code></pre>
+<p>就可以愉快地部署了：</p>
+<pre><code>$ serverless deploy
+
+...
+Serverless: Stack update finished...
+Serverless: Invoke aws:info
+Service Information
+service: aws-ses
+stage: dev
+region: us-east-1
+stack: aws-ses-dev
+api keys:
+  None
+endpoints:
+  POST - https://474a4mg7a7.execute-api.us-east-1.amazonaws.com/dev/sendMail
+functions:
+  sendMail: aws-ses-dev-sendMail
+
+Stack Outputs
+SendMailLambdaFunctionQualifiedArn: arn:aws:lambda:us-east-1:706605665335:function:aws-ses-dev-sendMail:1
+ServiceEndpoint: https://474a4mg7a7.execute-api.us-east-1.amazonaws.com/dev
+ServerlessDeploymentBucketName: aws-ses-dev-serverlessdeploymentbucket-14jvptxerdtxi
+
+Serverless: Invoke aws:deploy:finalize</code></pre>
+<p>这次的代码也很简单，主要是通过 aws-sdk 中的 SES 来发送邮件：</p>
+<pre><code>import AWS from &#39;aws-sdk&#39;;
+let ses = new AWS.SES();
+
+module.exports.sendMail = (event, context, callback) =&gt; {
+  ...
+  ses.sendEmail(emailParams, function (err, data) {
+      if (err) {
+          console.log(err, err.stack);
+          callback(err);
+      } else {
+        console.log(&quot;SES successful&quot;);
+        console.log(data);
+
+        callback(null, response);
+      }
+  });
+}</code></pre>
+<p>代码中便是直接调用相关的参数的。</p>
+<p>接下来就是测试时间了。</p>
+<h2 id="serverless-email-发送测试">Serverless Email 发送测试</h2>
+<p>我按照项目的参数配置：</p>
+<pre><code>{
+    &quot;bccEmailAddresses&quot;: [],
+    &quot;ccEmailAddresses&quot;: [],
+    &quot;toEmailAddresses&quot;: [&quot;xxx@qq.com&quot;],
+    &quot;bodyData&quot;: &quot;Hey test message buddy!! From AWS SES&quot;,
+    &quot;bodyCharset&quot;: &quot;UTF-8&quot;,
+    &quot;subjectdata&quot;: &quot;AWS SES&quot;,
+    &quot;subjectCharset&quot;: &quot;UTF-8&quot;,
+    &quot;sourceEmail&quot;: &quot;xxx@qq.com&quot;,
+    &quot;replyToAddresses&quot;: [&quot;xxx@qq.com&quot;]
+}</code></pre>
+<p>在 PostMan 上进行了测试：</p>
+<figure>
+<img src="./images/post-man-example.png" alt="PostMan 示例" /><figcaption>PostMan 示例</figcaption>
+</figure>
+<p>然后报错了：</p>
+<pre><code>{
+    &quot;errorMessage&quot;: &quot;There were 3 validation errors:\n* MissingRequiredParameter: Missing required key &#39;Source&#39; in params\n* MissingRequiredParameter: Missing required key &#39;Data&#39; in params.Message.Body.Text\n* MissingRequiredParameter: Missing required key &#39;Data&#39; in params.Message.Subject&quot;,
+    &quot;errorType&quot;: &quot;MultipleValidationErrors&quot;,
+    &quot;stackTrace&quot;: [
+        &quot;* MissingRequiredParameter: Missing required key &#39;Source&#39; in params&quot;,
+        &quot;* MissingRequiredParameter: Missing required key &#39;Data&#39; in params.Message.Body.Text&quot;,
+        &quot;* MissingRequiredParameter: Missing required key &#39;Data&#39; in params.Message.Subject&quot;,
+        &quot;ParamValidator.validate (/var/runtime/node_modules/aws-sdk/lib/param_validator.js:40:28)&quot;,
+        &quot;Request.VALIDATE_PARAMETERS (/var/runtime/node_modules/aws-sdk/lib/event_listeners.js:125:42)&quot;,
+        &quot;Request.callListeners (/var/runtime/node_modules/aws-sdk/lib/sequential_executor.js:105:20)&quot;,
+        &quot;callNextListener (/var/runtime/node_modules/aws-sdk/lib/sequential_executor.js:95:12)&quot;,
+        &quot;/var/runtime/node_modules/aws-sdk/lib/event_listeners.js:85:9&quot;,
+        &quot;finish (/var/runtime/node_modules/aws-sdk/lib/config.js:315:7)&quot;,
+        &quot;/var/runtime/node_modules/aws-sdk/lib/config.js:333:9&quot;,
+        &quot;Credentials.get (/var/runtime/node_modules/aws-sdk/lib/credentials.js:126:7)&quot;,
+        &quot;getAsyncCredentials (/var/runtime/node_modules/aws-sdk/lib/config.js:327:24)&quot;,
+        &quot;Config.getCredentials (/var/runtime/node_modules/aws-sdk/lib/config.js:347:9)&quot;
+    ]
+}</code></pre>
+<p>后来，才发现 SES 上有一行解释。</p>
+<blockquote>
+<p>对于 Amazon SES 新用户 – 如果您尚未申请提高发送限制，则仍将处于沙箱环境中，且只能发送电子邮件至您之前验证过的地址。要验证新电子邮件地址或域，请参阅 Amazon SES 控制台的身份管理部分。</p>
+</blockquote>
+<p>于是便登录 SNS，新增了一个验证邮箱。</p>
+<figure>
+<img src="./images/verify-email" alt="验证邮箱" /><figcaption>验证邮箱</figcaption>
+</figure>
+<p>试了 gmszone@qq.com 、网易邮箱都不行，最后用了 Google 的。</p>
+<p>最后，终于可以接收到邮件了。</p>
+<h2 id="serverless-kinesis-streams">Serverless + Kinesis Streams</h2>
+<p>最初我试用了 GitHub 上的<a href="https://github.com/pmuens/serverless-kinesis-streams">serverless-kinesis-streams</a>，然后发现它并不会自动创建 Kinesis Streams 服务，于是便自己创建了一个：</p>
+<pre><code>serverless install -u https://github.com/phodal/serverless-guide/tree/master/kinesis-streams -n kinesis-streams                                10:14:50
+Serverless: Downloading and installing &quot;serverless-kinesis-streams&quot;...
+central entry: serverless-kinesis-streams-master/
+central entry: serverless-kinesis-streams-master/README.md
+central entry: serverless-kinesis-streams-master/event.json
+central entry: serverless-kinesis-streams-master/handler.js
+central entry: serverless-kinesis-streams-master/package.json
+central entry: serverless-kinesis-streams-master/serverless.yml
+Serverless: Successfully installed &quot;serverless-kinesis-streams&quot; as &quot;kinesis-streams&quot;</code></pre>
+<p>然后执行：</p>
+<pre><code>yarn install</code></pre>
+<p>就可以直接部署了：</p>
+<pre><code>Serverless: Packaging service...
+Serverless: Excluding development dependencies...
+Serverless: Uploading CloudFormation file to S3...
+Serverless: Uploading artifacts...
+Serverless: Uploading service .zip file to S3 (19.75 KB)...
+Serverless: Validating template...
+Serverless: Updating Stack...
+Serverless: Checking Stack update progress...
+..............................
+Serverless: Stack update finished...
+Service Information
+service: kinesis-streams
+stage: dev
+region: us-east-1
+stack: kinesis-streams-dev
+api keys:
+  None
+endpoints:
+  None
+functions:
+  dataReceiver: kinesis-streams-dev-dataReceiver
+  logger: kinesis-streams-dev-logger
+Serverless: Removing old service versions...</code></pre>
+<p>完成后，就可以测试一下了。</p>
+<pre><code>$ serverless invoke --function dataReceiver --path event.json                                                                
+
+11:30:48
+{
+    &quot;message&quot;: &quot;Data successfully written to Kinesis stream \&quot;data-receiver\&quot;&quot;
+}</code></pre>
+<p>然后，通过相应的日志，我们就可以看到数据流向了：Kinesis stream</p>
+<pre><code>$ serverless logs --function logger                                                                                          
+
+11:31:41
+START RequestId: 3776bac6-612f-45dd-a8ac-156007f8e49b Version: $LATEST
+2017-11-04 11:30:53.382 (+08:00)  3776bac6-612f-45dd-a8ac-156007f8e49b  The following data was written to the Kinesis stream &quot;data-receiver&quot;:
+{
+  &quot;kinesisSchemaVersion&quot;: &quot;1.0&quot;,
+  &quot;partitionKey&quot;: &quot;8e35d6a0-c110-11e7-90ae-59fa1aa30da7&quot;,
+  &quot;sequenceNumber&quot;: &quot;49578559262872379484471662829472308063624661238972153858&quot;,
+  &quot;data&quot;: &quot;U29tZSBleGFtcGxlIGRhdGE=&quot;,
+  &quot;approximateArrivalTimestamp&quot;: 1509766251.753
+}
+END RequestId: 3776bac6-612f-45dd-a8ac-156007f8e49b
+REPORT RequestId: 3776bac6-612f-45dd-a8ac-156007f8e49b  Duration: 72.07 ms  Billed Duration: 100 ms   Memory Size: 128 MB Max Memory Used: 33 MB</code></pre>
+<p>但是光把数据流向 Kinesis stream ，并没有什么用，我们需要对数据进行处理。比如说，直接将数据存储到 S3，或者是 DynamoDB。</p>
+<p>So，请期待我们的下一篇文章。</p>
 <section class="footnotes">
 <hr />
 <ol>

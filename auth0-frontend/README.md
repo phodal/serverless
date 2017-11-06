@@ -1,70 +1,127 @@
-<!--
-title: AWS API Gateway Custom Authorizer Function with Auth0 example in NodeJS
-description: This is an example of how to protect API endpoints with Auth0, JSON Web Tokens (jwt) and a custom authorizer lambda function.
-layout: Doc
--->
-# API Gateway Custom Authorizer Function + Auth0
+代码
+---
 
-This is an example of how to protect API endpoints with [auth0](https://auth0.com/), JSON Web Tokens (jwt) and a [custom authorizer lambda function](https://serverless.com/framework/docs/providers/aws/events/apigateway#http-endpoints-with-custom-authorizers).
+### Auth0 代码
 
-Custom Authorizers allow you to run an AWS Lambda Function before your targeted AWS Lambda Function. This is useful for Microservice Architectures or when you simply want to do some Authorization before running your business logic.
+```
+lock.show((err, profile, token) => {
+    if (err) {
+      // Error callback
+      console.error('Something went wrong: ', err);
+      alert('Something went wrong, check the Console errors'); // eslint-disable-line no-alert
+    } else {
+      // Success calback
+      console.log(token);
 
-### [View live demo](http://auth0-serverless-protected-routes-demo.surge.sh/)
+      // Save the JWT token.
+      localStorage.setItem('userToken', token);
 
-## Use cases
+      // Save the profile
+      localStorage.setItem('profile', JSON.stringify(profile));
 
-- Protect API routes for authorized users
-- Rate limiting APIs
+      document.getElementById('btn-login').style.display = 'none';
+      document.getElementById('btn-logout').style.display = 'flex';
+      document.getElementById('nick').textContent = profile.nickname;
+    }
+  });
+```  
 
-## Setup
+配置
+---
 
-1. `npm install` json web token dependencies
+修改 ``config.yml``，添加 auth0 的 id 和密钥。
 
-2. Setup an [auth0 client](https://auth0.com/docs/clients) and get your `client id` and `client secrets` from auth0.
+然后执行部署：
 
-3. Plugin your `AUTH0_CLIENT_ID` and `AUTH0_CLIENT_SECRET` in `handler.js`. These will be used by the JSON web token decoder to validate private api access.
+···
 
-  ```js
-  /* handler.js */
-  // Replace with your auth0 client values
-  const AUTH0_CLIENT_ID = 'your-auth0-client-id-here';
-  const AUTH0_CLIENT_SECRET = 'your-auth0-client-secret-here';
-  ```
-
-4. Deploy the service with `serverless-deploy` and grab the public and private endpoints.
-
-5. Plugin your `AUTH0_CLIENT_ID`, `AUTH0_DOMAIN`, and the `PUBLIC_ENDPOINT` + `PRIVATE_ENDPOINT` from aws in top of the `frontend/app.js` file.
-
-  ```js
-  /* frontend/app.js */
-  // replace these values in app.js
-  const AUTH0_CLIENT_ID = 'your-auth0-client-id-here';
-  const AUTH0_DOMAIN = 'your-auth0-domain-here.auth0.com';
-  const PUBLIC_ENDPOINT = 'https://your-aws-endpoint-here.amazonaws.com/dev/api/public';
-  const PRIVATE_ENDPOINT = 'https://your-aws-endpoint-here.us-east-1.amazonaws.com/dev/api/private';
-  ```
-
-6. Deploy Frontend to host of your choosing and make sure to configure the `Allowed Callback URL` and `Allowed Origins` in your auth0 client in the [auth0 dashboard](https://manage.auth0.com). We used `http://auth0-serverless-protected-routes-demo.surge.sh/` for our demo.
-
-## Custom authorizer functions
-
-[Custom authorizers functions](https://aws.amazon.com/blogs/compute/introducing-custom-authorizers-in-amazon-api-gateway/) are executed before a Lambda function is executed and return an Error or a Policy document.
-
-The Custom authorizer function is passed an `event` object as below:
-```javascript
-{
-  "type": "TOKEN",
-  "authorizationToken": "<Incoming bearer token>",
-  "methodArn": "arn:aws:execute-api:<Region id>:<Account id>:<API id>/<Stage>/<Method>/<Resource path>"
-}
+```
+........................................................................
+Serverless: Stack update finished...
+Service Information
+service: auth0-frontend
+stage: dev
+region: us-east-1
+stack: auth0-frontend-dev
+api keys:
+  None
+endpoints:
+  GET - https://fy0qtq1r8c.execute-api.us-east-1.amazonaws.com/dev/api/public
+  GET - https://fy0qtq1r8c.execute-api.us-east-1.amazonaws.com/dev/api/private
+functions:
+  auth: auth0-frontend-dev-auth
+  publicEndpoint: auth0-frontend-dev-publicEndpoint
+  privateEndpoint: auth0-frontend-dev-privateEndpoint
 ```
 
-## Frontend
+将生成的 API Gateway 的地方放入到 **client/dist/app.js** 文件中：
 
-The frontend is a bare bones vanilla javascript implementation.
+再执行：
 
-You can replace it with whatever frontend framework you like =)
+```
+$ serverless client deploy
+```
+以部署我们的静态文件。
 
-If you do implement in another framework, please consider adding it our [growing list of examples](https://github.com/serverless/examples/)!
+```
+Serverless: Deploying client to stage "dev" in region "us-east-1"...
+Serverless: Creating bucket auth.wdsm.io...
+Serverless: Configuring website bucket auth.wdsm.io...
+Serverless: Configuring policy for bucket auth.wdsm.io...
+Serverless: Configuring CORS policy for bucket auth.wdsm.io...
+Serverless: Uploading file app.css to bucket auth.wdsm.io...
+Serverless: If successful this should be deployed at: https://s3.amazonaws.com/auth.wdsm.io/app.css
+Serverless: Uploading file app.js to bucket auth.wdsm.io...
+Serverless: If successful this should be deployed at: https://s3.amazonaws.com/auth.wdsm.io/app.js
+Serverless: Uploading file index.html to bucket auth.wdsm.io...
+Serverless: If successful this should be deployed at: https://s3.amazonaws.com/auth.wdsm.io/index.html
+```
 
-API calls are made with the browser's native `fetch` api.
+然后打开 [https://s3.amazonaws.com/auth.wdsm.io/index.html](https://s3.amazonaws.com/auth.wdsm.io/index.html) 就可以尝试授权。
+
+不过，在那之间，我们需要填写对应平台的授权信息：
+
+![](./images/auth0-github-example.png)
+
+接着，点击上面的 GitHub 『！』号，会提示我们填写对应的授权信息。
+
+打开我们的 GitHub ，申请一个新的 OAuth 应用，地址：[https://github.com/settings/applications/new](https://github.com/settings/applications/new)
+
+详细的信息见：[https://auth0.com/docs/github-clientid](https://auth0.com/docs/github-clientid)。
+
+如我的配置是：
+
+Homepage URL: https://phodal.auth0.com
+
+Authorization callback URL  https://phodal.auth0.com/login/callback
+
+完成后，把生成的 GitHub ID 和 Client Secret 填入。点击 Save，Auth0 就会自动帮我们测试。
+
+接着，再到我们的页面上尝试使用 GitHub 登录，还是报了个错：
+
+```
+app.js:26 Something went wrong:  Error: error: invalid origin: https://s3.amazonaws.com
+    at new LoginError (lock-9.0.min.js:9)
+    at lock-9.0.min.js:9
+    at onMessage (lock-9.0.min.js:10)
+```
+
+漏掉了在 Auth0 的设置页的 `Allowed Callback URL` 和 `Allowed Origins` 上加上用于登录的地址，用于允许跨域请求了。在这里，我的地址是：
+
+```
+https://s3.amazonaws.com/auth.wdsm.io/index.html
+```
+
+![CORS 配置](./images/auth0-cors-configure-example.png)
+
+然后，再测试一下登录：
+
+![Auth0 测试登录](./images/auth0-login-ui-example.png)
+
+清理
+---
+
+ - 删除 Auth0 的应用
+ - 删除 GitHub 的应用
+ - 清空 Bucket：``serverless client remove``
+ - 清空 Lambda：``serverless remove``
