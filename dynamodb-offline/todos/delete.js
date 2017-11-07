@@ -2,7 +2,7 @@
 
 const AWS = require('aws-sdk'); // eslint-disable-line import/no-extraneous-dependencies
 
-const dynamoDb = new AWS.DynamoDB.DocumentClient();
+const dynamodb = require('./dynamodb');
 
 module.exports.delete = (event, context, callback) => {
   const params = {

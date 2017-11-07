@@ -18,6 +18,7 @@ custom:
 provider:
   name: aws
   runtime: nodejs4.3
+  region: us-east-1
   environment:
     DYNAMODB_TABLE: ${self:service}-${opt:stage, self:provider.stage}
   iamRoleStatements:
