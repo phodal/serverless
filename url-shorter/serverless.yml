@@ -7,7 +7,7 @@ plugins:
 custom:
   stage: ${opt:stage, self:provider.stage}
   customDomain:
-    domainName: l.wdsm.io
+    domainName: link.pho.im
     basePath: ''
     stage: ${self:provider.stage}
     createRoute53Record: true
