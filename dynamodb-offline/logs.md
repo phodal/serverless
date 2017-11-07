@@ -1,7 +1,11 @@
+Serverless 架构应用开发：使用 serverless-offline 在本地部署与调试
+===
+
+在这几周的 Serverless 应用
 
 
 ```
-yarn add --dev serverless-offline
+yarn add --dev 
 yarn add --dev serverless-dynamodb-local
 ```
 
