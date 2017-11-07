@@ -1,6 +1,6 @@
 include_dir=build
 source=guide.md
-title='Serverless 应用开发指南'
+title='Serverless 架构应用开发指南'
 filename='ebook'
 
 
