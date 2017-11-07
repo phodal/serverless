@@ -118,19 +118,78 @@ functions:
 
 配置中定义了三个 lambda 函数：
 
- - auth，用于对用户传过来的 Token 进行校验
- - publicEndpoint，一个公开的 API 结点
- - privateEndpoint，一个需授权才能访问的 API
+ - auth 函数，用于对用户传过来的 Token 进行校验
+ - publicEndpoint 函数，一个公开的 API 结点
+ - privateEndpoint 函数，一个需授权才能访问的 API，即它将调用 auth 函数，根据授权结果来返回相应的内容。
 
-[使用 API Gateway 自定义授权方](http://docs.aws.amazon.com/zh_cn/apigateway/latest/developerguide/use-custom-authorizer.html)
+更详细的资料，可以访问官方的文档：[使用 API Gateway 自定义授权方](http://docs.aws.amazon.com/zh_cn/apigateway/latest/developerguide/use-custom-authorizer.html)。
 
-### Auth0 代码
+auth 函数的代码如下所示：
 
+```
+const jwt = require('jsonwebtoken');
+...
+const jwt = require('jsonwebtoken');
+  if (event.authorizationToken) {
+    // remove "bearer " from token
+    const token = event.authorizationToken.substring(7);
+    const options = {
+      audience: AUTH0_CLIENT_ID,
+    };
+    jwt.verify(token, AUTH0_CLIENT_SECRET, options, (err, decoded) => {
+      if (err) {
+        cb('Unauthorized');
+      } else {
+        cb(null, generatePolicy(decoded.sub, 'Allow', event.methodArn));
+      }
+    });
+  } else {
+    cb('Unauthorized');
+  }
+};
+```  
 
-配置
+代码中的主要函数是 ``jwt.verify``，它将根据 AUTH0 的 ID 和密钥来校验 token 是否是有效的。同时，还引用了一个名为 ``generatePolicy`` 的方法：
+
+```
+const generatePolicy = (principalId, effect, resource) => {
+  const authResponse = {};
+  authResponse.principalId = principalId;
+  if (effect && resource) {
+    const policyDocument = {};
+    policyDocument.Version = '2012-10-17';
+    policyDocument.Statement = [];
+    const statementOne = {};
+    statementOne.Action = 'execute-api:Invoke';
+    statementOne.Effect = effect;
+    statementOne.Resource = resource;
+    policyDocument.Statement[0] = statementOne;
+    authResponse.policyDocument = policyDocument;
+  }
+  return authResponse;
+};
+```
+
+这个方法用于生成一个 IAM 的策略，这个策略的生成规则建议参考官方文档，以上的内容和 AWS 的官方 DEMO 是一致的。随后，再根据生成的是 'Allow' 或者 'Deny' 来判断，该用户是否拥有权限。如果用户拥有权限的，那么就会继续往下执行：
+
+```
+module.exports.privateEndpoint = (event, context, cb) => {
+  cb(null, { message: 'Only logged in users can see this' });
+};
+```
+
+说了这么多，还是让我们跑跑代码吧。
+
+配置及部署
 ---
 
-修改 ``config.yml``，添加 auth0 的 id 和密钥。
+在这一个步骤里我们要做这么几件事：
+
+ - 注册、获取 Auth0 的账号
+ - 部署 Lambda 函数，获取后台 API 地址
+ - 根据上一步生成的地址，修改前端代码中的地址
+
+因此在开始之前，需要先申请一个 Auth0 的账号，然后在 ``config.yml`` 中，添加 auth0 的 id 和密钥。
 
 然后执行部署：
 
@@ -162,6 +221,7 @@ functions:
 ```
 $ serverless client deploy
 ```
+
 以部署我们的静态文件。
 
 ```
@@ -182,7 +242,7 @@ Serverless: If successful this should be deployed at: https://s3.amazonaws.com/a
 
 不过，在那之间，我们需要填写对应平台的授权信息：
 
-![](./images/auth0-github-example.png)
+![Auth GitHub](./images/auth0-github-example.png)
 
 接着，点击上面的 GitHub 『！』号，会提示我们填写对应的授权信息。
 
@@ -192,9 +252,10 @@ Serverless: If successful this should be deployed at: https://s3.amazonaws.com/a
 
 如我的配置是：
 
+```
 Homepage URL: https://phodal.auth0.com
-
 Authorization callback URL  https://phodal.auth0.com/login/callback
+```
 
 完成后，把生成的 GitHub ID 和 Client Secret 填入。点击 Save，Auth0 就会自动帮我们测试。
 
@@ -219,10 +280,18 @@ https://s3.amazonaws.com/auth.wdsm.io/index.html
 
 ![Auth0 测试登录](./images/auth0-login-ui-example.png)
 
-清理
----
+漂亮，我们登录成功了。
+
+### 清理
 
  - 删除 Auth0 的应用
  - 删除 GitHub 的应用
  - 清空 Bucket：``serverless client remove``
  - 清空 Lambda：``serverless remove``
+
+结论
+---
+
+AWS 官方的 Congito 支持的第三方应用有限，在这个时候 Auth0 成了一个更好的选择。除了 GitHub，Auth0 还集成了微博、人人等等的国内的平台。
+
+当然授权，作为一个基础的服务，几乎是每个应用的重要功能，也是核心的功能。对于大数中大型公司来说，几乎不太可能采用这样的方案。
