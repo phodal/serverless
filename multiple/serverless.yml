@@ -1,0 +1,19 @@
+service: multiple
+provider:
+  name: aws
+
+functions:
+  pythonDemo:
+    runtime: python2.7
+    events:
+      - http:
+          method: get
+          path: python
+    handler: py-handler.endpoint
+  jsDemo:
+    runtime: nodejs6.10
+    events:
+      - http:
+          method: get
+          path: js
+    handler: js-handler.hello
