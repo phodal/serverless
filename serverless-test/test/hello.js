@@ -14,7 +14,8 @@ describe('hello', () => {
 
   it('implement tests here', () => {
     return wrapped.run({}).then((response) => {
-      expect(response).to.not.be.empty;
+      let body = JSON.parse(response.body);
+      expect(body.message).equal('Go Serverless v1.0! Your function executed successfully!');
     });
   });
 });
