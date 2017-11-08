@@ -1,6 +1,81 @@
+Serverless 架构应用开发：多个语言运行环境
+===
 
+Serverless 与微服务在一点上很吸引人，你可以采用不同的语言来运行你的代码，不同的服务之间可以使用不同的语言。除了，在不同的 Serverless 服务里，采用不同的语言来开发。我们也可以在一个 Serverless 服务里，使用不同的语言来开发服务。
+
+Serverless 多个语言运行环境
+---
+
+这次我们要创建的 Serverless 服务，其实现步骤相当的简单：
+
+ - 使用 serverless 命令行工具，创建一个 node.js 模板
+ - 在上一步的基础上添加一个 python 的服务。
+
+于是，先让我们创建一个 hello, world 模板：
 
 ```
+serverless create --template aws-nodejs --path multiple
+```
+
+然后，让我们创建一个 py-handler.py 的函数，代码如下所示：
+
+```
+import json
+import datetime
+
+
+def endpoint(event, context):
+    current_time = datetime.datetime.now().time()
+    body = {
+        "message": "Hello, the current time is " + str(current_time)
+    }
+
+    response = {
+        "statusCode": 200,
+        "body": json.dumps(body)
+    }
+
+    return response
+```
+
+这个函数做了一件事，便是：获取当前的时间，然后导出并返回 json。
+
+对应的，我们的 ``serverless.yml`` 文件也只是设置了不同的 runtime：
+
+```
+functions:
+  pythonDemo:
+    runtime: python2.7
+    events:
+      - http:
+          method: get
+          path: python
+    handler: py-handler.endpoint
+  jsDemo:
+    runtime: nodejs6.10
+    events:
+      - http:
+          method: get
+          path: js
+    handler: js-handler.hello
+```
+
+在 Python 函数部分，我们使用了 python2.7 来执行相应的代码。而在 JavaScript 部分则是 Node.js 6.10。
+
+部署及测试
+---
+
+如果你还没有下载代码，那么先安装服务：
+
+```
+npm install -u https://github.com/phodal/serverless-guide/tree/master/multiple -n multiple
+```
+
+然后就愉快地部署吧：
+
+```
+$ serverless deploy
+
 Serverless: Packaging service...
 Serverless: Excluding development dependencies...
 Serverless: Uploading CloudFormation file to S3...
@@ -26,17 +101,24 @@ functions:
   jsDemo: multiple-dev-jsDemo
 ```
 
-js
+针对于 js 和 python 分别有两个对应的 HTTP 结点：
+
+ - https://ulgoy525y4.execute-api.us-east-1.amazonaws.com/dev/python
+ - https://ulgoy525y4.execute-api.us-east-1.amazonaws.com/dev/js
+
+访问对应的接口，就会返回对应的值，如下是 JS 返回的结果：
 
 ```
-{"message":"Go Serverless v1.0! Your function executed successfully!","input":{"resource":"/js","path":"/js","httpMethod":"GET","headers":{"Accept":"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8","Accept-Encoding":"gzip, deflate, br","Accept-Language":"zh-CN,zh;q=0.8,en-GB;q=0.6,en;q=0.4,it;q=0.2,zh-TW;q=0.2,ja;q=0.2","CloudFront-Forwarded-Proto":"https","CloudFront-Is-Desktop-Viewer":"true","CloudFront-Is-Mobile-Viewer":"false","CloudFront-Is-SmartTV-Viewer":"false","CloudFront-Is-Tablet-Viewer":"false","CloudFront-Viewer-Country":"HK","dnt":"1","Host":"ulgoy525y4.execute-api.us-east-1.amazonaws.com","upgrade-insecure-requests":"1","User-Agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36","Via":"2.0 176337e603db4b8969c9bd65812887b3.cloudfront.net (CloudFront)","X-Amz-Cf-Id":"yXigkVzYxOVqEcBEyhEpJT08zsTOFIkbkOW0EzmkKRfqT3BQcz38KA==","X-Amzn-Trace-Id":"Root=1-5a01c075-49c17464393b0d18223bc3fb","X-Forwarded-For":"202.66.38.130, 54.182.170.101","X-Forwarded-Port":"443","X-Forwarded-Proto":"https"},"queryStringParameters":null,"pathParameters":null,"stageVariables":null,"requestContext":{"path":"/dev/js","accountId":"706605665335","resourceId":"5j3roq","stage":"dev","requestId":"6127f9d4-c3c6-11e7-9735-198923464ae6","identity":{"cognitoIdentityPoolId":null,"accountId":null,"cognitoIdentityId":null,"caller":null,"apiKey":"","sourceIp":"202.66.38.130","accessKey":null,"cognitoAuthenticationType":null,"cognitoAuthenticationProvider":null,"userArn":null,"userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36","user":null},"resourcePath":"/js","httpMethod":"GET","apiId":"ulgoy525y4"},"body":null,"isBase64Encoded":false}}
+{"message":"Go Serverless v1.0! Your function executed successfully!"}
 ```
 
-python 
+如下是 Python 函数返回的结果：
 
 
 ```
 {"message": "Hello, the current time is 14:17:24.453136"}
 ```
 
-  
+当我们可以在一个服务里，写上不同的语言，就意味着：我们可以轻松地写上几十行的服务，然后轻松地部署。
+
+对了，测试完了，记得执行 ``serverless remove``。

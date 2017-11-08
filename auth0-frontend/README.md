@@ -1,4 +1,4 @@
-Serverless 架构应用开发：基于 Auth0 授权的 Serverless 应用
+Serverless 架构应用开发：基于 Auth0 授权的 Serverless 应用登录
 ===
 
 在多次尝试了使用 Amazon Cognito 前端授权无果，我转而使用和其它教程类似的 Auth0 授权登录。虽然 Amazon 提供了一个用于 Cognito 授权的前端组件，但是它仍然不是很成熟。在浏览器端，好像用得不是很普遍，而 Auth0 则是一个更通用的方案。
