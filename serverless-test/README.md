@@ -1,4 +1,4 @@
-Serverless 架构应用开发：测试 Serverless 服务
+Serverless 架构应用开发：如何编写 Serverless 应用的测试
 ---
 
 如 Serverless Framework 官方所说
@@ -23,4 +23,40 @@ Serverless 的测试金字塔
 因而，这种情况下，我们需要在测试上花费更多的精力。
 
 对于单元测试来说，在之前的 [Express 示例](https://www.phodal.com/blog/serverless-development-guide-express-react-build-server-side-rendering/)里，我们做了一个不错的 Demo。我们隔离了 Express 与 Lambda 函数之间的代码，只需要再加上一个本地的 Express 环境，那么我们就可以直接在本地运行了。而借助于上一篇中提供的 [serverless-offline](https://www.phodal.com/blog/serverless-architecture-development-serverless-offline-localhost-debug-test/)，我们则可以隔离本地数据库。
+
+步骤
+---
+
+```
+yarn add --dev serverless-mocha-plugin
+```
+
+添加到 ``serverless.yml`` 文件中：
+
+```
+plugins:
+  - serverless-mocha-plugin
+```
+
+### 创建函数
+
+```
+sls create function -f functionName --handler handler
+```
+
+```
+sls create function -f myFunction --handler functions/myFunction/index.handler
+```
+
+### 创建测试
+
+```
+sls create test -f functionName
+```
+
+### 运行测试
+
+```
+sls invoke test [--stage stage] [--region region] [-f function1] [-f function2] [...]
+```
 

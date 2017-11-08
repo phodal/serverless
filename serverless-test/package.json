@@ -1,0 +1,5 @@
+{
+  "devDependencies": {
+    "serverless-mocha-plugin": "^1.7.0"
+  }
+}
