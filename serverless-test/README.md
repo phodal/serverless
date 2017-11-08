@@ -93,3 +93,13 @@ describe('hello', () => {
 sls invoke test [--stage stage] [--region region] [-f function1] [-f function2] [...]
 ```
 
+```
+$ sls invoke test
+
+
+  hello
+    ✓ implement tests here
+
+
+  1 passing (7ms)
+```
