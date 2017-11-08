@@ -17,6 +17,9 @@ service: serverless-test
 # Check out our docs for more details
 # frameworkVersion: "=X.X.X"
 
+plugins:
+  - serverless-mocha-plugin
+
 provider:
   name: aws
   runtime: nodejs6.10
