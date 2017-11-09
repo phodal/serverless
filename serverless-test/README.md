@@ -15,7 +15,7 @@ Serverless 架构应用开发：如何编写 Serverless 应用的测试
  - 当您的业务逻辑与FaaS提供商分开编写时，您可以编写传统的单元测试以确保其正常工作。
  - 编写集成测试以验证与其他服务的集成是否正常工作。
 
-Serverless 的测试金字塔
+Serverless 应用的测试
 ---
 
 在传统的测试金字塔里，我们会写更多的单元测试，并尽可能地尽少集成测试。同样的，在 Serverless 架构应用里，我们会写同样数量的单元测试，只是会写更多地集成测试，用于测试与服务间的集成。而这些测试，往往更加依赖于网络，并且这些测试越需要我们隔离架构层级。
@@ -24,37 +24,37 @@ Serverless 的测试金字塔
 
 对于单元测试来说，在之前的 [Express 示例](https://www.phodal.com/blog/serverless-development-guide-express-react-build-server-side-rendering/)里，我们做了一个不错的 Demo。我们隔离了 Express 与 Lambda 函数之间的代码，只需要再加上一个本地的 Express 环境，那么我们就可以直接在本地运行了。而借助于上一篇中提供的 [serverless-offline](https://www.phodal.com/blog/serverless-architecture-development-serverless-offline-localhost-debug-test/)，我们则可以隔离本地数据库。
 
+随后，我们需要将 Serverless 应用部署测试环境。然后运行我们的测试脚本，自动地打开浏览器，进行操作。然后验证数据库中的数据是否是正确的，而一些都依赖于网络来执行。这就意味着，我们仿佛在不断地对接第三方系统，看上去就像一场场的恶梦。好在，我们也可以在 AWS 上运行测试，至少会让网络问题变得好一些。
+
 步骤
 ---
+
+在这里，我们要用 serverless-mocha-plugin 插件，这是一个基于 Mocha 框架、用于为 Serverless Framework 的添加测试的插件。
+
+它的 Setup 过程非常简单，先添加插件：
 
 ```
 yarn add --dev serverless-mocha-plugin
 ```
 
-添加到 ``serverless.yml`` 文件中：
+随后，添加到 ``serverless.yml`` 文件中：
 
 ```
 plugins:
   - serverless-mocha-plugin
 ```
 
-### 创建函数
-
-```
-sls create function -f functionName --handler handler
-```
-
-```
-sls create function -f myFunction --handler functions/myFunction/index.handler
-```
+接着，我们就可以创建测试了。
 
 ### 创建测试
+
+除了运行测试，它还提供创建测试的命令。只需要运行命令
 
 ```
 sls create test -f functionName
 ```
 
-如：
+如，在这里我们是这样的：
 
 ```
 $ sls create test -f hello
@@ -62,7 +62,7 @@ $ sls create test -f hello
 Serverless: serverless-mocha-plugin: created test/hello.js
 ```
 
-文件的内容如下：
+其文件的内容如下：
 
 ```
 'use strict';
@@ -87,11 +87,17 @@ describe('hello', () => {
 });
 ```
 
+如果你写过 Mocha 测试的话，那么你应该能看懂上面的代码。
+
 ### 运行测试
+
+现在，我们就可以运行测试了，命令以以下的格式运行：
 
 ```
 sls invoke test [--stage stage] [--region region] [-f function1] [-f function2] [...]
 ```
+
+我们也可以直接运行所有的测试：
 
 ```
 $ sls invoke test
@@ -103,3 +109,33 @@ $ sls invoke test
 
   1 passing (7ms)
 ```
+
+### 更准确的测试 
+
+让我们再让测试有针对性一点。在 ``handler.js`` 中，我们返回的 body 是一个字符串：
+
+```
+const response = {
+  statusCode: 200,
+  body: JSON.stringify({
+    message: 'Go Serverless v1.0! Your function executed successfully!',
+    input: event,
+  }),
+};
+```  
+
+那么，我们就应该去测试一下相应的字符串：
+
+```
+it('implement tests here', () => {
+  return wrapped.run({}).then((response) => {
+    let body = JSON.parse(response.body);
+    expect(body.message).equal('Go Serverless v1.0! Your function executed successfully!');
+  });
+});
+```
+
+结论
+---
+
+总的来说，对于普通的单元测试来说，和一般的测试差不多。对于数据库操作什么相关的函数来说，这就是一件复杂的事。

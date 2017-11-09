@@ -19,7 +19,7 @@ describe('Test ToDo DAO - save', () => {
       params.should.have.property('TableName', 'SomeTable');
 
       callback(null, {});
-      done()
+      // done()
     });
 
     return dynamoDb.put({
@@ -31,6 +31,8 @@ describe('Test ToDo DAO - save', () => {
       },
     }).promise().then((data) =>{
       console.log(data);
+    }).catch((error) => {
+      console.log(error);
     })
 
   });
