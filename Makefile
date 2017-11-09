@@ -16,3 +16,17 @@ html:
 		--normalize \
 		--smart \
 		--toc
+
+
+pdf:
+	# OS X: http://www.tug.org/mactex/
+	# Then find its path: find /usr/ -name "pdflatex"
+	# Then symlink it: ln -s /path/to/pdflatex /usr/local/bin
+	pandoc -s guide.md -o $(filename).pdf \
+		--title-prefix $(title) \
+		--listings -H listings-setup.tex \
+		--template=template/template.tex \
+		--normalize \
+		--smart \
+		--toc \
+		--latex-engine=`which xelatex`
