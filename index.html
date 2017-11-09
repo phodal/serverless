@@ -1266,7 +1266,7 @@ Distribution Domain Name
 <h1 id="serverless-应用开发指南使用-ses-创建邮件发送接口">Serverless 应用开发指南：使用 SES 创建邮件发送接口</h1>
 <p>当你有一个不成熟的 Idea 时，作为一个受精益思想影响的开发者，那么你可能会学习 Dropbox 创建一个 Landing Page 来验证你的想法。如下图所示：</p>
 <figure>
-<img src="launch-page.jpg" alt="Launch Page" /><figcaption>Launch Page</figcaption>
+<img src="images/launch-page.jpg" alt="Launch Page" /><figcaption>Launch Page</figcaption>
 </figure>
 <p>这个时候，你只需要大胆地公布出你的 Idea。等待用户的到来、在网页上提交他们的邮箱 blabla。然后在产品准备得差不多的时候，就可以大声地告诉全世界，你们可以来试用了。不过，这只里我们只讨论如何来发送邮件。</p>
 <p>对于诸如邮件发送、短信发送等服务的业务场景来说，采用 Serverless 特别合适——当然，如果你也使用 AWS 服务就更好了。我们只需要将相关的参数，发送到对应的接口即可。</p>
@@ -1348,7 +1348,7 @@ module.exports.sendMail = (event, context, callback) =&gt; {
 }</code></pre>
 <p>在 PostMan 上进行了测试：</p>
 <figure>
-<img src="./images/post-man-example.png" alt="PostMan 示例" /><figcaption>PostMan 示例</figcaption>
+<img src="images/post-man-example.png" alt="PostMan 示例" /><figcaption>PostMan 示例</figcaption>
 </figure>
 <p>然后报错了：</p>
 <pre><code>{
@@ -1375,9 +1375,6 @@ module.exports.sendMail = (event, context, callback) =&gt; {
 <p>对于 Amazon SES 新用户 – 如果您尚未申请提高发送限制，则仍将处于沙箱环境中，且只能发送电子邮件至您之前验证过的地址。要验证新电子邮件地址或域，请参阅 Amazon SES 控制台的身份管理部分。</p>
 </blockquote>
 <p>于是便登录 SNS，新增了一个验证邮箱。</p>
-<figure>
-<img src="./images/verify-email" alt="验证邮箱" /><figcaption>验证邮箱</figcaption>
-</figure>
 <p>试了 gmszone@qq.com 、网易邮箱都不行，最后用了 Google 的。</p>
 <p>最后，终于可以接收到邮件了。</p>
 <h2 id="serverless-kinesis-streams">Serverless + Kinesis Streams</h2>
@@ -1515,7 +1512,7 @@ ServerlessKinesisFirehose:
 <pre><code>serverless invoke --function receiver --path event.json</code></pre>
 <p>便会在我们的 S3 中生成对应的数据文件：</p>
 <figure>
-<img src="./images/firehose-s3.png" alt="Firehose" /><figcaption>Firehose</figcaption>
+<img src="images/firehose-s3.png" alt="Firehose" /><figcaption>Firehose</figcaption>
 </figure>
 <p>由于这里的数据太少，就没有用 Kinesis Analytics 进行分析了。</p>
 <h1 id="serverless-架构应用开发使用-serverless-offline-在本地部署与调试">Serverless 架构应用开发：使用 serverless-offline 在本地部署与调试</h1>
@@ -1634,7 +1631,7 @@ module.exports = client;</code></pre>
 <pre><code>const dynamoDb = require(&#39;./dynamodb&#39;);</code></pre>
 <p>确认一切无误后，我们就可以使用 postman 测试：</p>
 <figure>
-<img src="./images/postman-offline-db" alt="PostMan 测试 Serverless Offline" /><figcaption>PostMan 测试 Serverless Offline</figcaption>
+<img src="images/postman-offline-db.png" alt="PostMan 测试 Serverless Offline" /><figcaption>PostMan 测试 Serverless Offline</figcaption>
 </figure>
 <p>或者 curl：</p>
 <pre><code>curl -X POST -H &quot;Content-Type:application/json&quot; http://localhost:3000/todos --data &#39;{ &quot;text&quot;: &quot;Learn Serverless&quot; }&#39;</code></pre>
@@ -1831,7 +1828,7 @@ Serverless: If successful this should be deployed at: https://s3.amazonaws.com/a
 <p>然后打开 <a href="https://s3.amazonaws.com/auth.wdsm.io/index.html" class="uri">https://s3.amazonaws.com/auth.wdsm.io/index.html</a> 就可以尝试授权。</p>
 <p>不过，在那之间，我们需要填写对应平台的授权信息：</p>
 <figure>
-<img src="./images/auth0-github-example.png" alt="Auth GitHub" /><figcaption>Auth GitHub</figcaption>
+<img src="images/auth0-github-example.png" alt="Auth GitHub" /><figcaption>Auth GitHub</figcaption>
 </figure>
 <p>接着，点击上面的 GitHub 『！』号，会提示我们填写对应的授权信息。</p>
 <p>打开我们的 GitHub ，申请一个新的 OAuth 应用，地址：<a href="https://github.com/settings/applications/new" class="uri">https://github.com/settings/applications/new</a></p>
@@ -1848,11 +1845,11 @@ Authorization callback URL  https://phodal.auth0.com/login/callback</code></pre>
 <p>漏掉了在 Auth0 的设置页的 <code>Allowed Callback URL</code> 和 <code>Allowed Origins</code> 上加上用于登录的地址，用于允许跨域请求了。在这里，我的地址是：</p>
 <pre><code>https://s3.amazonaws.com/auth.wdsm.io/index.html</code></pre>
 <figure>
-<img src="./images/auth0-cors-configure-example.png" alt="CORS 配置" /><figcaption>CORS 配置</figcaption>
+<img src="images/auth0-cors-configure-example.png" alt="CORS 配置" /><figcaption>CORS 配置</figcaption>
 </figure>
 <p>然后，再测试一下登录：</p>
 <figure>
-<img src="./images/auth0-login-ui-example.png" alt="Auth0 测试登录" /><figcaption>Auth0 测试登录</figcaption>
+<img src="images/auth0-login-example.png" alt="Auth0 测试登录" /><figcaption>Auth0 测试登录</figcaption>
 </figure>
 <p>漂亮，我们登录成功了。</p>
 <h3 id="清理">清理</h3>

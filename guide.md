@@ -1722,7 +1722,7 @@ Serverless 应用开发指南：使用 SES 创建邮件发送接口
 
 当你有一个不成熟的 Idea 时，作为一个受精益思想影响的开发者，那么你可能会学习 Dropbox 创建一个 Landing Page 来验证你的想法。如下图所示：
 
-![Launch Page](launch-page.jpg)
+![Launch Page](images/launch-page.jpg)
 
 这个时候，你只需要大胆地公布出你的 Idea。等待用户的到来、在网页上提交他们的邮箱 blabla。然后在产品准备得差不多的时候，就可以大声地告诉全世界，你们可以来试用了。不过，这只里我们只讨论如何来发送邮件。
 
@@ -1838,7 +1838,7 @@ Serverless Email 发送测试
 
 在 PostMan 上进行了测试：
 
-![PostMan 示例](./images/post-man-example.png)
+![PostMan 示例](images/post-man-example.png)
 
 然后报错了：
 
@@ -1869,8 +1869,6 @@ Serverless Email 发送测试
 > 对于 Amazon SES 新用户 – 如果您尚未申请提高发送限制，则仍将处于沙箱环境中，且只能发送电子邮件至您之前验证过的地址。要验证新电子邮件地址或域，请参阅 Amazon SES 控制台的身份管理部分。
 
 于是便登录 SNS，新增了一个验证邮箱。
-
-![验证邮箱](./images/verify-email.png)
 
 试了 gmszone@qq.com 、网易邮箱都不行，最后用了 Google 的。
 
@@ -2073,7 +2071,7 @@ serverless invoke --function receiver --path event.json
 
 便会在我们的 S3 中生成对应的数据文件：
 
-![Firehose](./images/firehose-s3.png)
+![Firehose](images/firehose-s3.png)
 
 由于这里的数据太少，就没有用 Kinesis Analytics 进行分析了。
 
@@ -2264,7 +2262,7 @@ const dynamoDb = require('./dynamodb');
 
 确认一切无误后，我们就可以使用 postman 测试：
 
-![PostMan 测试 Serverless Offline](./images/postman-offline-db)
+![PostMan 测试 Serverless Offline](images/postman-offline-db.png)
 
 或者 curl：
 
@@ -2532,7 +2530,7 @@ Serverless: If successful this should be deployed at: https://s3.amazonaws.com/a
 
 不过，在那之间，我们需要填写对应平台的授权信息：
 
-![Auth GitHub](./images/auth0-github-example.png)
+![Auth GitHub](images/auth0-github-example.png)
 
 接着，点击上面的 GitHub 『！』号，会提示我们填写对应的授权信息。
 
@@ -2564,11 +2562,11 @@ app.js:26 Something went wrong:  Error: error: invalid origin: https://s3.amazon
 https://s3.amazonaws.com/auth.wdsm.io/index.html
 ```
 
-![CORS 配置](./images/auth0-cors-configure-example.png)
+![CORS 配置](images/auth0-cors-configure-example.png)
 
 然后，再测试一下登录：
 
-![Auth0 测试登录](./images/auth0-login-ui-example.png)
+![Auth0 测试登录](images/auth0-login-example.png)
 
 漂亮，我们登录成功了。
 
