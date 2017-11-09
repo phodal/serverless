@@ -7,6 +7,15 @@ const dynamoDb = require('./dynamodb');
 
 module.exports.create = (event, context, callback) => {
   const timestamp = new Date().getTime();
+  if(!event || !event.body) {
+    return callback(null, {
+      statusCode: 400,
+      headers: { 'Content-Type': 'text/plain' },
+      body: 'Empty request',
+    });
+    return;
+  }
+
   const data = JSON.parse(event.body);
   if (typeof data.text !== 'string') {
     console.error('Validation Failed');
