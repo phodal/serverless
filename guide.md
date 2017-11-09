@@ -1870,7 +1870,7 @@ Serverless Email 发送测试
 
 于是便登录 SNS，新增了一个验证邮箱。
 
-![验证邮箱](./images/verify-email)
+![验证邮箱](./images/verify-email.png)
 
 试了 gmszone@qq.com 、网易邮箱都不行，最后用了 Google 的。
 
@@ -1961,3 +1961,752 @@ REPORT RequestId: 3776bac6-612f-45dd-a8ac-156007f8e49b  Duration: 72.07 ms  Bill
 
 So，请期待我们的下一篇文章。
 
+Serverless Kinesis Firehose 持久化数据到 S3
+===
+
+based on:[serverless-kinesis-streams](https://github.com/pmuens/serverless-kinesis-streams), but auto create Kinesis streams
+
+在尝试了使用 Kinesis Stream 处理数据之后，我发现它并不能做什么。接着，便开始找寻其它方式，其中一个就是：Amazon Kinesis Firehose
+
+> Amazon Kinesis Firehose 是将流数据加载到 AWS 的最简单方式。它可以捕捉、转换流数据并将其加载到 Amazon Kinesis Analytics、Amazon S3、Amazon Redshift 和 Amazon Elasticsearch Service，让您可以利用正在使用的现有商业智能工具和仪表板进行近乎实时的分析。这是一项完全托管的服务，可以自动扩展以匹配数据吞吐量，并且无需持续管理。它还可以在加载数据前对其进行批处理、压缩和加密，从而最大程度地减少目的地使用的存储量，同时提高安全性。
+
+Serverless Kinesis Firehose 代码
+---
+
+总的来说，Kinesis Firehose 的 Lambda 代码与 Kinesis 是差不多的。
+
+```
+module.exports.receiver = (event, context, callback) => {
+  const data = event.data;
+  const firehose = new AWS.Firehose();
+
+  const params = {
+    Record: {
+      Data: data
+    },
+    DeliveryStreamName: 'serverless-firehose'
+  };
+
+  return firehose.putRecord(params, (error, data) => {
+    ...
+};
+```
+
+以下则是 Kinesis Stream 的代码：
+
+```
+module.exports.dataReceiver = (event, context, callback) => {
+  const data = event.data;
+  const kinesis = new AWS.Kinesis();
+  const partitionKey = uuid.v1();
+
+  const params = {
+    Data: data,
+    PartitionKey: partitionKey,
+    StreamName: 'kinesis-streams-stream'
+  };
+
+  return kinesis.putRecord(params, (error, data) => {
+    ...
+  });
+};
+```
+
+两个 Lambda 函数之间，最大的区别就是在于 new 出来的对象不一样，并且这个对象的参数也是不一样的。
+
+但是他们的配置来说，可能相差甚远。并且，实际上将数据存到 S3 的工作，主要是由 ``serverless.yml`` 文件来控制 的：
+
+```
+ServerlessKinesisFirehoseBucket:
+  Type: AWS::S3::Bucket
+  DeletionPolicy: Retain
+  Properties:
+    BucketName: serverless-firehose-bucket
+ServerlessKinesisFirehose:
+  Type: AWS::KinesisFirehose::DeliveryStream
+  Properties:
+    DeliveryStreamName: serverless-firehose
+    S3DestinationConfiguration:
+      BucketARN:
+        Fn::Join:
+        - ''
+        - - 'arn:aws:s3:::'
+          - Ref: ServerlessKinesisFirehoseBucket
+      BufferingHints:
+        IntervalInSeconds: "60"
+        SizeInMBs: "1"
+      CompressionFormat: "UNCOMPRESSED"
+      Prefix: "raw/"
+      RoleARN: { Fn::GetAtt: [ FirehoseToS3Role, Arn ] }
+```          
+
+在配置文件中，我们定义了要交付的 Stream 的名字，以及对应用来存储数据的 S3 Bucket 名称。
+
+安装及测试
+---
+
+好了，现在不妨直接试试相关的代码。
+
+1.安装我们的服务
+
+```
+npm install -u https://github.com/phodal/serverless-guide/tree/master/kinesis-streams -n kinesis-streams
+```
+
+2.然后：
+
+```
+npm install
+```
+
+3.紧接着部署：
+
+```
+serverless deploy
+```
+
+4.触发我们的函数：
+
+```
+serverless invoke --function receiver --path event.json
+```
+
+便会在我们的 S3 中生成对应的数据文件：
+
+![Firehose](./images/firehose-s3.png)
+
+由于这里的数据太少，就没有用 Kinesis Analytics 进行分析了。
+
+Serverless 架构应用开发：使用 serverless-offline 在本地部署与调试
+===
+
+在这几周的 Serverless 应用开发里，我觉得最大的不便就是，缺少一个本地的调试环境。在这种时候，我们需要不断地部署我们的代码，不断地在我们的代码里写上几行 ``console.log``，然后在一切正常之后，再把这些 ``console.log`` 删除。
+
+可要是，突然间又出现了一个 bug，我仿佛看到了我们又要重来一遍。
+
+就这样经历了几次之后，我便想尝试一些新的手段，比如 ``serverless-offline``。
+
+
+serverless-offline
+---
+
+serverless-offline 是一个 Serverless Framework 的插件，它可以在本地的机器上模拟 AWS Lamdba 和 API Gateway，以加快开发者的开发周期。为此，它启动一个处理请求生命周期的 HTTP 服务器，就像 APIG 一样，并调用你的处理程序。
+
+及包含以下的特性：
+
+ - 仅支持 Node.js 下的 Lambda 函数
+ - 支持 Velocity 模板
+ - 延迟加载你的、需要缓存失效文件：而不需要重载工具，如Nodemon。
+ - 以及，集成，授权人，代理，超时，responseParameters，HTTPS，Babel 运行时环境，CORS 等...
+
+那么，让我们看看如何做到这一点。
+
+本地搭建 serverless-offline 与 DynamoDB 环境
+---
+
+这次我们将基于之前的文章《[Serverless 应用开发指南：Lambda + API Gateway + DynamoDB 制作 REST API
+](https://www.phodal.com/blog/serverless-developement-gui-lambda-api-gateway-dynamodb-create-restful-services/)》中的 todolist，来开始我们的调试之旅。
+
+在之前的示例里，我们使用了 DynamoDB 来存储数据。在这篇文章里，我们也将介绍 ``serverless-dynamodb-local`` 来在本地运行 DynamoDB。
+
+在那之前，如果你还没有之前的代码，请先安装服务到本地：
+
+```
+npm install -u https://github.com/phodal/serverless-guide/tree/master/aws-node-rest-api-with-dynamodb -n dynamodb-offline
+```
+
+然后，在我们的项目里安装 ``serverless-offline`` 插件：
+
+```
+yarn add --dev serverless-offline
+```
+
+并安装 ``serverless-dynamodb-local`` 插件：
+
+```
+yarn add --dev serverless-dynamodb-local
+```
+
+然后，在 ``serverless.yml`` 中添加相应的插件：
+
+```
+plugins:
+  - serverless-offline
+  - serverless-dynamodb-local
+```
+
+紧接着，还需要进行相应的 dynamodb 配置：
+
+```
+custom:
+  dynamodb:
+    start:
+      port: 8000
+      inMemory: true
+      migrate: true
+    migration:
+      dir: offline/migrations
+```
+
+其中的 migration 对应的是本地的 Scheme，位于 ``offline/migrations/todos.json``，内容如下：
+
+```
+{
+    "Table": {
+        "TableName": "serverless-rest-api-with-dynamodb-dev",
+        "KeySchema": [
+            {
+                "AttributeName": "id",
+                "KeyType": "HASH"
+            }
+        ],
+        "AttributeDefinitions": [
+            {
+                "AttributeName": "id",
+                "AttributeType": "S"
+            }
+        ],
+        "ProvisionedThroughput": {
+            "ReadCapacityUnits": 1,
+            "WriteCapacityUnits": 1
+        }
+    }
+}
+```
+
+然后，执行：
+
+```
+serverless dynamodb install
+```
+
+以安装 DynamnoDB 的本地版本。
+
+一切准备妥当了，我们可以进行测试了。
+
+
+本地测试 serverless-offline 与 DynamoDB
+---
+
+接着，让我们用下面的命令，来运行起本地的环境：
+
+```
+$ serverless offline start
+
+Dynamodb Local Started, Visit: http://localhost:8000/shell
+Serverless: DynamoDB - created table serverless-rest-api-with-dynamodb-dev
+Serverless: Starting Offline: dev/us-east-1.
+
+Serverless: Routes for create:
+Serverless: POST /todos
+
+Serverless: Routes for list:
+Serverless: GET /todos
+
+Serverless: Routes for get:
+Serverless: GET /todos/{id}
+
+Serverless: Routes for update:
+Serverless: PUT /todos/{id}
+
+Serverless: Routes for delete:
+Serverless: DELETE /todos/{id}
+
+Serverless: Offline listening on http://localhost:3000
+```
+
+启动的时候，发现直接报错了：
+
+```
+  message: 'Missing region in config',
+  code: 'ConfigError',
+  time: 2017-11-07T01:18:45.365Z }
+```
+
+对比了官方的示例代码后，发现没有对本地调用的 DynamoDB 进行处理：
+
+让我们，新增一个 ``todos/dynamodb.js`` 文件：
+
+```
+'use strict';
+
+const AWS = require('aws-sdk'); // eslint-disable-line import/no-extraneous-dependencies
+
+let options = {};
+
+// connect to local DB if running offline
+if (process.env.IS_OFFLINE) {
+  options = {
+    region: 'localhost',
+    endpoint: 'http://localhost:8000',
+  };
+}
+
+const client = new AWS.DynamoDB.DocumentClient(options);
+
+module.exports = client;
+```
+
+当我们在本地运行的时候，将使用本地的 DynamoDB，当在服务端运行的时候，则会调用真正的 DynamoDB。
+
+再去修改 ``create.js``、``delete.js``、``get.js``、``list.js`` 和 ``update.js`` 中的：
+
+```
+const dynamoDb = new AWS.DynamoDB.DocumentClient();
+```
+
+改为
+
+
+```
+const dynamoDb = require('./dynamodb');
+```
+
+确认一切无误后，我们就可以使用 postman 测试：
+
+![PostMan 测试 Serverless Offline](./images/postman-offline-db)
+
+或者 curl：
+
+```
+curl -X POST -H "Content-Type:application/json" http://localhost:3000/todos --data '{ "text": "Learn Serverless" }'
+```
+
+接着打开本地的 todos 地址：
+
+```
+http://localhost:3000/todos
+```
+
+就会返回类似于在线上生成的数据结果。
+
+```
+[{"checked":false,"createdAt":1510018445663,"id":"be15f600-c35b-11e7-8089-a5ea63a20ab5","text":"Learn Serverless","updatedAt":1510018445663}]
+```
+
+Awesome！
+
+既然，已经有了可以在本地运行 DynamoDB，那么我们是不是可以写上几个测试呢？
+
+Serverless 架构应用开发：基于 Auth0 授权的 Serverless 应用登录
+===
+
+在多次尝试了使用 Amazon Cognito 前端授权无果，我转而使用和其它教程类似的 Auth0 授权登录。虽然 Amazon 提供了一个用于 Cognito 授权的前端组件，但是它仍然不是很成熟。在浏览器端，好像用得不是很普遍，而 Auth0 则是一个更通用的方案。
+
+> Auth0 是一家“身份验证即服务”提供商，旨在为开发人员提供简单易用的身份管理服务。为了保持灵活性和可扩展性，Auth0 身份管理平台允许开发人员在身份验证和授权管道中增加自定义代码。
+
+最后的代码见：[auth0-frontend](https://github.com/phodal/serverless-guide/tree/master/auth0-frontend)
+
+代码的执行逻辑如下所示：
+
+ - 由前端使用 Auth0 的 lock.js 调出授权框，进行用户授权
+ - 用户可以选择使用第三方授权服务登录，如 Google、GitHub
+ - 用户登录完后，会获取一个 Auth0 的 Token，通过该 Token 去请求数据
+ - 后台接到数据后，先验证 Token 是否有效的，然后返回相应的结果
+
+因此，对于我们而言，我们需要做这么一些事：
+
+ - 创建一个 Serverless 服务
+ - 创建一个验证 Token 的 Lambda 函数 
+ - 注册 Auth0 账户
+ - 绑定 Auth0 的 GitHub 授权
+
+这里我们采用的是 Serverless Framework 的官方示例 Demo。稍有不同的是，代码中对静态文件和 S3 部分进行了一些优化——官方的 DEMO，无法直接部署到 S3 上。
+
+Serverless Auth0 前端代码
+---
+
+在这次的教程里，代码分为两部分：前端和后台。
+
+这里的前端代码，是一个纯前端的代码。
+
+先让我们看看授权部分：
+
+```
+const lock = new Auth0Lock(AUTH0_CLIENT_ID, AUTH0_DOMAIN);
+
+...
+
+lock.show((err, profile, token) => {
+    if (err) {
+      console.error('Something went wrong: ', err);
+    } else {
+      localStorage.setItem('userToken', token);
+      localStorage.setItem('profile', JSON.stringify(profile));
+      ...
+    }
+  });
+```  
+
+首先，我们创建了一个 Auth0Lock 对象，并在参数中转入了对应的 ID 和 Auth0 域名。然后使用 lock.show 方法将调出 Auth0 的登录页面，当用户登录成功的时候，就会从后台取到 token 和 profile，然后我们在上面的代码中保存用户的 token 和 profile 到 localstorage 中。
+
+然后在发送 fetch 请求的时候，我们会带上这个 Token：
+
+```
+const token = localStorage.getItem('userToken');
+if (!token) {
+  return false;
+}
+const getdata = fetch(PRIVATE_ENDPOINT, {
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+  method: 'GET',
+  cache: 'no-store',
+});
+
+getdata.then((response) => {
+  response.json().then((data) => {
+    console.log('Token:', data);
+  });
+});
+```
+
+主要的前端逻辑代码就是这么简单。
+
+Serverless Auth0 后台代码
+---
+
+首先，先让我们看一眼 serverless.yml 配置。
+
+### serverless.yml 配置
+
+```
+functions:
+  auth:
+    handler: handler.auth
+    environment:
+      AUTH0_ID: ${file(./config.yml):AUTH0_ID}
+      AUTH0_SECRET: ${file(./config.yml):AUTH0_SECRET}
+
+  publicEndpoint:
+    handler: handler.publicEndpoint
+    events:
+      - http:
+          path: api/public
+          method: get
+          integration: lambda
+          cors: true
+  privateEndpoint:
+    handler: handler.privateEndpoint
+    events:
+      - http:
+          path: api/private
+          method: get
+          integration: lambda
+          authorizer: auth # See custom authorizer docs here: http://bit.ly/2gXw9pO
+          cors:
+            origins:
+              - '*'
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+```
+
+配置中定义了三个 lambda 函数：
+
+ - auth 函数，用于对用户传过来的 Token 进行校验
+ - publicEndpoint 函数，一个公开的 API 结点
+ - privateEndpoint 函数，一个需授权才能访问的 API，即它将调用 auth 函数，根据授权结果来返回相应的内容。
+
+更详细的资料，可以访问官方的文档：[使用 API Gateway 自定义授权方](http://docs.aws.amazon.com/zh_cn/apigateway/latest/developerguide/use-custom-authorizer.html)。
+
+auth 函数的代码如下所示：
+
+```
+const jwt = require('jsonwebtoken');
+...
+const jwt = require('jsonwebtoken');
+  if (event.authorizationToken) {
+    // remove "bearer " from token
+    const token = event.authorizationToken.substring(7);
+    const options = {
+      audience: AUTH0_CLIENT_ID,
+    };
+    jwt.verify(token, AUTH0_CLIENT_SECRET, options, (err, decoded) => {
+      if (err) {
+        cb('Unauthorized');
+      } else {
+        cb(null, generatePolicy(decoded.sub, 'Allow', event.methodArn));
+      }
+    });
+  } else {
+    cb('Unauthorized');
+  }
+};
+```  
+
+代码中的主要函数是 ``jwt.verify``，它将根据 AUTH0 的 ID 和密钥来校验 token 是否是有效的。同时，还引用了一个名为 ``generatePolicy`` 的方法：
+
+```
+const generatePolicy = (principalId, effect, resource) => {
+  const authResponse = {};
+  authResponse.principalId = principalId;
+  if (effect && resource) {
+    const policyDocument = {};
+    policyDocument.Version = '2012-10-17';
+    policyDocument.Statement = [];
+    const statementOne = {};
+    statementOne.Action = 'execute-api:Invoke';
+    statementOne.Effect = effect;
+    statementOne.Resource = resource;
+    policyDocument.Statement[0] = statementOne;
+    authResponse.policyDocument = policyDocument;
+  }
+  return authResponse;
+};
+```
+
+这个方法用于生成一个 IAM 的策略，这个策略的生成规则建议参考官方文档，以上的内容和 AWS 的官方 DEMO 是一致的。随后，再根据生成的是 'Allow' 或者 'Deny' 来判断，该用户是否拥有权限。如果用户拥有权限的，那么就会继续往下执行：
+
+```
+module.exports.privateEndpoint = (event, context, cb) => {
+  cb(null, { message: 'Only logged in users can see this' });
+};
+```
+
+说了这么多，还是让我们跑跑代码吧。
+
+配置及部署
+---
+
+在这一个步骤里我们要做这么几件事：
+
+ - 注册、获取 Auth0 的账号
+ - 部署 Lambda 函数，获取后台 API 地址
+ - 根据上一步生成的地址，修改前端代码中的地址
+
+因此在开始之前，需要先申请一个 Auth0 的账号，然后在 ``config.yml`` 中，添加 auth0 的 id 和密钥。
+
+然后执行部署：
+
+···
+
+```
+........................................................................
+Serverless: Stack update finished...
+Service Information
+service: auth0-frontend
+stage: dev
+region: us-east-1
+stack: auth0-frontend-dev
+api keys:
+  None
+endpoints:
+  GET - https://fy0qtq1r8c.execute-api.us-east-1.amazonaws.com/dev/api/public
+  GET - https://fy0qtq1r8c.execute-api.us-east-1.amazonaws.com/dev/api/private
+functions:
+  auth: auth0-frontend-dev-auth
+  publicEndpoint: auth0-frontend-dev-publicEndpoint
+  privateEndpoint: auth0-frontend-dev-privateEndpoint
+```
+
+将生成的 API Gateway 的地方放入到 **client/dist/app.js** 文件中：
+
+再执行：
+
+```
+$ serverless client deploy
+```
+
+以部署我们的静态文件。
+
+```
+Serverless: Deploying client to stage "dev" in region "us-east-1"...
+Serverless: Creating bucket auth.wdsm.io...
+Serverless: Configuring website bucket auth.wdsm.io...
+Serverless: Configuring policy for bucket auth.wdsm.io...
+Serverless: Configuring CORS policy for bucket auth.wdsm.io...
+Serverless: Uploading file app.css to bucket auth.wdsm.io...
+Serverless: If successful this should be deployed at: https://s3.amazonaws.com/auth.wdsm.io/app.css
+Serverless: Uploading file app.js to bucket auth.wdsm.io...
+Serverless: If successful this should be deployed at: https://s3.amazonaws.com/auth.wdsm.io/app.js
+Serverless: Uploading file index.html to bucket auth.wdsm.io...
+Serverless: If successful this should be deployed at: https://s3.amazonaws.com/auth.wdsm.io/index.html
+```
+
+然后打开 [https://s3.amazonaws.com/auth.wdsm.io/index.html](https://s3.amazonaws.com/auth.wdsm.io/index.html) 就可以尝试授权。
+
+不过，在那之间，我们需要填写对应平台的授权信息：
+
+![Auth GitHub](./images/auth0-github-example.png)
+
+接着，点击上面的 GitHub 『！』号，会提示我们填写对应的授权信息。
+
+打开我们的 GitHub ，申请一个新的 OAuth 应用，地址：[https://github.com/settings/applications/new](https://github.com/settings/applications/new)
+
+详细的信息见：[https://auth0.com/docs/github-clientid](https://auth0.com/docs/github-clientid)。
+
+如我的配置是：
+
+```
+Homepage URL: https://phodal.auth0.com
+Authorization callback URL  https://phodal.auth0.com/login/callback
+```
+
+完成后，把生成的 GitHub ID 和 Client Secret 填入。点击 Save，Auth0 就会自动帮我们测试。
+
+接着，再到我们的页面上尝试使用 GitHub 登录，还是报了个错：
+
+```
+app.js:26 Something went wrong:  Error: error: invalid origin: https://s3.amazonaws.com
+    at new LoginError (lock-9.0.min.js:9)
+    at lock-9.0.min.js:9
+    at onMessage (lock-9.0.min.js:10)
+```
+
+漏掉了在 Auth0 的设置页的 `Allowed Callback URL` 和 `Allowed Origins` 上加上用于登录的地址，用于允许跨域请求了。在这里，我的地址是：
+
+```
+https://s3.amazonaws.com/auth.wdsm.io/index.html
+```
+
+![CORS 配置](./images/auth0-cors-configure-example.png)
+
+然后，再测试一下登录：
+
+![Auth0 测试登录](./images/auth0-login-ui-example.png)
+
+漂亮，我们登录成功了。
+
+### 清理
+
+ - 删除 Auth0 的应用
+ - 删除 GitHub 的应用
+ - 清空 Bucket：``serverless client remove``
+ - 清空 Lambda：``serverless remove``
+
+结论
+---
+
+AWS 官方的 Congito 支持的第三方应用有限，在这个时候 Auth0 成了一个更好的选择。除了 GitHub，Auth0 还集成了微博、人人等等的国内的平台。
+
+当然授权，作为一个基础的服务，几乎是每个应用的重要功能，也是核心的功能。对于大数中大型公司来说，几乎不太可能采用这样的方案。
+
+Serverless 架构应用开发：多个语言运行环境
+===
+
+Serverless 与微服务在一点上很吸引人，你可以采用不同的语言来运行你的代码，不同的服务之间可以使用不同的语言。除了，在不同的 Serverless 服务里，采用不同的语言来开发。我们也可以在一个 Serverless 服务里，使用不同的语言来开发服务。
+
+Serverless 多个语言运行环境
+---
+
+这次我们要创建的 Serverless 服务，其实现步骤相当的简单：
+
+ - 使用 serverless 命令行工具，创建一个 node.js 模板
+ - 在上一步的基础上添加一个 python 的服务。
+
+于是，先让我们创建一个 hello, world 模板：
+
+```
+serverless create --template aws-nodejs --path multiple
+```
+
+然后，让我们创建一个 py-handler.py 的函数，代码如下所示：
+
+```
+import json
+import datetime
+
+
+def endpoint(event, context):
+    current_time = datetime.datetime.now().time()
+    body = {
+        "message": "Hello, the current time is " + str(current_time)
+    }
+
+    response = {
+        "statusCode": 200,
+        "body": json.dumps(body)
+    }
+
+    return response
+```
+
+这个函数做了一件事，便是：获取当前的时间，然后导出并返回 json。
+
+对应的，我们的 ``serverless.yml`` 文件也只是设置了不同的 runtime：
+
+```
+functions:
+  pythonDemo:
+    runtime: python2.7
+    events:
+      - http:
+          method: get
+          path: python
+    handler: py-handler.endpoint
+  jsDemo:
+    runtime: nodejs6.10
+    events:
+      - http:
+          method: get
+          path: js
+    handler: js-handler.hello
+```
+
+在 Python 函数部分，我们使用了 python2.7 来执行相应的代码。而在 JavaScript 部分则是 Node.js 6.10。
+
+部署及测试
+---
+
+如果你还没有下载代码，那么先安装服务：
+
+```
+npm install -u https://github.com/phodal/serverless-guide/tree/master/multiple -n multiple
+```
+
+然后就愉快地部署吧：
+
+```
+$ serverless deploy
+
+Serverless: Packaging service...
+Serverless: Excluding development dependencies...
+Serverless: Uploading CloudFormation file to S3...
+Serverless: Uploading artifacts...
+Serverless: Uploading service .zip file to S3 (640 B)...
+Serverless: Validating template...
+Serverless: Updating Stack...
+Serverless: Checking Stack update progress...
+....................
+Serverless: Stack update finished...
+Service Information
+service: multiple
+stage: dev
+region: us-east-1
+stack: multiple-dev
+api keys:
+  None
+endpoints:
+  GET - https://ulgoy525y4.execute-api.us-east-1.amazonaws.com/dev/python
+  GET - https://ulgoy525y4.execute-api.us-east-1.amazonaws.com/dev/js
+functions:
+  pythonDemo: multiple-dev-pythonDemo
+  jsDemo: multiple-dev-jsDemo
+```
+
+针对于 js 和 python 分别有两个对应的 HTTP 结点：
+
+ - https://ulgoy525y4.execute-api.us-east-1.amazonaws.com/dev/python
+ - https://ulgoy525y4.execute-api.us-east-1.amazonaws.com/dev/js
+
+访问对应的接口，就会返回对应的值，如下是 JS 返回的结果：
+
+```
+{"message":"Go Serverless v1.0! Your function executed successfully!"}
+```
+
+如下是 Python 函数返回的结果：
+
+
+```
+{"message": "Hello, the current time is 14:17:24.453136"}
+```
+
+当我们可以在一个服务里，写上不同的语言，就意味着：我们可以轻松地写上几十行的服务，然后轻松地部署。
+
+对了，测试完了，记得执行 ``serverless remove``。
