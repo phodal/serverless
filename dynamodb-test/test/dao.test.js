@@ -2,15 +2,13 @@ require('should');
 
 const mochaPlugin = require('serverless-mocha-plugin');
 const expect = mochaPlugin.chai.expect;
-const AWS = require('aws-sdk-mock');
+const awsMock = require('aws-sdk-mock');
+const AWS = require('aws-sdk');
 const dynamoDb = require('../todos/dynamodb');
-
-process.env.TABLE_NAME = 'SomeTable';
 
 describe('Test ToDo DAO - save', () => {
   it('should save todo', (done) => {
-    AWS.mock('DynamoDB.DocumentClient', 'put', (params, callback) => {
-      console.log(params);
+    awsMock.mock('DynamoDB.DocumentClient', 'put', (params, callback) => {
       params.should.be.an.Object();
       params.should.have.property('Item');
       params.Item.should.have.property('id', 'todoId');
@@ -19,9 +17,10 @@ describe('Test ToDo DAO - save', () => {
       params.should.have.property('TableName', 'SomeTable');
 
       callback(null, {});
-      // done()
+      done()
     });
 
+    let dynamoDb = new AWS.DynamoDB.DocumentClient();
     return dynamoDb.put({
       TableName: 'SomeTable',
       Item: {
@@ -29,8 +28,9 @@ describe('Test ToDo DAO - save', () => {
         text: 'ToDoText',
         checked: false
       },
-    }).promise().then((data) =>{
+    }).promise().then((data) => {
       console.log(data);
+      return data;
     }).catch((error) => {
       console.log(error);
     })
@@ -38,7 +38,7 @@ describe('Test ToDo DAO - save', () => {
   });
 
   afterEach(() => {
-    AWS.restore();
+    awsMock.restore();
   });
 
 });
