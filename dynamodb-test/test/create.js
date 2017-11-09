@@ -29,10 +29,10 @@ describe('create', () => {
       expect(response.body).equal('Couldn\'t create the todo item.');
     });
   });
-
-  it('Test for Validation Errored', () => {
-    return wrapped.run({body: '{ "text": "1123" }'}).then((response) => {
-      expect(response.body).equal('Couldn\'t create the todo item.');
-    });
-  });
+  //
+  // it('Test for Validation Errored', () => {
+  //   return wrapped.run({body: '{ "text": "1123" }'}).then((response) => {
+  //     expect(response.body).equal('Couldn\'t create the todo item.');
+  //   });
+  // });
 });

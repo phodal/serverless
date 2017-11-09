@@ -12,6 +12,7 @@
     "lambda-local": "^1.4.4",
     "serverless-dynamodb-local": "^0.2.26",
     "serverless-mocha-plugin": "^1.7.0",
-    "serverless-offline": "^3.16.0"
+    "serverless-offline": "^3.16.0",
+    "should": "^13.1.3"
   }
 }
