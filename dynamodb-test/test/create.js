@@ -12,10 +12,27 @@ describe('create', () => {
     done();
   });
 
-  it('implement tests here', () => {
+  it('Test for empty request', () => {
     return wrapped.run({}).then((response) => {
-      console.log(response);
-      // expect(response).to.not.be.empty;
+      expect(response.body).equal('Empty request');
+    });
+  });
+
+  it('Test for empty body', () => {
+    return wrapped.run({body: ''}).then((response) => {
+      expect(response.body).equal('Empty request');
+    });
+  });
+
+  it('Test for Validation Errored', () => {
+    return wrapped.run({body: '{ "text": 1123 }'}).then((response) => {
+      expect(response.body).equal('Couldn\'t create the todo item.');
+    });
+  });
+
+  it('Test for Validation Errored', () => {
+    return wrapped.run({body: '{ "text": "1123" }'}).then((response) => {
+      expect(response.body).equal('Couldn\'t create the todo item.');
     });
   });
 });
