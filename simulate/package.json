@@ -1,0 +1,19 @@
+{
+  "name": "simulate",
+  "version": "1.0.0",
+  "description": "",
+  "main": "handler.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.148.0"
+  },
+  "devDependencies": {
+    "serverless": "^1.24.1",
+    "serverless-plugin-simulate": "0.0.17"
+  }
+}
