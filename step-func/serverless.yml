@@ -1,0 +1,29 @@
+service: hello-world
+
+plugins:
+  - serverless-step-functions
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+
+functions:
+  hello:
+    handler: handler.hello
+
+stepFunctions:
+  stateMachines:
+    hello:
+      events:
+        - http:
+            path: hello
+            method: GET
+      name: myStateMachine
+      definition:
+        Comment: "A Hello World example of the Amazon States Language using an AWS Lambda Function"
+        StartAt: HelloWorld
+        States:
+          HelloWorld:
+            Type: Task
+            Resource: arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${opt:stage}-hello
+            End: true
