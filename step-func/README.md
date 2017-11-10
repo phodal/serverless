@@ -25,3 +25,7 @@ Serverless StepFunctions OutPuts
 endpoints:
   GET - https://m5g5nktxgj.execute-api.us-east-1.amazonaws.com/dev/hello
 ```
+
+```
+region: us-west-2 # This region must support step functions.
+```

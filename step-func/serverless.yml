@@ -6,10 +6,13 @@ plugins:
 provider:
   name: aws
   runtime: nodejs6.10
+  region: us-west-2
 
 functions:
   hello:
     handler: handler.hello
+  hello2:
+    handler: handler.hello2
 
 stepFunctions:
   stateMachines:
@@ -26,4 +29,8 @@ stepFunctions:
           HelloWorld:
             Type: Task
             Resource: arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${opt:stage}-hello
+            Next: HelloWorld2
+          HelloWorld2:
+            Type: Task
+            Resource: arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${opt:stage}-hello2
             End: true
