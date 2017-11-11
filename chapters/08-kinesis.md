@@ -1,0 +1,218 @@
+基于 Kinesis Streams 的数据流分析
+===
+
+Serverless 适合用于事件驱动型应用，以及定时任务。今天，让我们来看看一个事件驱动的例子。
+
+在之前的那篇《[Serverless 应用开发指南：CRON 定时执行 Lambda 任务](https://www.phodal.com/blog/serverless-development-guide-cron-scheduled-job/)》中，我们介绍了如何调度的示例。
+
+最初我想的是通过 Lambda + DynamoDB 来自定义数据格式，后来发现使用 Kinesis Streams 是一种更简单的方案。
+
+Amazon Kinesis Streams
+---
+
+今天，我们要学习的组件是 Amazon Kinesis Streams。引自官网的介绍：
+
+> 借助 Amazon Kinesis Streams，您可以构建用于处理或分析流数据的自定义应用程序，以满足特定需求。Kinesis Streams 每小时可从数十万种来源 (如网站点击流、财务交易、社交媒体源、IT 日志和定位追踪事件) 中持续捕获和存储数 TB 数据。借助 Kinesis Client Library (KCL)，您可以构建 Amazon Kinesis 应用程序，并能使用流数据为实时控制面板提供强力支持、生成警报、实施动态定价和广告等等。您还可以将数据从 Kinesis Streams 发送到其他 AWS 服务中，如 Amazon Simple Storage Service (Amazon S3)、Amazon Redshift、Amazon EMR 和 AWS Lambda。
+
+简单的来说，用于收集日志事件数据的功能，还可以用于实时数据分析。
+
+Serverless + Kinesis Streams
+---
+
+最初我试用了 GitHub 上的[serverless-kinesis-streams](https://github.com/pmuens/serverless-kinesis-streams)，然后发现它并不会自动创建 Kinesis Streams 服务，于是便自己创建了一个：
+
+```
+serverless install -u https://github.com/phodal/serverless-guide/tree/master/kinesis-streams -n kinesis-streams                                10:14:50
+Serverless: Downloading and installing "serverless-kinesis-streams"...
+central entry: serverless-kinesis-streams-master/
+central entry: serverless-kinesis-streams-master/README.md
+central entry: serverless-kinesis-streams-master/event.json
+central entry: serverless-kinesis-streams-master/handler.js
+central entry: serverless-kinesis-streams-master/package.json
+central entry: serverless-kinesis-streams-master/serverless.yml
+Serverless: Successfully installed "serverless-kinesis-streams" as "kinesis-streams"
+```
+
+然后执行：
+
+```
+yarn install
+```
+
+就可以直接部署了：
+
+```
+Serverless: Packaging service...
+Serverless: Excluding development dependencies...
+Serverless: Uploading CloudFormation file to S3...
+Serverless: Uploading artifacts...
+Serverless: Uploading service .zip file to S3 (19.75 KB)...
+Serverless: Validating template...
+Serverless: Updating Stack...
+Serverless: Checking Stack update progress...
+..............................
+Serverless: Stack update finished...
+Service Information
+service: kinesis-streams
+stage: dev
+region: us-east-1
+stack: kinesis-streams-dev
+api keys:
+  None
+endpoints:
+  None
+functions:
+  dataReceiver: kinesis-streams-dev-dataReceiver
+  logger: kinesis-streams-dev-logger
+Serverless: Removing old service versions...
+```
+
+完成后，就可以测试一下了。
+
+```
+$ serverless invoke --function dataReceiver --path event.json                                                                
+
+11:30:48
+{
+    "message": "Data successfully written to Kinesis stream \"data-receiver\""
+}
+```
+
+然后，通过相应的日志，我们就可以看到数据流向了：Kinesis stream 
+
+```
+$ serverless logs --function logger                                                                                          
+
+11:31:41
+START RequestId: 3776bac6-612f-45dd-a8ac-156007f8e49b Version: $LATEST
+2017-11-04 11:30:53.382 (+08:00)  3776bac6-612f-45dd-a8ac-156007f8e49b  The following data was written to the Kinesis stream "data-receiver":
+{
+  "kinesisSchemaVersion": "1.0",
+  "partitionKey": "8e35d6a0-c110-11e7-90ae-59fa1aa30da7",
+  "sequenceNumber": "49578559262872379484471662829472308063624661238972153858",
+  "data": "U29tZSBleGFtcGxlIGRhdGE=",
+  "approximateArrivalTimestamp": 1509766251.753
+}
+END RequestId: 3776bac6-612f-45dd-a8ac-156007f8e49b
+REPORT RequestId: 3776bac6-612f-45dd-a8ac-156007f8e49b  Duration: 72.07 ms  Billed Duration: 100 ms   Memory Size: 128 MB Max Memory Used: 33 MB
+```
+
+但是光把数据流向 Kinesis stream ，并没有什么用，我们需要对数据进行处理。比如说，直接将数据存储到 S3，或者是 DynamoDB。
+
+So，请期待我们的下一篇文章。
+
+Serverless 数据分析，Kinesis Firehose 持久化数据到 S3
+===
+
+based on:[serverless-kinesis-streams](https://github.com/pmuens/serverless-kinesis-streams), but auto create Kinesis streams
+
+在尝试了使用 Kinesis Stream 处理数据之后，我发现它并不能做什么。接着，便开始找寻其它方式，其中一个就是：Amazon Kinesis Firehose
+
+> Amazon Kinesis Firehose 是将流数据加载到 AWS 的最简单方式。它可以捕捉、转换流数据并将其加载到 Amazon Kinesis Analytics、Amazon S3、Amazon Redshift 和 Amazon Elasticsearch Service，让您可以利用正在使用的现有商业智能工具和仪表板进行近乎实时的分析。这是一项完全托管的服务，可以自动扩展以匹配数据吞吐量，并且无需持续管理。它还可以在加载数据前对其进行批处理、压缩和加密，从而最大程度地减少目的地使用的存储量，同时提高安全性。
+
+Serverless Kinesis Firehose 代码
+---
+
+总的来说，Kinesis Firehose 的 Lambda 代码与 Kinesis 是差不多的。
+
+```
+module.exports.receiver = (event, context, callback) => {
+  const data = event.data;
+  const firehose = new AWS.Firehose();
+
+  const params = {
+    Record: {
+      Data: data
+    },
+    DeliveryStreamName: 'serverless-firehose'
+  };
+
+  return firehose.putRecord(params, (error, data) => {
+    ...
+};
+```
+
+以下则是 Kinesis Stream 的代码：
+
+```
+module.exports.dataReceiver = (event, context, callback) => {
+  const data = event.data;
+  const kinesis = new AWS.Kinesis();
+  const partitionKey = uuid.v1();
+
+  const params = {
+    Data: data,
+    PartitionKey: partitionKey,
+    StreamName: 'kinesis-streams-stream'
+  };
+
+  return kinesis.putRecord(params, (error, data) => {
+    ...
+  });
+};
+```
+
+两个 Lambda 函数之间，最大的区别就是在于 new 出来的对象不一样，并且这个对象的参数也是不一样的。
+
+但是他们的配置来说，可能相差甚远。并且，实际上将数据存到 S3 的工作，主要是由 ``serverless.yml`` 文件来控制 的：
+
+```
+ServerlessKinesisFirehoseBucket:
+  Type: AWS::S3::Bucket
+  DeletionPolicy: Retain
+  Properties:
+    BucketName: serverless-firehose-bucket
+ServerlessKinesisFirehose:
+  Type: AWS::KinesisFirehose::DeliveryStream
+  Properties:
+    DeliveryStreamName: serverless-firehose
+    S3DestinationConfiguration:
+      BucketARN:
+        Fn::Join:
+        - ''
+        - - 'arn:aws:s3:::'
+          - Ref: ServerlessKinesisFirehoseBucket
+      BufferingHints:
+        IntervalInSeconds: "60"
+        SizeInMBs: "1"
+      CompressionFormat: "UNCOMPRESSED"
+      Prefix: "raw/"
+      RoleARN: { Fn::GetAtt: [ FirehoseToS3Role, Arn ] }
+```          
+
+在配置文件中，我们定义了要交付的 Stream 的名字，以及对应用来存储数据的 S3 Bucket 名称。
+
+安装及测试
+---
+
+好了，现在不妨直接试试相关的代码。
+
+1.安装我们的服务
+
+```
+npm install -u https://github.com/phodal/serverless-guide/tree/master/kinesis-streams -n kinesis-streams
+```
+
+2.然后：
+
+```
+npm install
+```
+
+3.紧接着部署：
+
+```
+serverless deploy
+```
+
+4.触发我们的函数：
+
+```
+serverless invoke --function receiver --path event.json
+```
+
+便会在我们的 S3 中生成对应的数据文件：
+
+![Firehose](images/firehose-s3.png)
+
+由于这里的数据太少，就没有用 Kinesis Analytics 进行分析了。
