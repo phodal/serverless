@@ -1,13 +1,15 @@
 include_dir=build
-source=guide.md
+source=chapters/*.md
 title='Serverless 架构应用开发指南'
-filename='ebook'
-
+filename='serverless'
 
 all: html
 
-html:
-	pandoc -s guide.md -t html5 -o index.html -c style.css \
+markdown:
+	awk 'FNR==1{print ""}{print}' $(source) > $(filename).md
+
+html: markdown
+	pandoc -s $(filename).md -t html5 -o index.html -c style.css \
 		--include-in-header $(include_dir)/head.html \
 		--include-before-body $(include_dir)/author.html \
 		--include-before-body $(include_dir)/share.html \
@@ -18,8 +20,8 @@ html:
 		--toc
 
 
-pdf:
-	pandoc -s guide.md -o $(filename).pdf \
+pdf: markdown
+	pandoc -s $(filename).md -o $(filename).pdf \
 		--title-prefix $(title) \
 		--listings -H template/listings-setup.tex \
 		--template=template/template.tex \

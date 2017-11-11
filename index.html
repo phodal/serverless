@@ -41,8 +41,51 @@
 <div style="width:800px">
 <nav id="TOC">
 <ul>
-<li><a href="#serverless无服务器架构应用开发指南">Serverless（无服务器架构）应用开发指南</a></li>
-<li><a href="#serverless-应用开发指南serverless-的-hello-world">Serverless 应用开发指南：serverless 的 hello, world</a><ul>
+<li><a href="#serverless-架构应用开发指南">Serverless 架构应用开发指南</a></li>
+<li><a href="#什么是-serverless-架构">什么是 Serverless 架构？？</a><ul>
+<li><a href="#优势">优势</a><ul>
+<li><a href="#运营成本">运营成本</a></li>
+<li><a href="#开发成本">开发成本</a></li>
+<li><a href="#扩展能力">扩展能力</a></li>
+<li><a href="#管理">管理？？</a></li>
+</ul></li>
+<li><a href="#原则">原则</a><ul>
+<li><a href="#编写单一用途的无状态函数">编写单一用途的无状态函数</a></li>
+<li><a href="#设计基于推送的事件驱动的管道">设计基于推送的、事件驱动的管道</a></li>
+<li><a href="#集成第三方服务">集成第三方服务</a></li>
+</ul></li>
+<li><a href="#适用场景">适用场景</a><ul>
+<li><a href="#发送通知邮件短信等">发送通知（邮件、短信等）</a></li>
+<li><a href="#轻量级-api">轻量级 API</a></li>
+<li><a href="#数据统计">数据统计</a></li>
+<li><a href="#大量计算ai">大量计算（AI）</a></li>
+<li><a href="#物联网">物联网</a></li>
+<li><a href="#trigger-及定时任务">Trigger 及定时任务</a></li>
+<li><a href="#精益创业">精益创业</a></li>
+<li><a href="#chat-机器人">Chat 机器人</a></li>
+<li><a href="#博客系统">博客系统</a></li>
+</ul></li>
+<li><a href="#优势-1">优势</a><ul>
+<li><a href="#更少的代码更快的速度">更少的代码、更快的速度</a></li>
+<li><a href="#可扩展性">可扩展性</a></li>
+<li><a href="#快速启动">快速启动</a></li>
+</ul></li>
+<li><a href="#问题">问题</a><ul>
+<li><a href="#严重依赖第三方-api">严重依赖第三方 API</a></li>
+<li><a href="#缺乏调试和开发工具">缺乏调试和开发工具</a></li>
+<li><a href="#构建复杂">构建复杂</a></li>
+<li><a href="#自然限制">自然限制</a></li>
+<li><a href="#复杂的逻辑不易迁移">复杂的逻辑不易迁移</a></li>
+<li><a href="#缺乏基础设施">缺乏基础设施</a></li>
+</ul></li>
+<li><a href="#迁移方案">迁移方案</a></li>
+<li><a href="#serverless-框架">Serverless 框架</a><ul>
+<li><a href="#serverless">Serverless</a></li>
+<li><a href="#apex">Apex</a></li>
+<li><a href="#apache-openwhisk">Apache OpenWhisk</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#serverless-的-hello-world">Serverless 的 hello, world</a><ul>
 <li><a href="#serverless-框架-hello-world">Serverless 框架 hello, world</a><ul>
 <li><a href="#一安装-serverless-框架">一、安装 serverless 框架</a></li>
 <li><a href="#二设置-aws-凭证">二、设置 aws 凭证。</a></li>
@@ -50,69 +93,54 @@
 <li><a href="#四部署及测试">四、部署及测试：</a></li>
 </ul></li>
 </ul></li>
-<li><a href="#serverless-应用开发指南-node.js-编程返回动态-html">Serverless 应用开发指南： Node.js 编程返回动态 HTML</a></li>
-<li><a href="#serverless-应用开发指南api-gateway-s3-aws-lambda-打造-crud">Serverless 应用开发指南：API Gateway + S3 + AWS Lambda 打造 CRUD</a><ul>
+<li><a href="#aws-lambda-动态返回-html">AWS Lambda 动态返回 HTML</a></li>
+<li><a href="#使用-s3-部署静态网站">使用 S3 部署静态网站</a><ul>
+<li><a href="#配置-serverless-finch">配置 serverless-finch</a></li>
+<li><a href="#静态内容">静态内容</a></li>
+</ul></li>
+<li><a href="#基于-aws-s3-静态存储的-crud">基于 AWS S3 静态存储的 CRUD</a><ul>
 <li><a href="#概念api-gateway-与-s3">概念：API Gateway 与 S3</a></li>
 <li><a href="#基于-s3-的-serverless-crud">基于 S3 的 Serverless CRUD</a></li>
 <li><a href="#上传原理">上传原理</a></li>
 <li><a href="#serverless-s3-crud-示例">Serverless S3 CRUD 示例</a></li>
 </ul></li>
-<li><a href="#serverless-开发指南aws-iot-服务开发">Serverless 开发指南：AWS IoT 服务开发</a><ul>
-<li><a href="#serverless-框架安装服务">Serverless 框架安装服务</a></li>
-<li><a href="#部署-aws-iot-serverless-服务">部署 AWS IoT Serverless 服务</a></li>
-<li><a href="#查看日志">查看日志</a></li>
-</ul></li>
-<li><a href="#serverless-应用开发指南使用-s3-部署静态网站">Serverless 应用开发指南：使用 S3 部署静态网站</a><ul>
-<li><a href="#配置-serverless-finch">配置 serverless-finch</a></li>
-<li><a href="#静态内容">静态内容</a></li>
-</ul></li>
-<li><a href="#serverless-应用开发指南lambda-api-gateway-dynamodb-制作-rest-api">Serverless 应用开发指南：Lambda + API Gateway + DynamoDB 制作 REST API</a><ul>
+<li><a href="#使用-dynamodb-数据库创建-rest-api">使用 DynamoDB 数据库创建 REST API</a><ul>
 <li><a href="#serverless-dynamodb-示例配置">Serverless DynamoDB 示例配置</a></li>
 <li><a href="#serverless-dynamodb-示例代码">Serverless DynamoDB 示例代码</a></li>
 <li><a href="#serverless-dynamodb-部署">Serverless DynamoDB 部署</a></li>
 <li><a href="#serverless-dynamodb-测试">Serverless DynamoDB 测试</a></li>
 <li><a href="#其它操作">其它操作</a></li>
 </ul></li>
-<li><a href="#serverless-应用开发指南serverless-express-的-react-服务端渲染">Serverless 应用开发指南：Serverless + Express 的 React 服务端渲染</a><ul>
+<li><a href="#express-react-实现-serverless-的服务端渲染">Express + React 实现 Serverless 的服务端渲染</a><ul>
 <li><a href="#serverless-express">Serverless + Express</a></li>
 <li><a href="#express-react-进行服务端渲染">Express + React 进行服务端渲染</a></li>
 </ul></li>
-<li><a href="#serverless-应用开发指南cron-定时执行-lambda-任务">Serverless 应用开发指南：CRON 定时执行 Lambda 任务</a><ul>
-<li><a href="#serverless-定时任务">Serverless 定时任务</a><ul>
-<li><a href="#rate-表达式">rate 表达式</a></li>
-<li><a href="#cron-表达式">cron 表达式</a></li>
-</ul></li>
-<li><a href="#部署">部署</a></li>
-</ul></li>
-<li><a href="#serverless-应用开发指南-api-gateway-与-route53-自定义域名">Serverless 应用开发指南： API Gateway 与 Route53 自定义域名</a><ul>
-<li><a href="#serveress-domain-manager">Serveress Domain Manager</a></li>
-</ul></li>
-<li><a href="#serverless-应用开发指南基于-serverless-与-lambda-的微信公共平台">Serverless 应用开发指南：基于 Serverless 与 Lambda 的微信公共平台</a><ul>
+<li><a href="#serverless-的微信公共平台">Serverless 的微信公共平台</a><ul>
 <li><a href="#创建-serverless-服务">创建 Serverless 服务</a></li>
 <li><a href="#引入-node-wechat">引入 node-wechat</a></li>
 <li><a href="#配置-app_id-和-token-等">配置 APP_ID 和 TOKEN 等</a></li>
 <li><a href="#配置-route-53-与-api-gateway">配置 Route 53 与 API Gateway</a></li>
 <li><a href="#添加微信公众平号服务">添加微信公众平号服务</a></li>
-<li><a href="#部署-1">部署</a></li>
+<li><a href="#部署">部署</a></li>
 </ul></li>
-<li><a href="#serverless-应用开发指南基于-kinesis-streams-的数据流分析上">Serverless 应用开发指南：基于 Kinesis Streams 的数据流分析（上）</a><ul>
+<li><a href="#基于-kinesis-streams-的数据流分析">基于 Kinesis Streams 的数据流分析</a><ul>
 <li><a href="#amazon-kinesis-streams">Amazon Kinesis Streams</a></li>
-</ul></li>
-<li><a href="#serverless-应用开发指南使用-ses-创建邮件发送接口">Serverless 应用开发指南：使用 SES 创建邮件发送接口</a><ul>
-<li><a href="#serverless-email-发送">Serverless Email 发送</a></li>
-<li><a href="#serverless-email-发送测试">Serverless Email 发送测试</a></li>
 <li><a href="#serverless-kinesis-streams">Serverless + Kinesis Streams</a></li>
 </ul></li>
-<li><a href="#serverless-kinesis-firehose-持久化数据到-s3">Serverless Kinesis Firehose 持久化数据到 S3</a><ul>
+<li><a href="#serverless-数据分析kinesis-firehose-持久化数据到-s3">Serverless 数据分析，Kinesis Firehose 持久化数据到 S3</a><ul>
 <li><a href="#serverless-kinesis-firehose-代码">Serverless Kinesis Firehose 代码</a></li>
 <li><a href="#安装及测试">安装及测试</a></li>
 </ul></li>
-<li><a href="#serverless-架构应用开发使用-serverless-offline-在本地部署与调试">Serverless 架构应用开发：使用 serverless-offline 在本地部署与调试</a><ul>
-<li><a href="#serverless-offline">serverless-offline</a></li>
-<li><a href="#本地搭建-serverless-offline-与-dynamodb-环境">本地搭建 serverless-offline 与 DynamoDB 环境</a></li>
-<li><a href="#本地测试-serverless-offline-与-dynamodb">本地测试 serverless-offline 与 DynamoDB</a></li>
+<li><a href="#创建邮件发送-api">创建邮件发送 API</a><ul>
+<li><a href="#serverless-email-发送">Serverless Email 发送</a></li>
+<li><a href="#serverless-email-发送测试">Serverless Email 发送测试</a></li>
 </ul></li>
-<li><a href="#serverless-架构应用开发基于-auth0-授权的-serverless-应用登录">Serverless 架构应用开发：基于 Auth0 授权的 Serverless 应用登录</a><ul>
+<li><a href="#创建自己的-serverless-短链服务">创建自己的 Serverless 短链服务</a><ul>
+<li><a href="#代码逻辑">代码逻辑</a><ul>
+<li><a href="#创建首页">创建首页</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#创建登录系统">创建登录系统</a><ul>
 <li><a href="#serverless-auth0-前端代码">Serverless Auth0 前端代码</a></li>
 <li><a href="#serverless-auth0-后台代码">Serverless Auth0 后台代码</a><ul>
 <li><a href="#serverless.yml-配置">serverless.yml 配置</a></li>
@@ -122,11 +150,12 @@
 </ul></li>
 <li><a href="#结论">结论</a></li>
 </ul></li>
-<li><a href="#serverless-架构应用开发多个语言运行环境">Serverless 架构应用开发：多个语言运行环境</a><ul>
-<li><a href="#serverless-多个语言运行环境">Serverless 多个语言运行环境</a></li>
-<li><a href="#部署及测试">部署及测试</a></li>
+<li><a href="#在本地部署与调试">在本地部署与调试</a><ul>
+<li><a href="#serverless-offline">serverless-offline</a></li>
+<li><a href="#本地搭建-serverless-offline-与-dynamodb-环境">本地搭建 serverless-offline 与 DynamoDB 环境</a></li>
+<li><a href="#本地测试-serverless-offline-与-dynamodb">本地测试 serverless-offline 与 DynamoDB</a></li>
 </ul></li>
-<li><a href="#serverless-架构应用开发如何编写-serverless-应用的测试">Serverless 架构应用开发：如何编写 Serverless 应用的测试</a><ul>
+<li><a href="#如何编写-serverless-应用的测试">如何编写 Serverless 应用的测试</a><ul>
 <li><a href="#serverless-应用的测试">Serverless 应用的测试</a></li>
 <li><a href="#步骤">步骤</a><ul>
 <li><a href="#创建测试">创建测试</a></li>
@@ -135,9 +164,25 @@
 </ul></li>
 <li><a href="#结论-1">结论</a></li>
 </ul></li>
+<li><a href="#多个语言运行环境">多个语言运行环境</a><ul>
+<li><a href="#serverless-多个语言运行环境">Serverless 多个语言运行环境</a></li>
+<li><a href="#部署及测试">部署及测试</a></li>
+</ul></li>
+<li><a href="#aws-iot-服务开发">AWS IoT 服务开发</a><ul>
+<li><a href="#serverless-框架安装服务">Serverless 框架安装服务</a></li>
+<li><a href="#部署-aws-iot-serverless-服务">部署 AWS IoT Serverless 服务</a></li>
+<li><a href="#查看日志">查看日志</a></li>
+</ul></li>
+<li><a href="#serverless-应用开发指南cron-定时执行-lambda-任务">Serverless 应用开发指南：CRON 定时执行 Lambda 任务</a><ul>
+<li><a href="#serverless-定时任务">Serverless 定时任务</a><ul>
+<li><a href="#rate-表达式">rate 表达式</a></li>
+<li><a href="#cron-表达式">cron 表达式</a></li>
+</ul></li>
+<li><a href="#部署-1">部署</a></li>
+</ul></li>
 </ul>
 </nav>
-<h1 id="serverless无服务器架构应用开发指南">Serverless（无服务器架构）应用开发指南</h1>
+<h1 id="serverless-架构应用开发指南">Serverless 架构应用开发指南</h1>
 <blockquote>
 <p>Serverless 架构是指大量依赖第三方服务(也叫做后端即服务，即“BaaS”)或暂存容器中运行的自定义代码(函数即服务，即“FaaS”)的应用程序，函数是无服务器架构中抽象语言运行时的最小单位。在这种架构中，我们并不看重运行一个函数需要多少 CPU 或 RAM 或任何其他资源，而是更看重运行函数所需的时间，我们也只为这些函数的运行时间付费。<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a></p>
 </blockquote>
@@ -146,7 +191,125 @@
 <blockquote>
 <p>Serverless Framework是无服务器应用框架和生态系统，旨在简化开发和部署AWS Lambda应用程序的工作。Serverless Framework 作为 Node.js NPM 模块提供，填补了AWS Lambda 存在的许多缺口。它提供了多个样本模板，可以迅速启动 AWS Lambda 开发。</p>
 </blockquote>
-<h1 id="serverless-应用开发指南serverless-的-hello-world">Serverless 应用开发指南：serverless 的 hello, world</h1>
+<h1 id="什么是-serverless-架构">什么是 Serverless 架构？？</h1>
+<p>对于我而言，缺乏大量的后台架构实践经验，也需要大量的 DevOps。</p>
+<p>开发者无需考虑服务器细节，只需要负责编写发生某些事件后所需执行的代码。</p>
+<p>事件驱动</p>
+<p>JavaScript 机制。</p>
+<p>并不一定使用这些云服务，如 AWS，才能称为 Serverless。诸如我的同事 《<a href="https://blog.jimmylv.info/2017-06-30-serverless-in-action-build-personal-reading-statistics-system/">Serverless 实战：打造个人阅读追踪系统</a>》，采用的是</p>
+<p>IFTTT + WebTask + GitHub Webhook + GitHub</p>
+<p>意味着，你所有的服务中的一部分运行在 xxx 上，</p>
+<h2 id="优势">优势</h2>
+<h3 id="运营成本">运营成本</h3>
+<p>对于，初创公司来说，他们没有基础设施，也没有财力，也可能没有能力去建设基础设施。采用云服务往往是最好的选择，可以节省大量的资金。与此同时，诸如 AWS 这样庞大的系统，对于创业公司的程序员来说，也不能容易消化掉的一个系统。</p>
+<p>而如果一家创业公司采用的是 Serverless，而不是使用云服务器。那么，他就会拥有更多的时间去开发，不需要担心维护。只需要为运行时的软件付钱。</p>
+<p>按需计算就意味着，在请求到来的时候，才运行函数。没有请求的时候，是不算钱的。</p>
+<table>
+<thead>
+<tr class="header">
+<th>内存 (MB)</th>
+<th>每个月的免费套餐秒数</th>
+<th>每 100ms 的价格 (USD)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>128</td>
+<td>3,200,000</td>
+<td>0.000000208</td>
+</tr>
+<tr class="even">
+<td>1024</td>
+<td>400,000</td>
+<td>0.000001667</td>
+</tr>
+</tbody>
+</table>
+<h3 id="开发成本">开发成本</h3>
+<h3 id="扩展能力">扩展能力</h3>
+<p>Serverless 的背后是 诸如 AWS Lambda 这样的 FaaS（Function as a Services）。</p>
+<p>对于传统应用来说，要应对更多的请求的方式，就是部署更多的实例。然而，这个时候往往已经来不及了。而对于 FaaS 来说，我们并不需要这么做，FaaS 会自动的扩展。它可以在需要时尽可能多地启动实例副本，而不会发生冗长的部署和配置延迟。</p>
+<h3 id="管理">管理？？</h3>
+<h2 id="原则">原则</h2>
+<h3 id="编写单一用途的无状态函数">编写单一用途的无状态函数</h3>
+<p>每一个服务尽可能的小，不一定拥有数据库，也可以共用。</p>
+<h3 id="设计基于推送的事件驱动的管道">设计基于推送的、事件驱动的管道</h3>
+<h3 id="集成第三方服务">集成第三方服务</h3>
+<p>Auth0 例子、GitHub Hook 示例</p>
+<h2 id="适用场景">适用场景</h2>
+<ul>
+<li>事件驱动的数据编程</li>
+<li>Web 应用</li>
+<li>移动应用</li>
+<li>物联网应用</li>
+<li>事件流</li>
+<li>应用生态</li>
+</ul>
+<h3 id="发送通知邮件短信等">发送通知（邮件、短信等）</h3>
+<p>事件触发，对实时性的要求相对没有那么高~~</p>
+<h3 id="轻量级-api">轻量级 API</h3>
+<p>Serverless 特别适合于，轻量级快速变化地 API。</p>
+<p>其实，我一直想举一个 Featrue Toggle 的例子，尽管有一些不合适。但是，可能是最有价值的部分。</p>
+<h3 id="数据统计">数据统计</h3>
+<p>统计本身只需要很少的计算量，但是生成图表，则可以定期生成。</p>
+<h3 id="大量计算ai">大量计算（AI）</h3>
+<p>低频高内存计算</p>
+<h3 id="物联网">物联网</h3>
+<p>如 IoT。</p>
+<p>当我们谈及物联网的时候，我们会讨论事件触发、传输协议、海量数据（数据存储、数据分析）。</p>
+<p>对接不同的硬件，本身就是一种挑战。</p>
+<h3 id="trigger-及定时任务">Trigger 及定时任务</h3>
+<p>定时爬虫机器人</p>
+<h3 id="精益创业">精益创业</h3>
+<p>快速验证一个想法 MVP。</p>
+<p>Dropbox 创业历史的示例。</p>
+<p>AWS 提供一系列的工具：</p>
+<ul>
+<li>Cognito 用于用户授权</li>
+<li>Dynamo 存储数据</li>
+<li>Lambda 计算</li>
+<li>API Gateway 进行 API</li>
+<li>blabla</li>
+</ul>
+<h3 id="chat-机器人">Chat 机器人</h3>
+<p>聊天机器人，也是一个相当好的应用场景。</p>
+<p>Message，</p>
+<p>But，由于国内的条件限制（信息监管），这并不是一件容易的事。因此，从渠道（如微信、blabla）上，都在尽可能地降低这方面的可能性。</p>
+<h3 id="博客系统">博客系统</h3>
+<p>过去的几年里，我一直在尝试将我的博客迁移到云服务上，而不是某个主机。</p>
+<p>与微服务的关系 —–</p>
+<p>微服务并不能替换大量的单体应用</p>
+<p>优势：<strong>编写单一用途的无状态函数</strong>。</p>
+<p>这一点与微服务是相当类似。</p>
+<p>相似的，它们是相辅相成的。</p>
+<h2 id="优势-1">优势</h2>
+<h3 id="更少的代码更快的速度">更少的代码、更快的速度</h3>
+<p>更少的代码，意味着更少的 bug</p>
+<h3 id="可扩展性">可扩展性</h3>
+<h3 id="快速启动">快速启动</h3>
+<h2 id="问题">问题</h2>
+<h3 id="严重依赖第三方-api">严重依赖第三方 API</h3>
+<p>是的，</p>
+<p>在这种情况下，只能将不重要的 API 放在 Serverless 上。</p>
+<p>当你已经有大量的基础设施的时候，Serverless 对于你来说，并不是一个好东西。</p>
+<h3 id="缺乏调试和开发工具">缺乏调试和开发工具</h3>
+<p>你需要一遍又一遍地上传代码，每次上传的时候，你就好像是在部署服务器。然后 Fuck the。</p>
+<p>当我使用 Serverless Framework 的时候，遇到了这样的问题。后来，我发现了 serverless-offline，问题有一些改善。</p>
+<p>然而，对于日志系统来说，这仍然是一个艰巨的挑战。</p>
+<h3 id="构建复杂">构建复杂</h3>
+<p>早先，在知道 AWS Lambda 之后，我本来想进行一些尝试。但是 CloudForamtion 让我觉得太难了，它的配置是如此的复杂，并且难以编写。</p>
+<p>我使用的是 Serverless，考虑到 CloudForamtion 的复杂度。</p>
+<h3 id="自然限制">自然限制</h3>
+<p>使用多少内存、CPU 限制等等</p>
+<h3 id="复杂的逻辑不易迁移">复杂的逻辑不易迁移</h3>
+<h3 id="缺乏基础设施">缺乏基础设施</h3>
+<h2 id="迁移方案">迁移方案</h2>
+<p>Express 应用示例</p>
+<h2 id="serverless-框架">Serverless 框架</h2>
+<h3 id="serverless">Serverless</h3>
+<h3 id="apex">Apex</h3>
+<h3 id="apache-openwhisk">Apache OpenWhisk</h3>
+<h1 id="serverless-的-hello-world">Serverless 的 hello, world</h1>
 <p>原文链接：<a href="https://www.phodal.com/blog/serverless-development-guid-serverless-framework-hello-world/">Serverless 应用开发指南：serverless 的 hello, world</a></p>
 <p>在翻译了几篇 serverless 与物联网相关的文章之后，我开始想着好好掌握一下 serverless 的相关知识。</p>
 <p>我对于 serverless 的第一认知是：<strong>Serverless 是由一堆云服务构建后端服务的，如存储、计算、授权都是由不同的服务来构建的。</strong>而作为一个开发人员，我们所要做的就是了解如何搭配不同的云服务。</p>
@@ -268,17 +431,14 @@ REPORT RequestId: 041138f9-bc81-11e7-aa63-0dbab83f773d  Duration: 2.49 ms   Bill
 <p>这意味着，我们的第一个服务已经成功上线了。</p>
 <p>我们也可以通过下面的命令来获取相应的日志：</p>
 <pre><code>serverless logs -f hello -t</code></pre>
-<h1 id="serverless-应用开发指南-node.js-编程返回动态-html">Serverless 应用开发指南： Node.js 编程返回动态 HTML</h1>
+<h1 id="aws-lambda-动态返回-html">AWS Lambda 动态返回 HTML</h1>
 <p>原文链接：<a href="https://www.phodal.com/blog/serverless-development-guide-nodejs-create-dymamic-html/">Serverless 应用开发指南： Node.js 编程返回动态 HTML</a></p>
 <p>在我们进行 Serverless + SPA 应用开发之前，先看看官方的相应 DEMO。</p>
 <pre><code>serverless install -u https://github.com/serverless/examples/tree/master/aws-node-serve-dynamic-html-via-http-endpoint -n node-serve-html</code></pre>
 <p>然后执行部署</p>
 <pre><code>serverless deploy</code></pre>
 <p><code>serverless.yml</code> 文件，如下：</p>
-<pre><code># Serving HTML through API Gateway for AWS Lambda
-service: node-serve-html
-
-frameworkVersion: &quot;&gt;=1.1.0 &lt;2.0.0&quot;
+<pre><code>service: node-serve-html
 
 provider:
   name: aws
@@ -342,7 +502,77 @@ functions:
 <pre><code>Landing Page
 
 Hey phodal!</code></pre>
-<h1 id="serverless-应用开发指南api-gateway-s3-aws-lambda-打造-crud">Serverless 应用开发指南：API Gateway + S3 + AWS Lambda 打造 CRUD</h1>
+<h1 id="使用-s3-部署静态网站">使用 S3 部署静态网站</h1>
+<p>原文链接：<a href="https://www.phodal.com/blog/serverless-development-guide-use-serverless-finch-deploy-s3-static-html/">Serverless 应用开发指南：使用 S3 部署静态网站</a></p>
+<p>在尝试了使用 Router53 路由到 S3 后，并想试试能否使用 serverless 框架来上传静态内容。在探索官方的 DEMO 后，找到了一个 <code>serverless-finch</code> 插件可以做相应的事情。</p>
+<pre><code>serverless create --template aws-nodejs s3-static-file s3-static-file</code></pre>
+<h2 id="配置-serverless-finch">配置 serverless-finch</h2>
+<p>官网的 <code>serverless-client-s3</code> 已经停止维护了，并推荐使用 <code>serverless-finch</code>。</p>
+<p><code>serverless-finch</code> 的安装方式是：</p>
+<pre><code>npm install --save serverless-finch</code></pre>
+<p>默认的官网生成的项目，并没有 <code>package.json</code> 文件，需要手动执行 <code>npm inti</code>，再安装插件。</p>
+<p>因此修改完后的 <code>package.json</code> 文件如下所示：</p>
+<pre><code>{
+  &quot;name&quot;: &quot;s3-static-file&quot;,
+  &quot;version&quot;: &quot;1.0.0&quot;,
+  &quot;description&quot;: &quot;&quot;,
+  &quot;main&quot;: &quot;index.js&quot;,
+  &quot;scripts&quot;: {
+    &quot;test&quot;: &quot;echo \&quot;Error: no test specified\&quot; &amp;&amp; exit 1&quot;
+  },
+  &quot;author&quot;: &quot;Phodal Huang&quot;,
+  &quot;license&quot;: &quot;MIT&quot;,
+  &quot;dependencies&quot;: {
+    &quot;serverless-finch&quot;: &quot;^1.1.1&quot;
+  }
+}</code></pre>
+<p>在这个时候，我们需要按 serverless 框架的插件要求，添加如下的内容：</p>
+<pre><code>plugins:
+  - serverless-finch</code></pre>
+<p>并配置好我们的 S3 存储桶的名字，最后 <code>serverless.yml</code> 文件的内容如下所示：</p>
+<pre><code>service: s3-static-file
+
+
+plugins:
+  - serverless-finch
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+
+custom:
+  client:
+    bucketName: wdsm.io</code></pre>
+<p>我们配置的 S3 存储桶的名字是: <strong>wdsm.io</strong>，然后其使用 <code>client/dist</code> 文件来放置静态文件。</p>
+<h2 id="静态内容">静态内容</h2>
+<p>如我们的 <code>index.html</code> 文件的路径是： <code>client/dist/index.html</code>，对应的内容是：</p>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;WDSM.io&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;WDSM&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<p>最后，执行 <code>serverless client deploy</code> 就可以部署我们的网站。</p>
+<p><code>再次提醒</code>，这次我们用的是 <code>serverless client deploy</code>。</p>
+<p>相应的过程日志如下所示：</p>
+<pre><code>Serverless: Deploying client to stage &quot;dev&quot; in region &quot;us-east-1&quot;...
+Serverless: Bucket wdsm.io exists
+Serverless: Listing objects in bucket wdsm.io...
+Serverless: Deleting all objects from bucket wdsm.io...
+Serverless: Configuring website bucket wdsm.io...
+Serverless: Configuring policy for bucket wdsm.io...
+Serverless: Configuring CORS policy for bucket wdsm.io...
+Serverless: Uploading file error.html to bucket wdsm.io...
+Serverless: If successful this should be deployed at: https://s3.amazonaws.com/wdsm.io/error.html
+Serverless: Uploading file index.html to bucket wdsm.io...
+Serverless: If successful this should be deployed at: https://s3.amazonaws.com/wdsm.io/index.html</code></pre>
+<p>由于配置了 Router53 指向了 S3，因此可以直接访问：<a href="http://wdsm.io/" class="uri">http://wdsm.io/</a> 来看最后的内容。</p>
+<p>并且，对应的删除命令也变成了：<code>serverless client remove</code>。</p>
+<h1 id="基于-aws-s3-静态存储的-crud">基于 AWS S3 静态存储的 CRUD</h1>
 <p>原文链接：<a href="https://www.phodal.com/blog/serverless-development-guide-use-s3-api-gateway-create-crud/">Serverless 应用开发指南：API Gateway + S3 + AWS Lambda 打造 CRUD</a></p>
 <p>在前两篇文章《Serverless 应用开发指南： serverless 的 hello, world》和 《<a href="https://www.phodal.com/blog/serverless-guide-development-aws-iot-serverless-example/">Serverless 开发指南：AWS IoT 服务开发</a>》 里，我们简单地介绍了如何用 Serverless 和 AWS IoT 开发入门级的 Serverless 应用。</p>
 <p>在这一篇文章里，我们将开始进入正式的应用开发领域里：一个 CRUD 示例。</p>
@@ -485,149 +715,7 @@ module.exports = (event, callback) =&gt; {
 <pre><code>curl https://xc1iprfbsg.execute-api.us-east-1.amazonaws.com/dev/form-response</code></pre>
 <p>就是这么简单。</p>
 <p>如果只是测试用途，可以在执行完成后执行 serverless remove 来删除对应的服务，以减少开支。</p>
-<h1 id="serverless-开发指南aws-iot-服务开发">Serverless 开发指南：AWS IoT 服务开发</h1>
-<p>原文链接：<a href="https://www.phodal.com/blog/serverless-guide-development-aws-iot-serverless-example/">Serverless 开发指南：AWS IoT 服务开发</a></p>
-<p>在我开发一个完整的 Serverless 应用之前，我决定尝试一下不同的 Serverless 服务。这次我打算结合一下 AWS IoT，作为我对云服务与物联网结合的探索。</p>
-<h2 id="serverless-框架安装服务">Serverless 框架安装服务</h2>
-<p>依旧的，我还将继续使用 Serverless 框架，而不是自己写 lambda 来实现。</p>
-<p>因此，首先，让我们使用官方的服务 demo，执行以下的命令，就可以在本地复制远程的 demo 到本地。</p>
-<pre><code>serverless install -u https://github.com/serverless/examples/tree/master/aws-node-iot-event -n aws-iot-example</code></pre>
-<p>其相当于将远程的 https://github.com/serverless/examples/tree/master/aws-node-iot-event 复制到本地的 <code>aws-iot-example</code></p>
-<p>这次我们的 <code>handler.js</code> 只是打了个日志，其它什么也没做。</p>
-<pre><code>&#39;use strict&#39;;
-
-module.exports.log = (event, context, callback) =&gt; {
-  console.log(event);
-  callback(null, {});
-};</code></pre>
-<p>重点还在于 <code>serverless.yml</code> 文件中的配置：</p>
-<pre><code>service: aws-node-iot-event
-
-frameworkVersion: &quot;&gt;=1.5.0 &lt;2.0.0&quot;
-
-provider:
-  name: aws
-  runtime: nodejs4.3
-
-functions:
-  log:
-    handler: handler.log
-    events:
-      - iot:
-          sql: &quot;SELECT * FROM &#39;mybutton&#39;&quot;</code></pre>
-<p>在这个 <code>CloudFormation</code> 配置文件中，我们设置了运行配置 nodejs4.3，以及对应的 <code>handler.log</code> 函数 。在 <code>events</code> 里，写了一个 sql 语句来选择 <code>mybutton</code> 的相关内容，即查看 mybutton 相关主题的日志。</p>
-<h2 id="部署-aws-iot-serverless-服务">部署 AWS IoT Serverless 服务</h2>
-<p>依旧的我们只需要执行 <code>serverless deploy</code> 即可：</p>
-<pre><code>.................
-Serverless: Stack update finished...
-Service Information
-service: aws-iot-example
-stage: dev
-region: us-east-1
-stack: aws-iot-example-dev
-api keys:
-  None
-endpoints:
-  None
-functions:
-  log: aws-iot-example-dev-log</code></pre>
-<p>完成部署后， 我们就可以在 AWS Lambda 后台看到我们的相关函数：</p>
-<figure>
-<img src="images/server-side-example.png" alt="Serverless 控制台" /><figcaption>Serverless 控制台</figcaption>
-</figure>
-<p>然后打开 AWS IoT 控制台，进入『测试』，即 MQTT 客户端页面：</p>
-<figure>
-<img src="images/aws-iot-mqtt-test.png" alt="AWS IoT MQTT 测试页面" /><figcaption>AWS IoT MQTT 测试页面</figcaption>
-</figure>
-<p>接着在发布主题里，填入 <code>mybutton</code>，然后输入以下的内容：</p>
-<pre><code>{
-  &quot;message&quot;: &quot;My first IoT event&quot;,
-  &quot;value&quot;: 2
-}</code></pre>
-<p>如下图所示：</p>
-<figure>
-<img src="images/aws-iot-mqtt-test.png" alt="AWS IoT 发布主题" /><figcaption>AWS IoT 发布主题</figcaption>
-</figure>
-<h2 id="查看日志">查看日志</h2>
-<p>然后执行以下的命令，我们就可以查看到对应的日志：</p>
-<pre><code>$ serverless logs --function log</code></pre>
-<p>内容如下所示：</p>
-<pre><code>START RequestId: 76ad40d4-bc84-11e7-885a-6182fb121f8c Version: $LATEST
-2017-10-29 16:37:57.481 (+08:00)    76ad40d4-bc84-11e7-885a-6182fb121f8c    { message: &#39;My first IoT event&#39;, value: 2 }
-END RequestId: 76ad40d4-bc84-11e7-885a-6182fb121f8c
-REPORT RequestId: 76ad40d4-bc84-11e7-885a-6182fb121f8c  Duration: 68.80 ms  Billed Duration: 100 ms     Memory Size: 1024 MB    Max Memory Used: 22 MB</code></pre>
-<p>如果只是测试用途，可以在执行完成后执行 <code>serverless remove</code> 来删除对应的服务，以减少开支。</p>
-<h1 id="serverless-应用开发指南使用-s3-部署静态网站">Serverless 应用开发指南：使用 S3 部署静态网站</h1>
-<p>原文链接：<a href="https://www.phodal.com/blog/serverless-development-guide-use-serverless-finch-deploy-s3-static-html/">Serverless 应用开发指南：使用 S3 部署静态网站</a></p>
-<p>在尝试了使用 Router53 路由到 S3 后，并想试试能否使用 serverless 框架来上传静态内容。在探索官方的 DEMO 后，找到了一个 <code>serverless-finch</code> 插件可以做相应的事情。</p>
-<pre><code>serverless create --template aws-nodejs s3-static-file s3-static-file</code></pre>
-<h2 id="配置-serverless-finch">配置 serverless-finch</h2>
-<p>官网的 <code>serverless-client-s3</code> 已经停止维护了，并推荐使用 <code>serverless-finch</code>。</p>
-<p><code>serverless-finch</code> 的安装方式是：</p>
-<pre><code>npm install --save serverless-finch</code></pre>
-<p>默认的官网生成的项目，并没有 <code>package.json</code> 文件，需要手动执行 <code>npm inti</code>，再安装插件。</p>
-<p>因此修改完后的 <code>package.json</code> 文件如下所示：</p>
-<pre><code>{
-  &quot;name&quot;: &quot;s3-static-file&quot;,
-  &quot;version&quot;: &quot;1.0.0&quot;,
-  &quot;description&quot;: &quot;&quot;,
-  &quot;main&quot;: &quot;index.js&quot;,
-  &quot;scripts&quot;: {
-    &quot;test&quot;: &quot;echo \&quot;Error: no test specified\&quot; &amp;&amp; exit 1&quot;
-  },
-  &quot;author&quot;: &quot;Phodal Huang&quot;,
-  &quot;license&quot;: &quot;MIT&quot;,
-  &quot;dependencies&quot;: {
-    &quot;serverless-finch&quot;: &quot;^1.1.1&quot;
-  }
-}</code></pre>
-<p>在这个时候，我们需要按 serverless 框架的插件要求，添加如下的内容：</p>
-<pre><code>plugins:
-  - serverless-finch</code></pre>
-<p>并配置好我们的 S3 存储桶的名字，最后 <code>serverless.yml</code> 文件的内容如下所示：</p>
-<pre><code>service: s3-static-file
-
-
-plugins:
-  - serverless-finch
-
-provider:
-  name: aws
-  runtime: nodejs6.10
-
-custom:
-  client:
-    bucketName: wdsm.io</code></pre>
-<p>我们配置的 S3 存储桶的名字是: <strong>wdsm.io</strong>，然后其使用 <code>client/dist</code> 文件来放置静态文件。</p>
-<h2 id="静态内容">静态内容</h2>
-<p>如我们的 <code>index.html</code> 文件的路径是： <code>client/dist/index.html</code>，对应的内容是：</p>
-<pre><code>&lt;!DOCTYPE html&gt;
-&lt;html lang=&quot;en&quot;&gt;
-&lt;head&gt;
-    &lt;meta charset=&quot;UTF-8&quot;&gt;
-    &lt;title&gt;WDSM.io&lt;/title&gt;
-&lt;/head&gt;
-&lt;body&gt;
-    &lt;h1&gt;WDSM&lt;/h1&gt;
-&lt;/body&gt;
-&lt;/html&gt;</code></pre>
-<p>最后，执行 <code>serverless client deploy</code> 就可以部署我们的网站。</p>
-<p><code>再次提醒</code>，这次我们用的是 <code>serverless client deploy</code>。</p>
-<p>相应的过程日志如下所示：</p>
-<pre><code>Serverless: Deploying client to stage &quot;dev&quot; in region &quot;us-east-1&quot;...
-Serverless: Bucket wdsm.io exists
-Serverless: Listing objects in bucket wdsm.io...
-Serverless: Deleting all objects from bucket wdsm.io...
-Serverless: Configuring website bucket wdsm.io...
-Serverless: Configuring policy for bucket wdsm.io...
-Serverless: Configuring CORS policy for bucket wdsm.io...
-Serverless: Uploading file error.html to bucket wdsm.io...
-Serverless: If successful this should be deployed at: https://s3.amazonaws.com/wdsm.io/error.html
-Serverless: Uploading file index.html to bucket wdsm.io...
-Serverless: If successful this should be deployed at: https://s3.amazonaws.com/wdsm.io/index.html</code></pre>
-<p>由于配置了 Router53 指向了 S3，因此可以直接访问：<a href="http://wdsm.io/" class="uri">http://wdsm.io/</a> 来看最后的内容。</p>
-<p>并且，对应的删除命令也变成了：<code>serverless client remove</code>。</p>
-<h1 id="serverless-应用开发指南lambda-api-gateway-dynamodb-制作-rest-api">Serverless 应用开发指南：Lambda + API Gateway + DynamoDB 制作 REST API</h1>
+<h1 id="使用-dynamodb-数据库创建-rest-api">使用 DynamoDB 数据库创建 REST API</h1>
 <p>原文链接：<a href="https://www.phodal.com/blog/serverless-developement-gui-lambda-api-gateway-dynamodb-create-restful-services/">Serverless 应用开发指南：Lambda + API Gateway + DynamoDB 制作 REST API</a></p>
 <p>本文将介绍如何用 AWS Lambda + API Gateway + DynamoDB 创建一个 RESTful API 的示例。文中的示例是一个 TODO API 的示例，支持 GET、POST、PUT、DELETE 请求，即常规的 CRUD。</p>
 <p>安装示例项目的命令如下：</p>
@@ -772,7 +860,7 @@ functions:
 <pre><code>curl -X DELETE https://dw5y1epmsj.execute-api.us-east-1.amazonaws.com/dev/todos/1</code></pre>
 <p>对了，没事得删除。。。考虑到我之前的 500 刀的经历，记得：</p>
 <pre><code>serverless remove</code></pre>
-<h1 id="serverless-应用开发指南serverless-express-的-react-服务端渲染">Serverless 应用开发指南：Serverless + Express 的 React 服务端渲染</h1>
+<h1 id="express-react-实现-serverless-的服务端渲染">Express + React 实现 Serverless 的服务端渲染</h1>
 <p>原文链接：<a href="https://www.phodal.com/blog/serverless-development-guide-express-react-build-server-side-rendering/">Serverless 应用开发指南：Serverless + Express 的 React 服务端渲染</a></p>
 <p>我们已经可以用 AWS Lambda 来动态返回 HTML 了。在阅读了一系列的文章后，也发现了 Express 可以在 Lambda 上运行。当我们可以运行 Express 的时候，也意味着，它可以进行服务端渲染，即我们可以做 React 的服务端渲染。</p>
 <p>于是，便有了这篇文章，也有了我创建的第一个 serverless 的项目：<a href="https://github.com/phodal/serverless-react-server-side-render">serverless-react-server-side-render</a>。</p>
@@ -920,180 +1008,7 @@ Serverless: Invoke aws:deploy:finalize</code></pre>
 <p>结果看上去，有点不如我们的预期，显示的内容是『hello world mobile』。不过，至少代表了我们的代码是 work 的。</p>
 <p>从目前的情况来看，仍然有很大的改进空间，如 webpack 版本过低、React 使用的是 15.6.2。但是 it works。</p>
 <p>末了，记得使用 <code>serverless remove</code> 来省点钱。</p>
-<h1 id="serverless-应用开发指南cron-定时执行-lambda-任务">Serverless 应用开发指南：CRON 定时执行 Lambda 任务</h1>
-<p>原文链接：<a href="https://www.phodal.com/blog/serverless-development-guide-cron-scheduled-job/">Serverless 应用开发指南：CRON 定时执行 Lambda 任务</a></p>
-<p>在上一篇文章《<a href="https://www.phodal.com/blog/serverless-development-guide-create-github-hooks/">Serverless 应用开发指南：基于 Serverless 的 GitHub Webhook</a>》里，我们介绍了如何用 Webhook 来触发定时的 Lambda 函数。这种方式与我们平时的 CI（持续集成）服务器相似，而CI（持续集成）服务器除了会监听 PUSH 事件。还会执行一些定时的任务，比如说每日构建出二进制包，用于 RELEASE。</p>
-<p>因此，在这篇文章里，我将简单地介绍一下：如何定时触发 Lambda 任务。</p>
-<h2 id="serverless-定时任务">Serverless 定时任务</h2>
-<p>幸运的是，带着我的想法，我在官网上看到了一个相关的事例。</p>
-<p>于是，让我们安装一下这个服务到本地：</p>
-<pre><code>$ serverless install -u https://github.com/serverless/examples/tree/master/aws-node-scheduled-cron -n scheduled-cron</code></pre>
-<h3 id="rate-表达式">rate 表达式</h3>
-<p>主要的定时代码写在 <code>serverless.yml</code> 文件中，如下所示：</p>
-<pre><code>functions:
-  cron:
-    handler: handler.run
-    events:
-      # Invoke Lambda function every minute
-      - schedule: rate(1 minute)</code></pre>
-<p>AWS 支持两种类型的定时任务 <code>rate</code> 和 <code>cron</code>。</p>
-<p>Rate 表达式在创建计划事件规则时启动，然后按照其定义的计划运行。Rate 表达式有两个必需字段。这些字段用空格分隔。</p>
-<pre><code>rate(value unit)</code></pre>
-<p>相应的值表示如下：</p>
-<ul>
-<li>value，正数（ &gt;0 的数）。</li>
-<li>unit，时间单位。其有效值：minute | minutes | hour | hours | day | days</li>
-</ul>
-<p>因此，上面的代码 <code>rate(1 minute)</code> 表示的是每一分钟执行一次。</p>
-<h3 id="cron-表达式">cron 表达式</h3>
-<p>下面的代码，则使用的是 cron 表达式</p>
-<pre><code>  secondCron:
-    handler: handler.run
-    events:
-      # Invoke Lambda function every 2nd minute from Mon-Fri
-      - schedule: cron(0/2 * ? * MON-FRI *)</code></pre>
-<p>cron 表达式的格式稍微复杂一些。但是它与 Linux 上的 cron 是不太一样的：</p>
-<pre><code>cron(&lt;分钟&gt; &lt;小时&gt; &lt;日期&gt; &lt;月份&gt; &lt;星期&gt; &lt;年代&gt;)</code></pre>
-<p>对应于下表：</p>
-<table>
-<thead>
-<tr class="header">
-<th>字段</th>
-<th style="text-align: center;">值</th>
-<th style="text-align: center;">通配符</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>分钟</td>
-<td style="text-align: center;">0-59</td>
-<td style="text-align: center;">, - * /</td>
-</tr>
-<tr class="even">
-<td>小时</td>
-<td style="text-align: center;">0-23</td>
-<td style="text-align: center;">, - * /</td>
-</tr>
-<tr class="odd">
-<td>日期</td>
-<td style="text-align: center;">1-31</td>
-<td style="text-align: center;">, - * ? / L W</td>
-</tr>
-<tr class="even">
-<td>月</td>
-<td style="text-align: center;">1-12 or JAN-DEC</td>
-<td style="text-align: center;">, - * /</td>
-</tr>
-<tr class="odd">
-<td>星期几</td>
-<td style="text-align: center;">1-7 or SUN-SAT</td>
-<td style="text-align: center;">, - * ? / L #</td>
-</tr>
-<tr class="even">
-<td>年代</td>
-<td style="text-align: center;">1970-2199</td>
-<td style="text-align: center;">, - * /</td>
-</tr>
-</tbody>
-</table>
-<p>更详细的信息，可以阅读官方的文档：<a href="http://docs.aws.amazon.com/zh_cn/AmazonCloudWatch/latest/events/ScheduledEvents.html">规则的计划表达式</a>。</p>
-<p>于是，上面的表达式，每星期一到星期五（MON-FRI），每 2 分钟运行一次。</p>
-<h2 id="部署">部署</h2>
-<p>接下来，让我们部署代码试试：</p>
-<pre><code>$ serverless deploy</code></pre>
-<p>相应的部署过程日志如下：</p>
-<pre><code>...............
-Serverless: Stack update finished...
-Service Information
-service: scheduled-cron
-stage: dev
-region: us-east-1
-stack: scheduled-cron-dev
-api keys:
-  None
-endpoints:
-  None
-functions:
-  cron: scheduled-cron-dev-cron
-  secondCron: scheduled-cron-dev-secondCron</code></pre>
-<p>然后，让我们看看日志：</p>
-<pre><code>$ serverless logs -f  cron -t</code></pre>
-<p>对应的日志如下：</p>
-<pre><code>2017-11-01 16:41:14.112 (+08:00)  6b33ad33-bee0-11e7-9439-23daa7bb59a8  Your cron function &quot;scheduled-cron-dev-cron&quot; ran at Wed Nov 01 2017 08:41:14 GMT+0000 (UTC)
-END RequestId: 6b33ad33-bee0-11e7-9439-23daa7bb59a8
-REPORT RequestId: 6b33ad33-bee0-11e7-9439-23daa7bb59a8  Duration: 0.86 ms Billed Duration: 100 ms   Memory Size: 1024 MB  Max Memory Used: 20 MB
-
-START RequestId: 8ea1a80f-bee0-11e7-a0c9-331175998dc2 Version: $LATEST
-2017-11-01 16:42:13.724 (+08:00)  8ea1a80f-bee0-11e7-a0c9-331175998dc2  Your cron function &quot;scheduled-cron-dev-cron&quot; ran at Wed Nov 01 2017 08:42:13 GMT+0000 (UTC)
-END RequestId: 8ea1a80f-bee0-11e7-a0c9-331175998dc2
-REPORT RequestId: 8ea1a80f-bee0-11e7-a0c9-331175998dc2  Duration: 4.08 ms Billed Duration: 100 ms   Memory Size: 1024 MB  Max Memory Used: 20 MB</code></pre>
-<p>这表明我们的程序，正在以每分钟的状态运行着。</p>
-<p>当我们想做一个 Serverless 的爬虫定期执行某个任务，这样做可以帮我们节省大量的成本。</p>
-<p>末了，记得执行：</p>
-<pre><code>$ serverless remove</code></pre>
-<h1 id="serverless-应用开发指南-api-gateway-与-route53-自定义域名">Serverless 应用开发指南： API Gateway 与 Route53 自定义域名</h1>
-<p>原文链接：<a href="https://www.phodal.com/blog/serverless-development-guide-api-gateway-and-route53-custom-domain/">Serverless 应用开发指南： API Gateway 与 Route53 自定义域名</a></p>
-<p>在测试使用 Serverless + Node-wechat 制作微信公众号后台的时候，发现微信不能直接使用 API Gateway 的 API 地址。于是，就需要使用自己的域名。</p>
-<p>首先，在 Route 53 上注册有域名，如果没有的话，需要转到 Route 53。</p>
-<p>然后，在后台为你的域名请求一个证书。</p>
-<p>需要注意的是：选择的区域是 <code>us-east-1</code>，这个 region 才能与 API Gateway 一起工作。</p>
-<p>在这个过程中，需要验证域名的所有权。所以，你需要先找个地方注册域名邮箱，如我使用的是网易的域名邮箱。</p>
-<h2 id="serveress-domain-manager">Serveress Domain Manager</h2>
-<p>在这里我们要用到 serverless-domain-manager 插件：</p>
-<pre><code>$ yarn add --dev serverless-domain-manager</code></pre>
-<p>或者</p>
-<pre><code>$ npm install serverless-domain-manager --save-dev</code></pre>
-<p>将这个插件配置好 serverless.yml 文件中：</p>
-<pre><code>plugins:
-  - serverless-domain-manager
-
-custom:
-  customDomain:
-    domainName: wechat.wdsm.io
-    basePath: &#39;&#39;
-    stage: ${self:provider.stage}
-    createRoute53Record: true</code></pre>
-<p>然后执行创建域名：</p>
-<pre><code>serverless create_domain</code></pre>
-<p>相应的日志如下：</p>
-<pre><code>Serverless: Domain was created, may take up to 40 mins to be initialized.</code></pre>
-<p>可以使用 AWS CLI 查看日志的创建状态：</p>
-<pre><code>$ aws apigateway get-domain-names
-
-{
-    &quot;items&quot;: [
-        {
-            &quot;certificateArn&quot;: &quot;arn:aws:acm:us-east-1:706605665335:certificate/278c252a-7aaf-41df-bcf1-adc279347557&quot;,
-            &quot;distributionDomainName&quot;: &quot;d1pp7oijqquj95.cloudfront.net&quot;,
-            &quot;certificateUploadDate&quot;: 1509592737,
-            &quot;domainName&quot;: &quot;wechat.wdsm.io&quot;
-        }
-    ]
-}</code></pre>
-<p>然后就可以执行部署了：</p>
-<pre><code>serverless deploy</code></pre>
-<p>日志如下：</p>
-<pre><code>....................................
-Serverless: Stack update finished...
-Service Information
-service: serverless-wechat
-stage: dev
-region: us-east-1
-stack: serverless-wechat-dev
-api keys:
-  None
-endpoints:
-  ANY - https://e8tct5f0v2.execute-api.us-east-1.amazonaws.com/dev
-  ANY - https://e8tct5f0v2.execute-api.us-east-1.amazonaws.com/dev/{proxy+}
-functions:
-  runserver: serverless-wechat-dev-runserver
-Serverless Domain Manager Summary
-Domain Name
-  wechat.wdsm.io
-Distribution Domain Name
-  d1pp7oijqquj95.cloudfront.net</code></pre>
-<p>现在，你就可以使用自己定义的域名来访问了 API Gateway 了。</p>
-<h1 id="serverless-应用开发指南基于-serverless-与-lambda-的微信公共平台">Serverless 应用开发指南：基于 Serverless 与 Lambda 的微信公共平台</h1>
+<h1 id="serverless-的微信公共平台">Serverless 的微信公共平台</h1>
 <p>原文链接：<a href="https://www.phodal.com/blog/serverless-development-guide-serverless-lambda-wechat-public-platform/">Serverless 应用开发指南：基于 Serverless 与 Lambda 的微信公共平台</a></p>
 <p>Serverless 在事件驱动方面具有天然的优势，其中之一就是聊天机器人。可要做聊天机器人不是一件容易的事，微信和 QQ 都只能用 Hack 的方式进行。</p>
 <p>于是，便想到微信公众号是不是一个更好的选择。当用户输入一个关键词时，做出相应的回复。总体上来说，他们之间是差不多的。这个时候，就可以开始尝试一个在线上运行的 Serverless 服务。</p>
@@ -1235,7 +1150,7 @@ custom:
   }
 });</code></pre>
 <p>最后代码见：<a href="https://github.com/phodal/mp/blob/master/index.js" class="uri">https://github.com/phodal/mp/blob/master/index.js</a></p>
-<h2 id="部署-1">部署</h2>
+<h2 id="部署">部署</h2>
 <p>最后，让我们愉快地执行 <code>serverless deploy</code>，对应的日志如下：</p>
 <pre><code>stack: serverless-wechat-dev
 api keys:
@@ -1262,7 +1177,7 @@ Distribution Domain Name
 <figure>
 <img src="images/phodal-wechat.jpg" alt="微信" /><figcaption>微信</figcaption>
 </figure>
-<h1 id="serverless-应用开发指南基于-kinesis-streams-的数据流分析上">Serverless 应用开发指南：基于 Kinesis Streams 的数据流分析（上）</h1>
+<h1 id="基于-kinesis-streams-的数据流分析">基于 Kinesis Streams 的数据流分析</h1>
 <p>Serverless 适合用于事件驱动型应用，以及定时任务。今天，让我们来看看一个事件驱动的例子。</p>
 <p>在之前的那篇《<a href="https://www.phodal.com/blog/serverless-development-guide-cron-scheduled-job/">Serverless 应用开发指南：CRON 定时执行 Lambda 任务</a>》中，我们介绍了如何调度的示例。</p>
 <p>最初我想的是通过 Lambda + DynamoDB 来自定义数据格式，后来发现使用 Kinesis Streams 是一种更简单的方案。</p>
@@ -1272,7 +1187,145 @@ Distribution Domain Name
 <p>借助 Amazon Kinesis Streams，您可以构建用于处理或分析流数据的自定义应用程序，以满足特定需求。Kinesis Streams 每小时可从数十万种来源 (如网站点击流、财务交易、社交媒体源、IT 日志和定位追踪事件) 中持续捕获和存储数 TB 数据。借助 Kinesis Client Library (KCL)，您可以构建 Amazon Kinesis 应用程序，并能使用流数据为实时控制面板提供强力支持、生成警报、实施动态定价和广告等等。您还可以将数据从 Kinesis Streams 发送到其他 AWS 服务中，如 Amazon Simple Storage Service (Amazon S3)、Amazon Redshift、Amazon EMR 和 AWS Lambda。</p>
 </blockquote>
 <p>简单的来说，用于收集日志事件数据的功能，还可以用于实时数据分析。</p>
-<h1 id="serverless-应用开发指南使用-ses-创建邮件发送接口">Serverless 应用开发指南：使用 SES 创建邮件发送接口</h1>
+<h2 id="serverless-kinesis-streams">Serverless + Kinesis Streams</h2>
+<p>最初我试用了 GitHub 上的<a href="https://github.com/pmuens/serverless-kinesis-streams">serverless-kinesis-streams</a>，然后发现它并不会自动创建 Kinesis Streams 服务，于是便自己创建了一个：</p>
+<pre><code>serverless install -u https://github.com/phodal/serverless-guide/tree/master/kinesis-streams -n kinesis-streams                                10:14:50
+Serverless: Downloading and installing &quot;serverless-kinesis-streams&quot;...
+central entry: serverless-kinesis-streams-master/
+central entry: serverless-kinesis-streams-master/README.md
+central entry: serverless-kinesis-streams-master/event.json
+central entry: serverless-kinesis-streams-master/handler.js
+central entry: serverless-kinesis-streams-master/package.json
+central entry: serverless-kinesis-streams-master/serverless.yml
+Serverless: Successfully installed &quot;serverless-kinesis-streams&quot; as &quot;kinesis-streams&quot;</code></pre>
+<p>然后执行：</p>
+<pre><code>yarn install</code></pre>
+<p>就可以直接部署了：</p>
+<pre><code>Serverless: Packaging service...
+Serverless: Excluding development dependencies...
+Serverless: Uploading CloudFormation file to S3...
+Serverless: Uploading artifacts...
+Serverless: Uploading service .zip file to S3 (19.75 KB)...
+Serverless: Validating template...
+Serverless: Updating Stack...
+Serverless: Checking Stack update progress...
+..............................
+Serverless: Stack update finished...
+Service Information
+service: kinesis-streams
+stage: dev
+region: us-east-1
+stack: kinesis-streams-dev
+api keys:
+  None
+endpoints:
+  None
+functions:
+  dataReceiver: kinesis-streams-dev-dataReceiver
+  logger: kinesis-streams-dev-logger
+Serverless: Removing old service versions...</code></pre>
+<p>完成后，就可以测试一下了。</p>
+<pre><code>$ serverless invoke --function dataReceiver --path event.json                                                                
+
+11:30:48
+{
+    &quot;message&quot;: &quot;Data successfully written to Kinesis stream \&quot;data-receiver\&quot;&quot;
+}</code></pre>
+<p>然后，通过相应的日志，我们就可以看到数据流向了：Kinesis stream</p>
+<pre><code>$ serverless logs --function logger                                                                                          
+
+11:31:41
+START RequestId: 3776bac6-612f-45dd-a8ac-156007f8e49b Version: $LATEST
+2017-11-04 11:30:53.382 (+08:00)  3776bac6-612f-45dd-a8ac-156007f8e49b  The following data was written to the Kinesis stream &quot;data-receiver&quot;:
+{
+  &quot;kinesisSchemaVersion&quot;: &quot;1.0&quot;,
+  &quot;partitionKey&quot;: &quot;8e35d6a0-c110-11e7-90ae-59fa1aa30da7&quot;,
+  &quot;sequenceNumber&quot;: &quot;49578559262872379484471662829472308063624661238972153858&quot;,
+  &quot;data&quot;: &quot;U29tZSBleGFtcGxlIGRhdGE=&quot;,
+  &quot;approximateArrivalTimestamp&quot;: 1509766251.753
+}
+END RequestId: 3776bac6-612f-45dd-a8ac-156007f8e49b
+REPORT RequestId: 3776bac6-612f-45dd-a8ac-156007f8e49b  Duration: 72.07 ms  Billed Duration: 100 ms   Memory Size: 128 MB Max Memory Used: 33 MB</code></pre>
+<p>但是光把数据流向 Kinesis stream ，并没有什么用，我们需要对数据进行处理。比如说，直接将数据存储到 S3，或者是 DynamoDB。</p>
+<p>So，请期待我们的下一篇文章。</p>
+<h1 id="serverless-数据分析kinesis-firehose-持久化数据到-s3">Serverless 数据分析，Kinesis Firehose 持久化数据到 S3</h1>
+<p>based on:<a href="https://github.com/pmuens/serverless-kinesis-streams">serverless-kinesis-streams</a>, but auto create Kinesis streams</p>
+<p>在尝试了使用 Kinesis Stream 处理数据之后，我发现它并不能做什么。接着，便开始找寻其它方式，其中一个就是：Amazon Kinesis Firehose</p>
+<blockquote>
+<p>Amazon Kinesis Firehose 是将流数据加载到 AWS 的最简单方式。它可以捕捉、转换流数据并将其加载到 Amazon Kinesis Analytics、Amazon S3、Amazon Redshift 和 Amazon Elasticsearch Service，让您可以利用正在使用的现有商业智能工具和仪表板进行近乎实时的分析。这是一项完全托管的服务，可以自动扩展以匹配数据吞吐量，并且无需持续管理。它还可以在加载数据前对其进行批处理、压缩和加密，从而最大程度地减少目的地使用的存储量，同时提高安全性。</p>
+</blockquote>
+<h2 id="serverless-kinesis-firehose-代码">Serverless Kinesis Firehose 代码</h2>
+<p>总的来说，Kinesis Firehose 的 Lambda 代码与 Kinesis 是差不多的。</p>
+<pre><code>module.exports.receiver = (event, context, callback) =&gt; {
+  const data = event.data;
+  const firehose = new AWS.Firehose();
+
+  const params = {
+    Record: {
+      Data: data
+    },
+    DeliveryStreamName: &#39;serverless-firehose&#39;
+  };
+
+  return firehose.putRecord(params, (error, data) =&gt; {
+    ...
+};</code></pre>
+<p>以下则是 Kinesis Stream 的代码：</p>
+<pre><code>module.exports.dataReceiver = (event, context, callback) =&gt; {
+  const data = event.data;
+  const kinesis = new AWS.Kinesis();
+  const partitionKey = uuid.v1();
+
+  const params = {
+    Data: data,
+    PartitionKey: partitionKey,
+    StreamName: &#39;kinesis-streams-stream&#39;
+  };
+
+  return kinesis.putRecord(params, (error, data) =&gt; {
+    ...
+  });
+};</code></pre>
+<p>两个 Lambda 函数之间，最大的区别就是在于 new 出来的对象不一样，并且这个对象的参数也是不一样的。</p>
+<p>但是他们的配置来说，可能相差甚远。并且，实际上将数据存到 S3 的工作，主要是由 <code>serverless.yml</code> 文件来控制 的：</p>
+<pre><code>ServerlessKinesisFirehoseBucket:
+  Type: AWS::S3::Bucket
+  DeletionPolicy: Retain
+  Properties:
+    BucketName: serverless-firehose-bucket
+ServerlessKinesisFirehose:
+  Type: AWS::KinesisFirehose::DeliveryStream
+  Properties:
+    DeliveryStreamName: serverless-firehose
+    S3DestinationConfiguration:
+      BucketARN:
+        Fn::Join:
+        - &#39;&#39;
+        - - &#39;arn:aws:s3:::&#39;
+          - Ref: ServerlessKinesisFirehoseBucket
+      BufferingHints:
+        IntervalInSeconds: &quot;60&quot;
+        SizeInMBs: &quot;1&quot;
+      CompressionFormat: &quot;UNCOMPRESSED&quot;
+      Prefix: &quot;raw/&quot;
+      RoleARN: { Fn::GetAtt: [ FirehoseToS3Role, Arn ] }</code></pre>
+<p>在配置文件中，我们定义了要交付的 Stream 的名字，以及对应用来存储数据的 S3 Bucket 名称。</p>
+<h2 id="安装及测试">安装及测试</h2>
+<p>好了，现在不妨直接试试相关的代码。</p>
+<p>1.安装我们的服务</p>
+<pre><code>npm install -u https://github.com/phodal/serverless-guide/tree/master/kinesis-streams -n kinesis-streams</code></pre>
+<p>2.然后：</p>
+<pre><code>npm install</code></pre>
+<p>3.紧接着部署：</p>
+<pre><code>serverless deploy</code></pre>
+<p>4.触发我们的函数：</p>
+<pre><code>serverless invoke --function receiver --path event.json</code></pre>
+<p>便会在我们的 S3 中生成对应的数据文件：</p>
+<figure>
+<img src="images/firehose-s3.png" alt="Firehose" /><figcaption>Firehose</figcaption>
+</figure>
+<p>由于这里的数据太少，就没有用 Kinesis Analytics 进行分析了。</p>
+<h1 id="创建邮件发送-api">创建邮件发送 API</h1>
 <p>当你有一个不成熟的 Idea 时，作为一个受精益思想影响的开发者，那么你可能会学习 Dropbox 创建一个 Landing Page 来验证你的想法。如下图所示：</p>
 <figure>
 <img src="images/launch-page.jpg" alt="Launch Page" /><figcaption>Launch Page</figcaption>
@@ -1386,271 +1439,46 @@ module.exports.sendMail = (event, context, callback) =&gt; {
 <p>于是便登录 SNS，新增了一个验证邮箱。</p>
 <p>试了 gmszone@qq.com 、网易邮箱都不行，最后用了 Google 的。</p>
 <p>最后，终于可以接收到邮件了。</p>
-<h2 id="serverless-kinesis-streams">Serverless + Kinesis Streams</h2>
-<p>最初我试用了 GitHub 上的<a href="https://github.com/pmuens/serverless-kinesis-streams">serverless-kinesis-streams</a>，然后发现它并不会自动创建 Kinesis Streams 服务，于是便自己创建了一个：</p>
-<pre><code>serverless install -u https://github.com/phodal/serverless-guide/tree/master/kinesis-streams -n kinesis-streams                                10:14:50
-Serverless: Downloading and installing &quot;serverless-kinesis-streams&quot;...
-central entry: serverless-kinesis-streams-master/
-central entry: serverless-kinesis-streams-master/README.md
-central entry: serverless-kinesis-streams-master/event.json
-central entry: serverless-kinesis-streams-master/handler.js
-central entry: serverless-kinesis-streams-master/package.json
-central entry: serverless-kinesis-streams-master/serverless.yml
-Serverless: Successfully installed &quot;serverless-kinesis-streams&quot; as &quot;kinesis-streams&quot;</code></pre>
-<p>然后执行：</p>
-<pre><code>yarn install</code></pre>
-<p>就可以直接部署了：</p>
-<pre><code>Serverless: Packaging service...
-Serverless: Excluding development dependencies...
-Serverless: Uploading CloudFormation file to S3...
-Serverless: Uploading artifacts...
-Serverless: Uploading service .zip file to S3 (19.75 KB)...
-Serverless: Validating template...
-Serverless: Updating Stack...
-Serverless: Checking Stack update progress...
-..............................
-Serverless: Stack update finished...
-Service Information
-service: kinesis-streams
-stage: dev
-region: us-east-1
-stack: kinesis-streams-dev
-api keys:
-  None
-endpoints:
-  None
-functions:
-  dataReceiver: kinesis-streams-dev-dataReceiver
-  logger: kinesis-streams-dev-logger
-Serverless: Removing old service versions...</code></pre>
-<p>完成后，就可以测试一下了。</p>
-<pre><code>$ serverless invoke --function dataReceiver --path event.json                                                                
-
-11:30:48
-{
-    &quot;message&quot;: &quot;Data successfully written to Kinesis stream \&quot;data-receiver\&quot;&quot;
-}</code></pre>
-<p>然后，通过相应的日志，我们就可以看到数据流向了：Kinesis stream</p>
-<pre><code>$ serverless logs --function logger                                                                                          
-
-11:31:41
-START RequestId: 3776bac6-612f-45dd-a8ac-156007f8e49b Version: $LATEST
-2017-11-04 11:30:53.382 (+08:00)  3776bac6-612f-45dd-a8ac-156007f8e49b  The following data was written to the Kinesis stream &quot;data-receiver&quot;:
-{
-  &quot;kinesisSchemaVersion&quot;: &quot;1.0&quot;,
-  &quot;partitionKey&quot;: &quot;8e35d6a0-c110-11e7-90ae-59fa1aa30da7&quot;,
-  &quot;sequenceNumber&quot;: &quot;49578559262872379484471662829472308063624661238972153858&quot;,
-  &quot;data&quot;: &quot;U29tZSBleGFtcGxlIGRhdGE=&quot;,
-  &quot;approximateArrivalTimestamp&quot;: 1509766251.753
-}
-END RequestId: 3776bac6-612f-45dd-a8ac-156007f8e49b
-REPORT RequestId: 3776bac6-612f-45dd-a8ac-156007f8e49b  Duration: 72.07 ms  Billed Duration: 100 ms   Memory Size: 128 MB Max Memory Used: 33 MB</code></pre>
-<p>但是光把数据流向 Kinesis stream ，并没有什么用，我们需要对数据进行处理。比如说，直接将数据存储到 S3，或者是 DynamoDB。</p>
-<p>So，请期待我们的下一篇文章。</p>
-<h1 id="serverless-kinesis-firehose-持久化数据到-s3">Serverless Kinesis Firehose 持久化数据到 S3</h1>
-<p>based on:<a href="https://github.com/pmuens/serverless-kinesis-streams">serverless-kinesis-streams</a>, but auto create Kinesis streams</p>
-<p>在尝试了使用 Kinesis Stream 处理数据之后，我发现它并不能做什么。接着，便开始找寻其它方式，其中一个就是：Amazon Kinesis Firehose</p>
-<blockquote>
-<p>Amazon Kinesis Firehose 是将流数据加载到 AWS 的最简单方式。它可以捕捉、转换流数据并将其加载到 Amazon Kinesis Analytics、Amazon S3、Amazon Redshift 和 Amazon Elasticsearch Service，让您可以利用正在使用的现有商业智能工具和仪表板进行近乎实时的分析。这是一项完全托管的服务，可以自动扩展以匹配数据吞吐量，并且无需持续管理。它还可以在加载数据前对其进行批处理、压缩和加密，从而最大程度地减少目的地使用的存储量，同时提高安全性。</p>
-</blockquote>
-<h2 id="serverless-kinesis-firehose-代码">Serverless Kinesis Firehose 代码</h2>
-<p>总的来说，Kinesis Firehose 的 Lambda 代码与 Kinesis 是差不多的。</p>
-<pre><code>module.exports.receiver = (event, context, callback) =&gt; {
-  const data = event.data;
-  const firehose = new AWS.Firehose();
-
-  const params = {
-    Record: {
-      Data: data
-    },
-    DeliveryStreamName: &#39;serverless-firehose&#39;
-  };
-
-  return firehose.putRecord(params, (error, data) =&gt; {
-    ...
-};</code></pre>
-<p>以下则是 Kinesis Stream 的代码：</p>
-<pre><code>module.exports.dataReceiver = (event, context, callback) =&gt; {
-  const data = event.data;
-  const kinesis = new AWS.Kinesis();
-  const partitionKey = uuid.v1();
-
-  const params = {
-    Data: data,
-    PartitionKey: partitionKey,
-    StreamName: &#39;kinesis-streams-stream&#39;
-  };
-
-  return kinesis.putRecord(params, (error, data) =&gt; {
-    ...
-  });
-};</code></pre>
-<p>两个 Lambda 函数之间，最大的区别就是在于 new 出来的对象不一样，并且这个对象的参数也是不一样的。</p>
-<p>但是他们的配置来说，可能相差甚远。并且，实际上将数据存到 S3 的工作，主要是由 <code>serverless.yml</code> 文件来控制 的：</p>
-<pre><code>ServerlessKinesisFirehoseBucket:
-  Type: AWS::S3::Bucket
-  DeletionPolicy: Retain
-  Properties:
-    BucketName: serverless-firehose-bucket
-ServerlessKinesisFirehose:
-  Type: AWS::KinesisFirehose::DeliveryStream
-  Properties:
-    DeliveryStreamName: serverless-firehose
-    S3DestinationConfiguration:
-      BucketARN:
-        Fn::Join:
-        - &#39;&#39;
-        - - &#39;arn:aws:s3:::&#39;
-          - Ref: ServerlessKinesisFirehoseBucket
-      BufferingHints:
-        IntervalInSeconds: &quot;60&quot;
-        SizeInMBs: &quot;1&quot;
-      CompressionFormat: &quot;UNCOMPRESSED&quot;
-      Prefix: &quot;raw/&quot;
-      RoleARN: { Fn::GetAtt: [ FirehoseToS3Role, Arn ] }</code></pre>
-<p>在配置文件中，我们定义了要交付的 Stream 的名字，以及对应用来存储数据的 S3 Bucket 名称。</p>
-<h2 id="安装及测试">安装及测试</h2>
-<p>好了，现在不妨直接试试相关的代码。</p>
-<p>1.安装我们的服务</p>
-<pre><code>npm install -u https://github.com/phodal/serverless-guide/tree/master/kinesis-streams -n kinesis-streams</code></pre>
-<p>2.然后：</p>
-<pre><code>npm install</code></pre>
-<p>3.紧接着部署：</p>
-<pre><code>serverless deploy</code></pre>
-<p>4.触发我们的函数：</p>
-<pre><code>serverless invoke --function receiver --path event.json</code></pre>
-<p>便会在我们的 S3 中生成对应的数据文件：</p>
-<figure>
-<img src="images/firehose-s3.png" alt="Firehose" /><figcaption>Firehose</figcaption>
-</figure>
-<p>由于这里的数据太少，就没有用 Kinesis Analytics 进行分析了。</p>
-<h1 id="serverless-架构应用开发使用-serverless-offline-在本地部署与调试">Serverless 架构应用开发：使用 serverless-offline 在本地部署与调试</h1>
-<p>在这几周的 Serverless 应用开发里，我觉得最大的不便就是，缺少一个本地的调试环境。在这种时候，我们需要不断地部署我们的代码，不断地在我们的代码里写上几行 <code>console.log</code>，然后在一切正常之后，再把这些 <code>console.log</code> 删除。</p>
-<p>可要是，突然间又出现了一个 bug，我仿佛看到了我们又要重来一遍。</p>
-<p>就这样经历了几次之后，我便想尝试一些新的手段，比如 <code>serverless-offline</code>。</p>
-<h2 id="serverless-offline">serverless-offline</h2>
-<p>serverless-offline 是一个 Serverless Framework 的插件，它可以在本地的机器上模拟 AWS Lamdba 和 API Gateway，以加快开发者的开发周期。为此，它启动一个处理请求生命周期的 HTTP 服务器，就像 APIG 一样，并调用你的处理程序。</p>
-<p>及包含以下的特性：</p>
+<h1 id="创建自己的-serverless-短链服务">创建自己的 Serverless 短链服务</h1>
+<p>在想用 Serverless 可以做点什么简单的在线应用后，我想到了一个是在线短链生成服务。最后的结果见：<a href="http://x.pho.im/" class="uri">http://x.pho.im/</a>，一个非常简单的在线应用。</p>
+<p>这里的代码基于：<a href="https://github.com/vannio/serverless-shrink" class="uri">https://github.com/vannio/serverless-shrink</a>。</p>
+<p>因为上面的代码中，不能自动创建域名。然后，再针对数据库进行了一些优化。</p>
+<h2 id="代码逻辑">代码逻辑</h2>
+<p>这里的代码逻辑比如简单：</p>
 <ul>
-<li>仅支持 Node.js 下的 Lambda 函数</li>
-<li>支持 Velocity 模板</li>
-<li>延迟加载你的、需要缓存失效文件：而不需要重载工具，如Nodemon。</li>
-<li>以及，集成，授权人，代理，超时，responseParameters，HTTPS，Babel 运行时环境，CORS 等…</li>
+<li>创建短链时，使用生成一个四位的字符串</li>
+<li>将原有的 URL 和生成的 URL 存储到 DynamoDB 中</li>
+<li>在返回的 HTML 中，输出对应的 URL</li>
+<li>重定向时，从 DynamoDB 读取对应的短链</li>
+<li>如果短链存在，则执行 302 重定向；如果不存在，则返回一个 404。</li>
 </ul>
-<p>那么，让我们看看如何做到这一点。</p>
-<h2 id="本地搭建-serverless-offline-与-dynamodb-环境">本地搭建 serverless-offline 与 DynamoDB 环境</h2>
-<p>这次我们将基于之前的文章《<a href="https://www.phodal.com/blog/serverless-developement-gui-lambda-api-gateway-dynamodb-create-restful-services/">Serverless 应用开发指南：Lambda + API Gateway + DynamoDB 制作 REST API</a>》中的 todolist，来开始我们的调试之旅。</p>
-<p>在之前的示例里，我们使用了 DynamoDB 来存储数据。在这篇文章里，我们也将介绍 <code>serverless-dynamodb-local</code> 来在本地运行 DynamoDB。</p>
-<p>在那之前，如果你还没有之前的代码，请先安装服务到本地：</p>
-<pre><code>npm install -u https://github.com/phodal/serverless-guide/tree/master/aws-node-rest-api-with-dynamodb -n dynamodb-offline</code></pre>
-<p>然后，在我们的项目里安装 <code>serverless-offline</code> 插件：</p>
-<pre><code>yarn add --dev serverless-offline</code></pre>
-<p>并安装 <code>serverless-dynamodb-local</code> 插件：</p>
-<pre><code>yarn add --dev serverless-dynamodb-local</code></pre>
-<p>然后，在 <code>serverless.yml</code> 中添加相应的插件：</p>
-<pre><code>plugins:
-  - serverless-offline
-  - serverless-dynamodb-local</code></pre>
-<p>紧接着，还需要进行相应的 dynamodb 配置：</p>
-<pre><code>custom:
-  dynamodb:
-    start:
-      port: 8000
-      inMemory: true
-      migrate: true
-    migration:
-      dir: offline/migrations</code></pre>
-<p>其中的 migration 对应的是本地的 Scheme，位于 <code>offline/migrations/todos.json</code>，内容如下：</p>
-<pre><code>{
-    &quot;Table&quot;: {
-        &quot;TableName&quot;: &quot;serverless-rest-api-with-dynamodb-dev&quot;,
-        &quot;KeySchema&quot;: [
-            {
-                &quot;AttributeName&quot;: &quot;id&quot;,
-                &quot;KeyType&quot;: &quot;HASH&quot;
-            }
-        ],
-        &quot;AttributeDefinitions&quot;: [
-            {
-                &quot;AttributeName&quot;: &quot;id&quot;,
-                &quot;AttributeType&quot;: &quot;S&quot;
-            }
-        ],
-        &quot;ProvisionedThroughput&quot;: {
-            &quot;ReadCapacityUnits&quot;: 1,
-            &quot;WriteCapacityUnits&quot;: 1
-        }
+<h3 id="创建首页">创建首页</h3>
+<p>首页只是一个简单的 HTML 表单：</p>
+<pre><code>const base_page = `&lt;html&gt;
+&lt;h1&gt;Hi!&lt;/h1&gt;
+  &lt;form method=&quot;POST&quot; action=&quot;&quot;&gt;
+    &lt;label for=&quot;uri&quot;&gt;Link:&lt;/label&gt;
+    &lt;input type=&quot;text&quot; id=&quot;link&quot; name=&quot;link&quot; size=&quot;40&quot; autofocus /&gt;
+    &lt;br/&gt;
+    &lt;br/&gt;
+    &lt;input type=&quot;submit&quot; value=&quot;Shorten it!&quot; /&gt;
+  &lt;/form&gt;
+&lt;/html&gt;`
+
+module.exports.handler = (event, context, callback) =&gt; {
+  console.log(JSON.stringify(event));
+
+  callback(
+    null,
+    {
+      statusCode: 200,
+      body: base_page,
+      headers: {&#39;Content-Type&#39;: &#39;text/html&#39;},
     }
+  );
 }</code></pre>
-<p>然后，执行：</p>
-<pre><code>serverless dynamodb install</code></pre>
-<p>以安装 DynamnoDB 的本地版本。</p>
-<p>一切准备妥当了，我们可以进行测试了。</p>
-<h2 id="本地测试-serverless-offline-与-dynamodb">本地测试 serverless-offline 与 DynamoDB</h2>
-<p>接着，让我们用下面的命令，来运行起本地的环境：</p>
-<pre><code>$ serverless offline start
-
-Dynamodb Local Started, Visit: http://localhost:8000/shell
-Serverless: DynamoDB - created table serverless-rest-api-with-dynamodb-dev
-Serverless: Starting Offline: dev/us-east-1.
-
-Serverless: Routes for create:
-Serverless: POST /todos
-
-Serverless: Routes for list:
-Serverless: GET /todos
-
-Serverless: Routes for get:
-Serverless: GET /todos/{id}
-
-Serverless: Routes for update:
-Serverless: PUT /todos/{id}
-
-Serverless: Routes for delete:
-Serverless: DELETE /todos/{id}
-
-Serverless: Offline listening on http://localhost:3000</code></pre>
-<p>启动的时候，发现直接报错了：</p>
-<pre><code>  message: &#39;Missing region in config&#39;,
-  code: &#39;ConfigError&#39;,
-  time: 2017-11-07T01:18:45.365Z }</code></pre>
-<p>对比了官方的示例代码后，发现没有对本地调用的 DynamoDB 进行处理：</p>
-<p>让我们，新增一个 <code>todos/dynamodb.js</code> 文件：</p>
-<pre><code>&#39;use strict&#39;;
-
-const AWS = require(&#39;aws-sdk&#39;); // eslint-disable-line import/no-extraneous-dependencies
-
-let options = {};
-
-// connect to local DB if running offline
-if (process.env.IS_OFFLINE) {
-  options = {
-    region: &#39;localhost&#39;,
-    endpoint: &#39;http://localhost:8000&#39;,
-  };
-}
-
-const client = new AWS.DynamoDB.DocumentClient(options);
-
-module.exports = client;</code></pre>
-<p>当我们在本地运行的时候，将使用本地的 DynamoDB，当在服务端运行的时候，则会调用真正的 DynamoDB。</p>
-<p>再去修改 <code>create.js</code>、<code>delete.js</code>、<code>get.js</code>、<code>list.js</code> 和 <code>update.js</code> 中的：</p>
-<pre><code>const dynamoDb = new AWS.DynamoDB.DocumentClient();</code></pre>
-<p>改为</p>
-<pre><code>const dynamoDb = require(&#39;./dynamodb&#39;);</code></pre>
-<p>确认一切无误后，我们就可以使用 postman 测试：</p>
-<figure>
-<img src="images/postman-offline-db.png" alt="PostMan 测试 Serverless Offline" /><figcaption>PostMan 测试 Serverless Offline</figcaption>
-</figure>
-<p>或者 curl：</p>
-<pre><code>curl -X POST -H &quot;Content-Type:application/json&quot; http://localhost:3000/todos --data &#39;{ &quot;text&quot;: &quot;Learn Serverless&quot; }&#39;</code></pre>
-<p>接着打开本地的 todos 地址：</p>
-<pre><code>http://localhost:3000/todos</code></pre>
-<p>就会返回类似于在线上生成的数据结果。</p>
-<pre><code>[{&quot;checked&quot;:false,&quot;createdAt&quot;:1510018445663,&quot;id&quot;:&quot;be15f600-c35b-11e7-8089-a5ea63a20ab5&quot;,&quot;text&quot;:&quot;Learn Serverless&quot;,&quot;updatedAt&quot;:1510018445663}]</code></pre>
-<p>Awesome！</p>
-<p>既然，已经有了可以在本地运行 DynamoDB，那么我们是不是可以写上几个测试呢？</p>
-<h1 id="serverless-架构应用开发基于-auth0-授权的-serverless-应用登录">Serverless 架构应用开发：基于 Auth0 授权的 Serverless 应用登录</h1>
+<p>当我们提交的时候，就会触发对应的 POST 请求。</p>
+<h1 id="创建登录系统">创建登录系统</h1>
 <p>在多次尝试了使用 Amazon Cognito 前端授权无果，我转而使用和其它教程类似的 Auth0 授权登录。虽然 Amazon 提供了一个用于 Cognito 授权的前端组件，但是它仍然不是很成熟。在浏览器端，好像用得不是很普遍，而 Auth0 则是一个更通用的方案。</p>
 <blockquote>
 <p>Auth0 是一家“身份验证即服务”提供商，旨在为开发人员提供简单易用的身份管理服务。为了保持灵活性和可扩展性，Auth0 身份管理平台允许开发人员在身份验证和授权管道中增加自定义代码。</p>
@@ -1871,92 +1699,133 @@ Authorization callback URL  https://phodal.auth0.com/login/callback</code></pre>
 <h2 id="结论">结论</h2>
 <p>AWS 官方的 Congito 支持的第三方应用有限，在这个时候 Auth0 成了一个更好的选择。除了 GitHub，Auth0 还集成了微博、人人等等的国内的平台。</p>
 <p>当然授权，作为一个基础的服务，几乎是每个应用的重要功能，也是核心的功能。对于大数中大型公司来说，几乎不太可能采用这样的方案。</p>
-<h1 id="serverless-架构应用开发多个语言运行环境">Serverless 架构应用开发：多个语言运行环境</h1>
-<p>Serverless 与微服务在一点上很吸引人，你可以采用不同的语言来运行你的代码，不同的服务之间可以使用不同的语言。除了，在不同的 Serverless 服务里，采用不同的语言来开发。我们也可以在一个 Serverless 服务里，使用不同的语言来开发服务。</p>
-<h2 id="serverless-多个语言运行环境">Serverless 多个语言运行环境</h2>
-<p>这次我们要创建的 Serverless 服务，其实现步骤相当的简单：</p>
+<h1 id="在本地部署与调试">在本地部署与调试</h1>
+<p>在这几周的 Serverless 应用开发里，我觉得最大的不便就是，缺少一个本地的调试环境。在这种时候，我们需要不断地部署我们的代码，不断地在我们的代码里写上几行 <code>console.log</code>，然后在一切正常之后，再把这些 <code>console.log</code> 删除。</p>
+<p>可要是，突然间又出现了一个 bug，我仿佛看到了我们又要重来一遍。</p>
+<p>就这样经历了几次之后，我便想尝试一些新的手段，比如 <code>serverless-offline</code>。</p>
+<h2 id="serverless-offline">serverless-offline</h2>
+<p>serverless-offline 是一个 Serverless Framework 的插件，它可以在本地的机器上模拟 AWS Lamdba 和 API Gateway，以加快开发者的开发周期。为此，它启动一个处理请求生命周期的 HTTP 服务器，就像 APIG 一样，并调用你的处理程序。</p>
+<p>及包含以下的特性：</p>
 <ul>
-<li>使用 serverless 命令行工具，创建一个 node.js 模板</li>
-<li>在上一步的基础上添加一个 python 的服务。</li>
+<li>仅支持 Node.js 下的 Lambda 函数</li>
+<li>支持 Velocity 模板</li>
+<li>延迟加载你的、需要缓存失效文件：而不需要重载工具，如Nodemon。</li>
+<li>以及，集成，授权人，代理，超时，responseParameters，HTTPS，Babel 运行时环境，CORS 等…</li>
 </ul>
-<p>于是，先让我们创建一个 hello, world 模板：</p>
-<pre><code>serverless create --template aws-nodejs --path multiple</code></pre>
-<p>然后，让我们创建一个 py-handler.py 的函数，代码如下所示：</p>
-<pre><code>import json
-import datetime
-
-
-def endpoint(event, context):
-    current_time = datetime.datetime.now().time()
-    body = {
-        &quot;message&quot;: &quot;Hello, the current time is &quot; + str(current_time)
+<p>那么，让我们看看如何做到这一点。</p>
+<h2 id="本地搭建-serverless-offline-与-dynamodb-环境">本地搭建 serverless-offline 与 DynamoDB 环境</h2>
+<p>这次我们将基于之前的文章《<a href="https://www.phodal.com/blog/serverless-developement-gui-lambda-api-gateway-dynamodb-create-restful-services/">Serverless 应用开发指南：Lambda + API Gateway + DynamoDB 制作 REST API</a>》中的 todolist，来开始我们的调试之旅。</p>
+<p>在之前的示例里，我们使用了 DynamoDB 来存储数据。在这篇文章里，我们也将介绍 <code>serverless-dynamodb-local</code> 来在本地运行 DynamoDB。</p>
+<p>在那之前，如果你还没有之前的代码，请先安装服务到本地：</p>
+<pre><code>npm install -u https://github.com/phodal/serverless-guide/tree/master/aws-node-rest-api-with-dynamodb -n dynamodb-offline</code></pre>
+<p>然后，在我们的项目里安装 <code>serverless-offline</code> 插件：</p>
+<pre><code>yarn add --dev serverless-offline</code></pre>
+<p>并安装 <code>serverless-dynamodb-local</code> 插件：</p>
+<pre><code>yarn add --dev serverless-dynamodb-local</code></pre>
+<p>然后，在 <code>serverless.yml</code> 中添加相应的插件：</p>
+<pre><code>plugins:
+  - serverless-offline
+  - serverless-dynamodb-local</code></pre>
+<p>紧接着，还需要进行相应的 dynamodb 配置：</p>
+<pre><code>custom:
+  dynamodb:
+    start:
+      port: 8000
+      inMemory: true
+      migrate: true
+    migration:
+      dir: offline/migrations</code></pre>
+<p>其中的 migration 对应的是本地的 Scheme，位于 <code>offline/migrations/todos.json</code>，内容如下：</p>
+<pre><code>{
+    &quot;Table&quot;: {
+        &quot;TableName&quot;: &quot;serverless-rest-api-with-dynamodb-dev&quot;,
+        &quot;KeySchema&quot;: [
+            {
+                &quot;AttributeName&quot;: &quot;id&quot;,
+                &quot;KeyType&quot;: &quot;HASH&quot;
+            }
+        ],
+        &quot;AttributeDefinitions&quot;: [
+            {
+                &quot;AttributeName&quot;: &quot;id&quot;,
+                &quot;AttributeType&quot;: &quot;S&quot;
+            }
+        ],
+        &quot;ProvisionedThroughput&quot;: {
+            &quot;ReadCapacityUnits&quot;: 1,
+            &quot;WriteCapacityUnits&quot;: 1
+        }
     }
+}</code></pre>
+<p>然后，执行：</p>
+<pre><code>serverless dynamodb install</code></pre>
+<p>以安装 DynamnoDB 的本地版本。</p>
+<p>一切准备妥当了，我们可以进行测试了。</p>
+<h2 id="本地测试-serverless-offline-与-dynamodb">本地测试 serverless-offline 与 DynamoDB</h2>
+<p>接着，让我们用下面的命令，来运行起本地的环境：</p>
+<pre><code>$ serverless offline start
 
-    response = {
-        &quot;statusCode&quot;: 200,
-        &quot;body&quot;: json.dumps(body)
-    }
+Dynamodb Local Started, Visit: http://localhost:8000/shell
+Serverless: DynamoDB - created table serverless-rest-api-with-dynamodb-dev
+Serverless: Starting Offline: dev/us-east-1.
 
-    return response</code></pre>
-<p>这个函数做了一件事，便是：获取当前的时间，然后导出并返回 json。</p>
-<p>对应的，我们的 <code>serverless.yml</code> 文件也只是设置了不同的 runtime：</p>
-<pre><code>functions:
-  pythonDemo:
-    runtime: python2.7
-    events:
-      - http:
-          method: get
-          path: python
-    handler: py-handler.endpoint
-  jsDemo:
-    runtime: nodejs6.10
-    events:
-      - http:
-          method: get
-          path: js
-    handler: js-handler.hello</code></pre>
-<p>在 Python 函数部分，我们使用了 python2.7 来执行相应的代码。而在 JavaScript 部分则是 Node.js 6.10。</p>
-<h2 id="部署及测试">部署及测试</h2>
-<p>如果你还没有下载代码，那么先安装服务：</p>
-<pre><code>npm install -u https://github.com/phodal/serverless-guide/tree/master/multiple -n multiple</code></pre>
-<p>然后就愉快地部署吧：</p>
-<pre><code>$ serverless deploy
+Serverless: Routes for create:
+Serverless: POST /todos
 
-Serverless: Packaging service...
-Serverless: Excluding development dependencies...
-Serverless: Uploading CloudFormation file to S3...
-Serverless: Uploading artifacts...
-Serverless: Uploading service .zip file to S3 (640 B)...
-Serverless: Validating template...
-Serverless: Updating Stack...
-Serverless: Checking Stack update progress...
-....................
-Serverless: Stack update finished...
-Service Information
-service: multiple
-stage: dev
-region: us-east-1
-stack: multiple-dev
-api keys:
-  None
-endpoints:
-  GET - https://ulgoy525y4.execute-api.us-east-1.amazonaws.com/dev/python
-  GET - https://ulgoy525y4.execute-api.us-east-1.amazonaws.com/dev/js
-functions:
-  pythonDemo: multiple-dev-pythonDemo
-  jsDemo: multiple-dev-jsDemo</code></pre>
-<p>针对于 js 和 python 分别有两个对应的 HTTP 结点：</p>
-<ul>
-<li>https://ulgoy525y4.execute-api.us-east-1.amazonaws.com/dev/python</li>
-<li>https://ulgoy525y4.execute-api.us-east-1.amazonaws.com/dev/js</li>
-</ul>
-<p>访问对应的接口，就会返回对应的值，如下是 JS 返回的结果：</p>
-<pre><code>{&quot;message&quot;:&quot;Go Serverless v1.0! Your function executed successfully!&quot;}</code></pre>
-<p>如下是 Python 函数返回的结果：</p>
-<pre><code>{&quot;message&quot;: &quot;Hello, the current time is 14:17:24.453136&quot;}</code></pre>
-<p>当我们可以在一个服务里，写上不同的语言，就意味着：我们可以轻松地写上几十行的服务，然后轻松地部署。</p>
-<p>对了，测试完了，记得执行 <code>serverless remove</code>。</p>
-<h1 id="serverless-架构应用开发如何编写-serverless-应用的测试">Serverless 架构应用开发：如何编写 Serverless 应用的测试</h1>
+Serverless: Routes for list:
+Serverless: GET /todos
+
+Serverless: Routes for get:
+Serverless: GET /todos/{id}
+
+Serverless: Routes for update:
+Serverless: PUT /todos/{id}
+
+Serverless: Routes for delete:
+Serverless: DELETE /todos/{id}
+
+Serverless: Offline listening on http://localhost:3000</code></pre>
+<p>启动的时候，发现直接报错了：</p>
+<pre><code>  message: &#39;Missing region in config&#39;,
+  code: &#39;ConfigError&#39;,
+  time: 2017-11-07T01:18:45.365Z }</code></pre>
+<p>对比了官方的示例代码后，发现没有对本地调用的 DynamoDB 进行处理：</p>
+<p>让我们，新增一个 <code>todos/dynamodb.js</code> 文件：</p>
+<pre><code>&#39;use strict&#39;;
+
+const AWS = require(&#39;aws-sdk&#39;); // eslint-disable-line import/no-extraneous-dependencies
+
+let options = {};
+
+// connect to local DB if running offline
+if (process.env.IS_OFFLINE) {
+  options = {
+    region: &#39;localhost&#39;,
+    endpoint: &#39;http://localhost:8000&#39;,
+  };
+}
+
+const client = new AWS.DynamoDB.DocumentClient(options);
+
+module.exports = client;</code></pre>
+<p>当我们在本地运行的时候，将使用本地的 DynamoDB，当在服务端运行的时候，则会调用真正的 DynamoDB。</p>
+<p>再去修改 <code>create.js</code>、<code>delete.js</code>、<code>get.js</code>、<code>list.js</code> 和 <code>update.js</code> 中的：</p>
+<pre><code>const dynamoDb = new AWS.DynamoDB.DocumentClient();</code></pre>
+<p>改为</p>
+<pre><code>const dynamoDb = require(&#39;./dynamodb&#39;);</code></pre>
+<p>确认一切无误后，我们就可以使用 postman 测试：</p>
+<figure>
+<img src="images/postman-offline-db.png" alt="PostMan 测试 Serverless Offline" /><figcaption>PostMan 测试 Serverless Offline</figcaption>
+</figure>
+<p>或者 curl：</p>
+<pre><code>curl -X POST -H &quot;Content-Type:application/json&quot; http://localhost:3000/todos --data &#39;{ &quot;text&quot;: &quot;Learn Serverless&quot; }&#39;</code></pre>
+<p>接着打开本地的 todos 地址：</p>
+<pre><code>http://localhost:3000/todos</code></pre>
+<p>就会返回类似于在线上生成的数据结果。</p>
+<pre><code>[{&quot;checked&quot;:false,&quot;createdAt&quot;:1510018445663,&quot;id&quot;:&quot;be15f600-c35b-11e7-8089-a5ea63a20ab5&quot;,&quot;text&quot;:&quot;Learn Serverless&quot;,&quot;updatedAt&quot;:1510018445663}]</code></pre>
+<p>Awesome！</p>
+<p>既然，已经有了可以在本地运行 DynamoDB，那么我们是不是可以写上几个测试呢？</p>
+<h1 id="如何编写-serverless-应用的测试">如何编写 Serverless 应用的测试</h1>
 <p>如 Serverless Framework 官方所说</p>
 <p>虽然 Serverless 架构在服务业务逻辑方面引入了很多简单性，但是它的一些特性给测试带来了挑战。他们是：</p>
 <ul>
@@ -2042,6 +1911,274 @@ describe(&#39;hello&#39;, () =&gt; {
 });</code></pre>
 <h2 id="结论-1">结论</h2>
 <p>总的来说，对于普通的单元测试来说，和一般的测试差不多。对于数据库操作什么相关的函数来说，这就是一件复杂的事。</p>
+<h1 id="多个语言运行环境">多个语言运行环境</h1>
+<p>Serverless 与微服务在一点上很吸引人，你可以采用不同的语言来运行你的代码，不同的服务之间可以使用不同的语言。除了，在不同的 Serverless 服务里，采用不同的语言来开发。我们也可以在一个 Serverless 服务里，使用不同的语言来开发服务。</p>
+<h2 id="serverless-多个语言运行环境">Serverless 多个语言运行环境</h2>
+<p>这次我们要创建的 Serverless 服务，其实现步骤相当的简单：</p>
+<ul>
+<li>使用 serverless 命令行工具，创建一个 node.js 模板</li>
+<li>在上一步的基础上添加一个 python 的服务。</li>
+</ul>
+<p>于是，先让我们创建一个 hello, world 模板：</p>
+<pre><code>serverless create --template aws-nodejs --path multiple</code></pre>
+<p>然后，让我们创建一个 py-handler.py 的函数，代码如下所示：</p>
+<pre><code>import json
+import datetime
+
+
+def endpoint(event, context):
+    current_time = datetime.datetime.now().time()
+    body = {
+        &quot;message&quot;: &quot;Hello, the current time is &quot; + str(current_time)
+    }
+
+    response = {
+        &quot;statusCode&quot;: 200,
+        &quot;body&quot;: json.dumps(body)
+    }
+
+    return response</code></pre>
+<p>这个函数做了一件事，便是：获取当前的时间，然后导出并返回 json。</p>
+<p>对应的，我们的 <code>serverless.yml</code> 文件也只是设置了不同的 runtime：</p>
+<pre><code>functions:
+  pythonDemo:
+    runtime: python2.7
+    events:
+      - http:
+          method: get
+          path: python
+    handler: py-handler.endpoint
+  jsDemo:
+    runtime: nodejs6.10
+    events:
+      - http:
+          method: get
+          path: js
+    handler: js-handler.hello</code></pre>
+<p>在 Python 函数部分，我们使用了 python2.7 来执行相应的代码。而在 JavaScript 部分则是 Node.js 6.10。</p>
+<h2 id="部署及测试">部署及测试</h2>
+<p>如果你还没有下载代码，那么先安装服务：</p>
+<pre><code>npm install -u https://github.com/phodal/serverless-guide/tree/master/multiple -n multiple</code></pre>
+<p>然后就愉快地部署吧：</p>
+<pre><code>$ serverless deploy
+
+Serverless: Packaging service...
+Serverless: Excluding development dependencies...
+Serverless: Uploading CloudFormation file to S3...
+Serverless: Uploading artifacts...
+Serverless: Uploading service .zip file to S3 (640 B)...
+Serverless: Validating template...
+Serverless: Updating Stack...
+Serverless: Checking Stack update progress...
+....................
+Serverless: Stack update finished...
+Service Information
+service: multiple
+stage: dev
+region: us-east-1
+stack: multiple-dev
+api keys:
+  None
+endpoints:
+  GET - https://ulgoy525y4.execute-api.us-east-1.amazonaws.com/dev/python
+  GET - https://ulgoy525y4.execute-api.us-east-1.amazonaws.com/dev/js
+functions:
+  pythonDemo: multiple-dev-pythonDemo
+  jsDemo: multiple-dev-jsDemo</code></pre>
+<p>针对于 js 和 python 分别有两个对应的 HTTP 结点：</p>
+<ul>
+<li>https://ulgoy525y4.execute-api.us-east-1.amazonaws.com/dev/python</li>
+<li>https://ulgoy525y4.execute-api.us-east-1.amazonaws.com/dev/js</li>
+</ul>
+<p>访问对应的接口，就会返回对应的值，如下是 JS 返回的结果：</p>
+<pre><code>{&quot;message&quot;:&quot;Go Serverless v1.0! Your function executed successfully!&quot;}</code></pre>
+<p>如下是 Python 函数返回的结果：</p>
+<pre><code>{&quot;message&quot;: &quot;Hello, the current time is 14:17:24.453136&quot;}</code></pre>
+<p>当我们可以在一个服务里，写上不同的语言，就意味着：我们可以轻松地写上几十行的服务，然后轻松地部署。</p>
+<p>对了，测试完了，记得执行 <code>serverless remove</code>。</p>
+<h1 id="aws-iot-服务开发">AWS IoT 服务开发</h1>
+<p>原文链接：<a href="https://www.phodal.com/blog/serverless-guide-development-aws-iot-serverless-example/">Serverless 开发指南：AWS IoT 服务开发</a></p>
+<p>在我开发一个完整的 Serverless 应用之前，我决定尝试一下不同的 Serverless 服务。这次我打算结合一下 AWS IoT，作为我对云服务与物联网结合的探索。</p>
+<h2 id="serverless-框架安装服务">Serverless 框架安装服务</h2>
+<p>依旧的，我还将继续使用 Serverless 框架，而不是自己写 lambda 来实现。</p>
+<p>因此，首先，让我们使用官方的服务 demo，执行以下的命令，就可以在本地复制远程的 demo 到本地。</p>
+<pre><code>serverless install -u https://github.com/serverless/examples/tree/master/aws-node-iot-event -n aws-iot-example</code></pre>
+<p>其相当于将远程的 https://github.com/serverless/examples/tree/master/aws-node-iot-event 复制到本地的 <code>aws-iot-example</code></p>
+<p>这次我们的 <code>handler.js</code> 只是打了个日志，其它什么也没做。</p>
+<pre><code>&#39;use strict&#39;;
+
+module.exports.log = (event, context, callback) =&gt; {
+  console.log(event);
+  callback(null, {});
+};</code></pre>
+<p>重点还在于 <code>serverless.yml</code> 文件中的配置：</p>
+<pre><code>service: aws-node-iot-event
+
+frameworkVersion: &quot;&gt;=1.5.0 &lt;2.0.0&quot;
+
+provider:
+  name: aws
+  runtime: nodejs4.3
+
+functions:
+  log:
+    handler: handler.log
+    events:
+      - iot:
+          sql: &quot;SELECT * FROM &#39;mybutton&#39;&quot;</code></pre>
+<p>在这个 <code>CloudFormation</code> 配置文件中，我们设置了运行配置 nodejs4.3，以及对应的 <code>handler.log</code> 函数 。在 <code>events</code> 里，写了一个 sql 语句来选择 <code>mybutton</code> 的相关内容，即查看 mybutton 相关主题的日志。</p>
+<h2 id="部署-aws-iot-serverless-服务">部署 AWS IoT Serverless 服务</h2>
+<p>依旧的我们只需要执行 <code>serverless deploy</code> 即可：</p>
+<pre><code>.................
+Serverless: Stack update finished...
+Service Information
+service: aws-iot-example
+stage: dev
+region: us-east-1
+stack: aws-iot-example-dev
+api keys:
+  None
+endpoints:
+  None
+functions:
+  log: aws-iot-example-dev-log</code></pre>
+<p>完成部署后， 我们就可以在 AWS Lambda 后台看到我们的相关函数：</p>
+<figure>
+<img src="images/server-side-example.png" alt="Serverless 控制台" /><figcaption>Serverless 控制台</figcaption>
+</figure>
+<p>然后打开 AWS IoT 控制台，进入『测试』，即 MQTT 客户端页面：</p>
+<figure>
+<img src="images/aws-iot-mqtt-test.png" alt="AWS IoT MQTT 测试页面" /><figcaption>AWS IoT MQTT 测试页面</figcaption>
+</figure>
+<p>接着在发布主题里，填入 <code>mybutton</code>，然后输入以下的内容：</p>
+<pre><code>{
+  &quot;message&quot;: &quot;My first IoT event&quot;,
+  &quot;value&quot;: 2
+}</code></pre>
+<p>如下图所示：</p>
+<figure>
+<img src="images/aws-iot-mqtt-test.png" alt="AWS IoT 发布主题" /><figcaption>AWS IoT 发布主题</figcaption>
+</figure>
+<h2 id="查看日志">查看日志</h2>
+<p>然后执行以下的命令，我们就可以查看到对应的日志：</p>
+<pre><code>$ serverless logs --function log</code></pre>
+<p>内容如下所示：</p>
+<pre><code>START RequestId: 76ad40d4-bc84-11e7-885a-6182fb121f8c Version: $LATEST
+2017-10-29 16:37:57.481 (+08:00)  76ad40d4-bc84-11e7-885a-6182fb121f8c  { message: &#39;My first IoT event&#39;, value: 2 }
+END RequestId: 76ad40d4-bc84-11e7-885a-6182fb121f8c
+REPORT RequestId: 76ad40d4-bc84-11e7-885a-6182fb121f8c  Duration: 68.80 ms  Billed Duration: 100 ms   Memory Size: 1024 MB  Max Memory Used: 22 MB</code></pre>
+<p>如果只是测试用途，可以在执行完成后执行 <code>serverless remove</code> 来删除对应的服务，以减少开支。</p>
+<h1 id="serverless-应用开发指南cron-定时执行-lambda-任务">Serverless 应用开发指南：CRON 定时执行 Lambda 任务</h1>
+<p>原文链接：<a href="https://www.phodal.com/blog/serverless-development-guide-cron-scheduled-job/">Serverless 应用开发指南：CRON 定时执行 Lambda 任务</a></p>
+<p>在上一篇文章《<a href="https://www.phodal.com/blog/serverless-development-guide-create-github-hooks/">Serverless 应用开发指南：基于 Serverless 的 GitHub Webhook</a>》里，我们介绍了如何用 Webhook 来触发定时的 Lambda 函数。这种方式与我们平时的 CI（持续集成）服务器相似，而CI（持续集成）服务器除了会监听 PUSH 事件。还会执行一些定时的任务，比如说每日构建出二进制包，用于 RELEASE。</p>
+<p>因此，在这篇文章里，我将简单地介绍一下：如何定时触发 Lambda 任务。</p>
+<h2 id="serverless-定时任务">Serverless 定时任务</h2>
+<p>幸运的是，带着我的想法，我在官网上看到了一个相关的事例。</p>
+<p>于是，让我们安装一下这个服务到本地：</p>
+<pre><code>$ serverless install -u https://github.com/serverless/examples/tree/master/aws-node-scheduled-cron -n scheduled-cron</code></pre>
+<h3 id="rate-表达式">rate 表达式</h3>
+<p>主要的定时代码写在 <code>serverless.yml</code> 文件中，如下所示：</p>
+<pre><code>functions:
+  cron:
+    handler: handler.run
+    events:
+      # Invoke Lambda function every minute
+      - schedule: rate(1 minute)</code></pre>
+<p>AWS 支持两种类型的定时任务 <code>rate</code> 和 <code>cron</code>。</p>
+<p>Rate 表达式在创建计划事件规则时启动，然后按照其定义的计划运行。Rate 表达式有两个必需字段。这些字段用空格分隔。</p>
+<pre><code>rate(value unit)</code></pre>
+<p>相应的值表示如下：</p>
+<ul>
+<li>value，正数（ &gt;0 的数）。</li>
+<li>unit，时间单位。其有效值：minute | minutes | hour | hours | day | days</li>
+</ul>
+<p>因此，上面的代码 <code>rate(1 minute)</code> 表示的是每一分钟执行一次。</p>
+<h3 id="cron-表达式">cron 表达式</h3>
+<p>下面的代码，则使用的是 cron 表达式</p>
+<pre><code>  secondCron:
+    handler: handler.run
+    events:
+      # Invoke Lambda function every 2nd minute from Mon-Fri
+      - schedule: cron(0/2 * ? * MON-FRI *)</code></pre>
+<p>cron 表达式的格式稍微复杂一些。但是它与 Linux 上的 cron 是不太一样的：</p>
+<pre><code>cron(&lt;分钟&gt; &lt;小时&gt; &lt;日期&gt; &lt;月份&gt; &lt;星期&gt; &lt;年代&gt;)</code></pre>
+<p>对应于下表：</p>
+<table>
+<thead>
+<tr class="header">
+<th>字段</th>
+<th style="text-align: center;">值</th>
+<th style="text-align: center;">通配符</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>分钟</td>
+<td style="text-align: center;">0-59</td>
+<td style="text-align: center;">, - * /</td>
+</tr>
+<tr class="even">
+<td>小时</td>
+<td style="text-align: center;">0-23</td>
+<td style="text-align: center;">, - * /</td>
+</tr>
+<tr class="odd">
+<td>日期</td>
+<td style="text-align: center;">1-31</td>
+<td style="text-align: center;">, - * ? / L W</td>
+</tr>
+<tr class="even">
+<td>月</td>
+<td style="text-align: center;">1-12 or JAN-DEC</td>
+<td style="text-align: center;">, - * /</td>
+</tr>
+<tr class="odd">
+<td>星期几</td>
+<td style="text-align: center;">1-7 or SUN-SAT</td>
+<td style="text-align: center;">, - * ? / L #</td>
+</tr>
+<tr class="even">
+<td>年代</td>
+<td style="text-align: center;">1970-2199</td>
+<td style="text-align: center;">, - * /</td>
+</tr>
+</tbody>
+</table>
+<p>更详细的信息，可以阅读官方的文档：<a href="http://docs.aws.amazon.com/zh_cn/AmazonCloudWatch/latest/events/ScheduledEvents.html">规则的计划表达式</a>。</p>
+<p>于是，上面的表达式，每星期一到星期五（MON-FRI），每 2 分钟运行一次。</p>
+<h2 id="部署-1">部署</h2>
+<p>接下来，让我们部署代码试试：</p>
+<pre><code>$ serverless deploy</code></pre>
+<p>相应的部署过程日志如下：</p>
+<pre><code>...............
+Serverless: Stack update finished...
+Service Information
+service: scheduled-cron
+stage: dev
+region: us-east-1
+stack: scheduled-cron-dev
+api keys:
+  None
+endpoints:
+  None
+functions:
+  cron: scheduled-cron-dev-cron
+  secondCron: scheduled-cron-dev-secondCron</code></pre>
+<p>然后，让我们看看日志：</p>
+<pre><code>$ serverless logs -f  cron -t</code></pre>
+<p>对应的日志如下：</p>
+<pre><code>2017-11-01 16:41:14.112 (+08:00)  6b33ad33-bee0-11e7-9439-23daa7bb59a8  Your cron function &quot;scheduled-cron-dev-cron&quot; ran at Wed Nov 01 2017 08:41:14 GMT+0000 (UTC)
+END RequestId: 6b33ad33-bee0-11e7-9439-23daa7bb59a8
+REPORT RequestId: 6b33ad33-bee0-11e7-9439-23daa7bb59a8  Duration: 0.86 ms Billed Duration: 100 ms   Memory Size: 1024 MB  Max Memory Used: 20 MB
+
+START RequestId: 8ea1a80f-bee0-11e7-a0c9-331175998dc2 Version: $LATEST
+2017-11-01 16:42:13.724 (+08:00)  8ea1a80f-bee0-11e7-a0c9-331175998dc2  Your cron function &quot;scheduled-cron-dev-cron&quot; ran at Wed Nov 01 2017 08:42:13 GMT+0000 (UTC)
+END RequestId: 8ea1a80f-bee0-11e7-a0c9-331175998dc2
+REPORT RequestId: 8ea1a80f-bee0-11e7-a0c9-331175998dc2  Duration: 4.08 ms Billed Duration: 100 ms   Memory Size: 1024 MB  Max Memory Used: 20 MB</code></pre>
+<p>这表明我们的程序，正在以每分钟的状态运行着。</p>
+<p>当我们想做一个 Serverless 的爬虫定期执行某个任务，这样做可以帮我们节省大量的成本。</p>
+<p>末了，记得执行：</p>
+<pre><code>$ serverless remove</code></pre>
 <section class="footnotes">
 <hr />
 <ol>

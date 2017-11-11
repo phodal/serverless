@@ -1,4 +1,4 @@
-AWS Lambda 动态 HTML 编程
+AWS Lambda 动态返回 HTML
 ===
 
 原文链接：[Serverless 应用开发指南： Node.js 编程返回动态 HTML](https://www.phodal.com/blog/serverless-development-guide-nodejs-create-dymamic-html/)
@@ -20,10 +20,7 @@ serverless deploy
 ``serverless.yml`` 文件，如下：
 
 ```
-# Serving HTML through API Gateway for AWS Lambda
 service: node-serve-html
-
-frameworkVersion: ">=1.1.0 <2.0.0"
 
 provider:
   name: aws
