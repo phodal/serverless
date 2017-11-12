@@ -1913,7 +1913,7 @@ Serverless Email 发送测试
 
 最后，终于可以接收到邮件了。
 
-创建自己的 Serverless 短链服务
+[创建自己的 Serverless 短链服务](https://www.phodal.com/blog/serverless-architecture-develoment-create-self-short-url-services/)
 ===
 
 

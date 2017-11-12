@@ -135,7 +135,7 @@
 <li><a href="#serverless-email-发送">Serverless Email 发送</a></li>
 <li><a href="#serverless-email-发送测试">Serverless Email 发送测试</a></li>
 </ul></li>
-<li><a href="#创建自己的-serverless-短链服务">创建自己的 Serverless 短链服务</a><ul>
+<li><a href="#创建自己的-serverless-短链服务"><a href="https://www.phodal.com/blog/serverless-architecture-develoment-create-self-short-url-services/">创建自己的 Serverless 短链服务</a></a><ul>
 <li><a href="#代码逻辑">代码逻辑</a></li>
 <li><a href="#创建首页">创建首页</a></li>
 <li><a href="#生成短链">生成短链</a><ul>
@@ -1446,7 +1446,7 @@ module.exports.sendMail = (event, context, callback) =&gt; {
 <p>于是便登录 SNS，新增了一个验证邮箱。</p>
 <p>试了 gmszone@qq.com 、网易邮箱都不行，最后用了 Google 的。</p>
 <p>最后，终于可以接收到邮件了。</p>
-<h1 id="创建自己的-serverless-短链服务">创建自己的 Serverless 短链服务</h1>
+<h1 id="创建自己的-serverless-短链服务"><a href="https://www.phodal.com/blog/serverless-architecture-develoment-create-self-short-url-services/">创建自己的 Serverless 短链服务</a></h1>
 <p>在想用 Serverless 可以做点什么简单的在线应用后，我想到了一个是在线短链生成服务。最后的结果见：<a href="http://x.pho.im/" class="uri">http://x.pho.im/</a>，一个非常简单的在线应用。</p>
 <p>这里的代码基于：<a href="https://github.com/vannio/serverless-shrink" class="uri">https://github.com/vannio/serverless-shrink</a>。</p>
 <p>因为上面的代码中，不能自动创建域名。然后，再针对数据库进行了一些优化。</p>

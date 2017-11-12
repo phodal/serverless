@@ -1,4 +1,4 @@
-创建自己的 Serverless 短链服务
+[创建自己的 Serverless 短链服务](https://www.phodal.com/blog/serverless-architecture-develoment-create-self-short-url-services/)
 ===
 
 
