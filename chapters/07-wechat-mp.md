@@ -1,4 +1,4 @@
-Serverless 的微信公共平台
+Serverless 的微信公共平台后台
 ===
 
 原文链接：[Serverless 应用开发指南：基于 Serverless 与 Lambda 的微信公共平台](https://www.phodal.com/blog/serverless-development-guide-serverless-lambda-wechat-public-platform/)

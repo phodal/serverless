@@ -209,7 +209,6 @@ Serverless 框架
 
 ### Apache OpenWhisk
 
-
 Serverless 的 hello, world
 ===
 
@@ -399,7 +398,7 @@ REPORT RequestId: 041138f9-bc81-11e7-aa63-0dbab83f773d	Duration: 2.49 ms	Billed 
 serverless logs -f hello -t
 ```
 
-AWS Lambda 动态返回 HTML
+AWS Lambda 动态编程返回 HTML
 ===
 
 原文链接：[Serverless 应用开发指南： Node.js 编程返回动态 HTML](https://www.phodal.com/blog/serverless-development-guide-nodejs-create-dymamic-html/)
@@ -501,7 +500,7 @@ Landing Page
 Hey phodal!
 ```
 
-使用 S3 部署静态网站
+将网站部署到 S3 上
 ===
 
 原文链接：[Serverless 应用开发指南：使用 S3 部署静态网站](https://www.phodal.com/blog/serverless-development-guide-use-serverless-finch-deploy-s3-static-html/)
@@ -615,7 +614,7 @@ Serverless: If successful this should be deployed at: https://s3.amazonaws.com/w
 
 
 
-基于 AWS S3 静态存储的 CRUD
+为基于 S3 的网站支持 CRUD
 ===
 
 原文链接：[Serverless 应用开发指南：API Gateway + S3 + AWS Lambda 打造 CRUD](https://www.phodal.com/blog/serverless-development-guide-use-s3-api-gateway-create-crud/)
@@ -832,7 +831,7 @@ curl https://xc1iprfbsg.execute-api.us-east-1.amazonaws.com/dev/form-response
 
 如果只是测试用途，可以在执行完成后执行 serverless remove 来删除对应的服务，以减少开支。
 
-使用 DynamoDB 数据库创建 REST API
+结合 DynamoDB 数据库创建 RESTful API
 ===
 
 原文链接：[Serverless 应用开发指南：Lambda + API Gateway + DynamoDB 制作 REST API](https://www.phodal.com/blog/serverless-developement-gui-lambda-api-gateway-dynamodb-create-restful-services/)
@@ -1053,7 +1052,7 @@ curl -X DELETE https://dw5y1epmsj.execute-api.us-east-1.amazonaws.com/dev/todos/
 serverless remove
 ```
 
-Express + React 实现 Serverless 的服务端渲染
+Express 实现 Serverless 的 React 服务端渲染
 ===
 
 原文链接：[Serverless 应用开发指南：Serverless + Express 的 React 服务端渲染](https://www.phodal.com/blog/serverless-development-guide-express-react-build-server-side-rendering/)  
@@ -1259,7 +1258,7 @@ Serverless: Invoke aws:deploy:finalize
 
 末了，记得使用 ``serverless remove`` 来省点钱。
 
-Serverless 的微信公共平台
+Serverless 的微信公共平台后台
 ===
 
 原文链接：[Serverless 应用开发指南：基于 Serverless 与 Lambda 的微信公共平台](https://www.phodal.com/blog/serverless-development-guide-serverless-lambda-wechat-public-platform/)
@@ -2159,7 +2158,7 @@ Serverless: Removing old service versions...
 Done!
 
 
-创建登录系统
+结合 Auth0 的登录、授权系统
 ===
 
 在多次尝试了使用 Amazon Cognito 前端授权无果，我转而使用和其它教程类似的 Auth0 授权登录。虽然 Amazon 提供了一个用于 Cognito 授权的前端组件，但是它仍然不是很成熟。在浏览器端，好像用得不是很普遍，而 Auth0 则是一个更通用的方案。
@@ -2935,7 +2934,7 @@ functions:
 
 对了，测试完了，记得执行 ``serverless remove``。
 
-AWS IoT 服务开发
+Serverless 开发物联网应用
 ===
 
 原文链接：[Serverless 开发指南：AWS IoT 服务开发](https://www.phodal.com/blog/serverless-guide-development-aws-iot-serverless-example/)
@@ -3049,8 +3048,7 @@ REPORT RequestId: 76ad40d4-bc84-11e7-885a-6182fb121f8c  Duration: 68.80 ms  Bill
 
 如果只是测试用途，可以在执行完成后执行 ``serverless remove`` 来删除对应的服务，以减少开支。
 
-
-Serverless 应用开发指南：CRON 定时执行 Lambda 任务
+定时执行任务
 ===
 
 原文链接：[Serverless 应用开发指南：CRON 定时执行 Lambda 任务](https://www.phodal.com/blog/serverless-development-guide-cron-scheduled-job/)

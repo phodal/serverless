@@ -1,4 +1,3 @@
-
 Serverless 的 hello, world
 ===
 

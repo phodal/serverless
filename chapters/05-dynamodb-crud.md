@@ -1,4 +1,4 @@
-使用 DynamoDB 数据库创建 REST API
+结合 DynamoDB 数据库创建 RESTful API
 ===
 
 原文链接：[Serverless 应用开发指南：Lambda + API Gateway + DynamoDB 制作 REST API](https://www.phodal.com/blog/serverless-developement-gui-lambda-api-gateway-dynamodb-create-restful-services/)

@@ -93,29 +93,29 @@
 <li><a href="#四部署及测试">四、部署及测试：</a></li>
 </ul></li>
 </ul></li>
-<li><a href="#aws-lambda-动态返回-html">AWS Lambda 动态返回 HTML</a></li>
-<li><a href="#使用-s3-部署静态网站">使用 S3 部署静态网站</a><ul>
+<li><a href="#aws-lambda-动态编程返回-html">AWS Lambda 动态编程返回 HTML</a></li>
+<li><a href="#将网站部署到-s3-上">将网站部署到 S3 上</a><ul>
 <li><a href="#配置-serverless-finch">配置 serverless-finch</a></li>
 <li><a href="#静态内容">静态内容</a></li>
 </ul></li>
-<li><a href="#基于-aws-s3-静态存储的-crud">基于 AWS S3 静态存储的 CRUD</a><ul>
+<li><a href="#为基于-s3-的网站支持-crud">为基于 S3 的网站支持 CRUD</a><ul>
 <li><a href="#概念api-gateway-与-s3">概念：API Gateway 与 S3</a></li>
 <li><a href="#基于-s3-的-serverless-crud">基于 S3 的 Serverless CRUD</a></li>
 <li><a href="#上传原理">上传原理</a></li>
 <li><a href="#serverless-s3-crud-示例">Serverless S3 CRUD 示例</a></li>
 </ul></li>
-<li><a href="#使用-dynamodb-数据库创建-rest-api">使用 DynamoDB 数据库创建 REST API</a><ul>
+<li><a href="#结合-dynamodb-数据库创建-restful-api">结合 DynamoDB 数据库创建 RESTful API</a><ul>
 <li><a href="#serverless-dynamodb-示例配置">Serverless DynamoDB 示例配置</a></li>
 <li><a href="#serverless-dynamodb-示例代码">Serverless DynamoDB 示例代码</a></li>
 <li><a href="#serverless-dynamodb-部署">Serverless DynamoDB 部署</a></li>
 <li><a href="#serverless-dynamodb-测试">Serverless DynamoDB 测试</a></li>
 <li><a href="#其它操作">其它操作</a></li>
 </ul></li>
-<li><a href="#express-react-实现-serverless-的服务端渲染">Express + React 实现 Serverless 的服务端渲染</a><ul>
+<li><a href="#express-实现-serverless-的-react-服务端渲染">Express 实现 Serverless 的 React 服务端渲染</a><ul>
 <li><a href="#serverless-express">Serverless + Express</a></li>
 <li><a href="#express-react-进行服务端渲染">Express + React 进行服务端渲染</a></li>
 </ul></li>
-<li><a href="#serverless-的微信公共平台">Serverless 的微信公共平台</a><ul>
+<li><a href="#serverless-的微信公共平台后台">Serverless 的微信公共平台后台</a><ul>
 <li><a href="#创建-serverless-服务">创建 Serverless 服务</a></li>
 <li><a href="#引入-node-wechat">引入 node-wechat</a></li>
 <li><a href="#配置-app_id-和-token-等">配置 APP_ID 和 TOKEN 等</a></li>
@@ -147,7 +147,7 @@
 <li><a href="#重定向短链">重定向短链</a></li>
 <li><a href="#部署及测试短链服务">部署及测试短链服务</a></li>
 </ul></li>
-<li><a href="#创建登录系统">创建登录系统</a><ul>
+<li><a href="#结合-auth0-的登录授权系统">结合 Auth0 的登录、授权系统</a><ul>
 <li><a href="#serverless-auth0-前端代码">Serverless Auth0 前端代码</a></li>
 <li><a href="#serverless-auth0-后台代码">Serverless Auth0 后台代码</a><ul>
 <li><a href="#serverless.yml-配置">serverless.yml 配置</a></li>
@@ -175,12 +175,12 @@
 <li><a href="#serverless-多个语言运行环境">Serverless 多个语言运行环境</a></li>
 <li><a href="#部署及测试">部署及测试</a></li>
 </ul></li>
-<li><a href="#aws-iot-服务开发">AWS IoT 服务开发</a><ul>
+<li><a href="#serverless-开发物联网应用">Serverless 开发物联网应用</a><ul>
 <li><a href="#serverless-框架安装服务">Serverless 框架安装服务</a></li>
 <li><a href="#部署-aws-iot-serverless-服务">部署 AWS IoT Serverless 服务</a></li>
 <li><a href="#查看日志">查看日志</a></li>
 </ul></li>
-<li><a href="#serverless-应用开发指南cron-定时执行-lambda-任务">Serverless 应用开发指南：CRON 定时执行 Lambda 任务</a><ul>
+<li><a href="#定时执行任务">定时执行任务</a><ul>
 <li><a href="#serverless-定时任务">Serverless 定时任务</a><ul>
 <li><a href="#rate-表达式">rate 表达式</a></li>
 <li><a href="#cron-表达式">cron 表达式</a></li>
@@ -438,7 +438,7 @@ REPORT RequestId: 041138f9-bc81-11e7-aa63-0dbab83f773d  Duration: 2.49 ms   Bill
 <p>这意味着，我们的第一个服务已经成功上线了。</p>
 <p>我们也可以通过下面的命令来获取相应的日志：</p>
 <pre><code>serverless logs -f hello -t</code></pre>
-<h1 id="aws-lambda-动态返回-html">AWS Lambda 动态返回 HTML</h1>
+<h1 id="aws-lambda-动态编程返回-html">AWS Lambda 动态编程返回 HTML</h1>
 <p>原文链接：<a href="https://www.phodal.com/blog/serverless-development-guide-nodejs-create-dymamic-html/">Serverless 应用开发指南： Node.js 编程返回动态 HTML</a></p>
 <p>在我们进行 Serverless + SPA 应用开发之前，先看看官方的相应 DEMO。</p>
 <pre><code>serverless install -u https://github.com/serverless/examples/tree/master/aws-node-serve-dynamic-html-via-http-endpoint -n node-serve-html</code></pre>
@@ -509,7 +509,7 @@ functions:
 <pre><code>Landing Page
 
 Hey phodal!</code></pre>
-<h1 id="使用-s3-部署静态网站">使用 S3 部署静态网站</h1>
+<h1 id="将网站部署到-s3-上">将网站部署到 S3 上</h1>
 <p>原文链接：<a href="https://www.phodal.com/blog/serverless-development-guide-use-serverless-finch-deploy-s3-static-html/">Serverless 应用开发指南：使用 S3 部署静态网站</a></p>
 <p>在尝试了使用 Router53 路由到 S3 后，并想试试能否使用 serverless 框架来上传静态内容。在探索官方的 DEMO 后，找到了一个 <code>serverless-finch</code> 插件可以做相应的事情。</p>
 <pre><code>serverless create --template aws-nodejs s3-static-file s3-static-file</code></pre>
@@ -579,7 +579,7 @@ Serverless: Uploading file index.html to bucket wdsm.io...
 Serverless: If successful this should be deployed at: https://s3.amazonaws.com/wdsm.io/index.html</code></pre>
 <p>由于配置了 Router53 指向了 S3，因此可以直接访问：<a href="http://wdsm.io/" class="uri">http://wdsm.io/</a> 来看最后的内容。</p>
 <p>并且，对应的删除命令也变成了：<code>serverless client remove</code>。</p>
-<h1 id="基于-aws-s3-静态存储的-crud">基于 AWS S3 静态存储的 CRUD</h1>
+<h1 id="为基于-s3-的网站支持-crud">为基于 S3 的网站支持 CRUD</h1>
 <p>原文链接：<a href="https://www.phodal.com/blog/serverless-development-guide-use-s3-api-gateway-create-crud/">Serverless 应用开发指南：API Gateway + S3 + AWS Lambda 打造 CRUD</a></p>
 <p>在前两篇文章《Serverless 应用开发指南： serverless 的 hello, world》和 《<a href="https://www.phodal.com/blog/serverless-guide-development-aws-iot-serverless-example/">Serverless 开发指南：AWS IoT 服务开发</a>》 里，我们简单地介绍了如何用 Serverless 和 AWS IoT 开发入门级的 Serverless 应用。</p>
 <p>在这一篇文章里，我们将开始进入正式的应用开发领域里：一个 CRUD 示例。</p>
@@ -722,7 +722,7 @@ module.exports = (event, callback) =&gt; {
 <pre><code>curl https://xc1iprfbsg.execute-api.us-east-1.amazonaws.com/dev/form-response</code></pre>
 <p>就是这么简单。</p>
 <p>如果只是测试用途，可以在执行完成后执行 serverless remove 来删除对应的服务，以减少开支。</p>
-<h1 id="使用-dynamodb-数据库创建-rest-api">使用 DynamoDB 数据库创建 REST API</h1>
+<h1 id="结合-dynamodb-数据库创建-restful-api">结合 DynamoDB 数据库创建 RESTful API</h1>
 <p>原文链接：<a href="https://www.phodal.com/blog/serverless-developement-gui-lambda-api-gateway-dynamodb-create-restful-services/">Serverless 应用开发指南：Lambda + API Gateway + DynamoDB 制作 REST API</a></p>
 <p>本文将介绍如何用 AWS Lambda + API Gateway + DynamoDB 创建一个 RESTful API 的示例。文中的示例是一个 TODO API 的示例，支持 GET、POST、PUT、DELETE 请求，即常规的 CRUD。</p>
 <p>安装示例项目的命令如下：</p>
@@ -867,7 +867,7 @@ functions:
 <pre><code>curl -X DELETE https://dw5y1epmsj.execute-api.us-east-1.amazonaws.com/dev/todos/1</code></pre>
 <p>对了，没事得删除。。。考虑到我之前的 500 刀的经历，记得：</p>
 <pre><code>serverless remove</code></pre>
-<h1 id="express-react-实现-serverless-的服务端渲染">Express + React 实现 Serverless 的服务端渲染</h1>
+<h1 id="express-实现-serverless-的-react-服务端渲染">Express 实现 Serverless 的 React 服务端渲染</h1>
 <p>原文链接：<a href="https://www.phodal.com/blog/serverless-development-guide-express-react-build-server-side-rendering/">Serverless 应用开发指南：Serverless + Express 的 React 服务端渲染</a></p>
 <p>我们已经可以用 AWS Lambda 来动态返回 HTML 了。在阅读了一系列的文章后，也发现了 Express 可以在 Lambda 上运行。当我们可以运行 Express 的时候，也意味着，它可以进行服务端渲染，即我们可以做 React 的服务端渲染。</p>
 <p>于是，便有了这篇文章，也有了我创建的第一个 serverless 的项目：<a href="https://github.com/phodal/serverless-react-server-side-render">serverless-react-server-side-render</a>。</p>
@@ -1015,7 +1015,7 @@ Serverless: Invoke aws:deploy:finalize</code></pre>
 <p>结果看上去，有点不如我们的预期，显示的内容是『hello world mobile』。不过，至少代表了我们的代码是 work 的。</p>
 <p>从目前的情况来看，仍然有很大的改进空间，如 webpack 版本过低、React 使用的是 15.6.2。但是 it works。</p>
 <p>末了，记得使用 <code>serverless remove</code> 来省点钱。</p>
-<h1 id="serverless-的微信公共平台">Serverless 的微信公共平台</h1>
+<h1 id="serverless-的微信公共平台后台">Serverless 的微信公共平台后台</h1>
 <p>原文链接：<a href="https://www.phodal.com/blog/serverless-development-guide-serverless-lambda-wechat-public-platform/">Serverless 应用开发指南：基于 Serverless 与 Lambda 的微信公共平台</a></p>
 <p>Serverless 在事件驱动方面具有天然的优势，其中之一就是聊天机器人。可要做聊天机器人不是一件容易的事，微信和 QQ 都只能用 Hack 的方式进行。</p>
 <p>于是，便想到微信公众号是不是一个更好的选择。当用户输入一个关键词时，做出相应的回复。总体上来说，他们之间是差不多的。这个时候，就可以开始尝试一个在线上运行的 Serverless 服务。</p>
@@ -1614,7 +1614,7 @@ Serverless: Removing old service versions...</code></pre>
 <li>看是否会重定向到我们的网站上。</li>
 </ol>
 <p>Done!</p>
-<h1 id="创建登录系统">创建登录系统</h1>
+<h1 id="结合-auth0-的登录授权系统">结合 Auth0 的登录、授权系统</h1>
 <p>在多次尝试了使用 Amazon Cognito 前端授权无果，我转而使用和其它教程类似的 Auth0 授权登录。虽然 Amazon 提供了一个用于 Cognito 授权的前端组件，但是它仍然不是很成熟。在浏览器端，好像用得不是很普遍，而 Auth0 则是一个更通用的方案。</p>
 <blockquote>
 <p>Auth0 是一家“身份验证即服务”提供商，旨在为开发人员提供简单易用的身份管理服务。为了保持灵活性和可扩展性，Auth0 身份管理平台允许开发人员在身份验证和授权管道中增加自定义代码。</p>
@@ -2132,7 +2132,7 @@ functions:
 <pre><code>{&quot;message&quot;: &quot;Hello, the current time is 14:17:24.453136&quot;}</code></pre>
 <p>当我们可以在一个服务里，写上不同的语言，就意味着：我们可以轻松地写上几十行的服务，然后轻松地部署。</p>
 <p>对了，测试完了，记得执行 <code>serverless remove</code>。</p>
-<h1 id="aws-iot-服务开发">AWS IoT 服务开发</h1>
+<h1 id="serverless-开发物联网应用">Serverless 开发物联网应用</h1>
 <p>原文链接：<a href="https://www.phodal.com/blog/serverless-guide-development-aws-iot-serverless-example/">Serverless 开发指南：AWS IoT 服务开发</a></p>
 <p>在我开发一个完整的 Serverless 应用之前，我决定尝试一下不同的 Serverless 服务。这次我打算结合一下 AWS IoT，作为我对云服务与物联网结合的探索。</p>
 <h2 id="serverless-框架安装服务">Serverless 框架安装服务</h2>
@@ -2204,7 +2204,7 @@ functions:
 END RequestId: 76ad40d4-bc84-11e7-885a-6182fb121f8c
 REPORT RequestId: 76ad40d4-bc84-11e7-885a-6182fb121f8c  Duration: 68.80 ms  Billed Duration: 100 ms   Memory Size: 1024 MB  Max Memory Used: 22 MB</code></pre>
 <p>如果只是测试用途，可以在执行完成后执行 <code>serverless remove</code> 来删除对应的服务，以减少开支。</p>
-<h1 id="serverless-应用开发指南cron-定时执行-lambda-任务">Serverless 应用开发指南：CRON 定时执行 Lambda 任务</h1>
+<h1 id="定时执行任务">定时执行任务</h1>
 <p>原文链接：<a href="https://www.phodal.com/blog/serverless-development-guide-cron-scheduled-job/">Serverless 应用开发指南：CRON 定时执行 Lambda 任务</a></p>
 <p>在上一篇文章《<a href="https://www.phodal.com/blog/serverless-development-guide-create-github-hooks/">Serverless 应用开发指南：基于 Serverless 的 GitHub Webhook</a>》里，我们介绍了如何用 Webhook 来触发定时的 Lambda 函数。这种方式与我们平时的 CI（持续集成）服务器相似，而CI（持续集成）服务器除了会监听 PUSH 事件。还会执行一些定时的任务，比如说每日构建出二进制包，用于 RELEASE。</p>
 <p>因此，在这篇文章里，我将简单地介绍一下：如何定时触发 Lambda 任务。</p>

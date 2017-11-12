@@ -1,4 +1,4 @@
-Express + React 实现 Serverless 的服务端渲染
+Express 实现 Serverless 的 React 服务端渲染
 ===
 
 原文链接：[Serverless 应用开发指南：Serverless + Express 的 React 服务端渲染](https://www.phodal.com/blog/serverless-development-guide-express-react-build-server-side-rendering/)  

@@ -1,4 +1,4 @@
-使用 S3 部署静态网站
+将网站部署到 S3 上
 ===
 
 原文链接：[Serverless 应用开发指南：使用 S3 部署静态网站](https://www.phodal.com/blog/serverless-development-guide-use-serverless-finch-deploy-s3-static-html/)

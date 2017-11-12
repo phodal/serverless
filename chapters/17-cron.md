@@ -1,5 +1,4 @@
-
-Serverless 应用开发指南：CRON 定时执行 Lambda 任务
+定时执行任务
 ===
 
 原文链接：[Serverless 应用开发指南：CRON 定时执行 Lambda 任务](https://www.phodal.com/blog/serverless-development-guide-cron-scheduled-job/)

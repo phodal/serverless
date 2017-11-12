@@ -1,4 +1,4 @@
-基于 AWS S3 静态存储的 CRUD
+为基于 S3 的网站支持 CRUD
 ===
 
 原文链接：[Serverless 应用开发指南：API Gateway + S3 + AWS Lambda 打造 CRUD](https://www.phodal.com/blog/serverless-development-guide-use-s3-api-gateway-create-crud/)

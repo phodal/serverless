@@ -1,4 +1,4 @@
-AWS Lambda 动态返回 HTML
+AWS Lambda 动态编程返回 HTML
 ===
 
 原文链接：[Serverless 应用开发指南： Node.js 编程返回动态 HTML](https://www.phodal.com/blog/serverless-development-guide-nodejs-create-dymamic-html/)
