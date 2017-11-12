@@ -136,9 +136,16 @@
 <li><a href="#serverless-email-发送测试">Serverless Email 发送测试</a></li>
 </ul></li>
 <li><a href="#创建自己的-serverless-短链服务">创建自己的 Serverless 短链服务</a><ul>
-<li><a href="#代码逻辑">代码逻辑</a><ul>
+<li><a href="#代码逻辑">代码逻辑</a></li>
 <li><a href="#创建首页">创建首页</a></li>
+<li><a href="#生成短链">生成短链</a><ul>
+<li><a href="#解析出提交表单中的链接">解析出提交表单中的链接</a></li>
+<li><a href="#根据-url-生成对应的短链">根据 URL 生成对应的短链</a></li>
+<li><a href="#存储到-dynamo-数据库中">存储到 Dynamo 数据库中。</a></li>
+<li><a href="#返回短链给用户">返回短链给用户</a></li>
 </ul></li>
+<li><a href="#重定向短链">重定向短链</a></li>
+<li><a href="#部署及测试短链服务">部署及测试短链服务</a></li>
 </ul></li>
 <li><a href="#创建登录系统">创建登录系统</a><ul>
 <li><a href="#serverless-auth0-前端代码">Serverless Auth0 前端代码</a></li>
@@ -1443,7 +1450,7 @@ module.exports.sendMail = (event, context, callback) =&gt; {
 <p>在想用 Serverless 可以做点什么简单的在线应用后，我想到了一个是在线短链生成服务。最后的结果见：<a href="http://x.pho.im/" class="uri">http://x.pho.im/</a>，一个非常简单的在线应用。</p>
 <p>这里的代码基于：<a href="https://github.com/vannio/serverless-shrink" class="uri">https://github.com/vannio/serverless-shrink</a>。</p>
 <p>因为上面的代码中，不能自动创建域名。然后，再针对数据库进行了一些优化。</p>
-<h2 id="代码逻辑">代码逻辑</h2>
+<h3 id="代码逻辑">代码逻辑</h3>
 <p>这里的代码逻辑比如简单：</p>
 <ul>
 <li>创建短链时，使用生成一个四位的字符串</li>
@@ -1452,7 +1459,7 @@ module.exports.sendMail = (event, context, callback) =&gt; {
 <li>重定向时，从 DynamoDB 读取对应的短链</li>
 <li>如果短链存在，则执行 302 重定向；如果不存在，则返回一个 404。</li>
 </ul>
-<h3 id="创建首页">创建首页</h3>
+<h2 id="创建首页">创建首页</h2>
 <p>首页只是一个简单的 HTML 表单：</p>
 <pre><code>const base_page = `&lt;html&gt;
 &lt;h1&gt;Hi!&lt;/h1&gt;
@@ -1478,6 +1485,135 @@ module.exports.handler = (event, context, callback) =&gt; {
   );
 }</code></pre>
 <p>当我们提交的时候，就会触发对应的 POST 请求。</p>
+<h2 id="生成短链">生成短链</h2>
+<p>如上所述，对于个短链请求，我们要做这么几件事：</p>
+<ol type="1">
+<li>解析出提交表单中的链接</li>
+<li>根据 URL 生成对应的短链</li>
+<li>将对应的 URL 和短链的对应关系存储到 DynamoDB 中</li>
+<li>如果成功，则返回生成的短链；失败则，返回一个 400</li>
+</ol>
+<p>事实上，在存储 URL 和短链的 map 之前，我们应该先判断一下数据中是否已经有相应的短链。不过，对于这种只针对于我一个用户的短链服务来说，这个步骤有点浪费钱——毕竟要去扫描一遍数据库。所以，我也不想去添加这样的扩展功能。</p>
+<p>接下来，让我们回到代码中去，代码的主要逻辑都是在 Promise 里，按顺序往下执行。</p>
+<h3 id="解析出提交表单中的链接">解析出提交表单中的链接</h3>
+<p>首先，我们通过 <code>querystring</code> 库来解决中表单中的链接。</p>
+<pre><code>const submitted = querystring.parse(event.body).link;</code></pre>
+<h3 id="根据-url-生成对应的短链">根据 URL 生成对应的短链</h3>
+<p>接着，使用 Node.js 中的 <code>crypto.randomBytes</code> 方法来生成八位的伪随机码。</p>
+<pre><code>crypto.randomBytes(8)
+  .toString(&#39;base64&#39;)
+  .replace(/[=+/]/g, &#39;&#39;)
+  .substring(0, 4)</code></pre>
+<p>由于生成的伪随机码是 Buffer 类型，因此需要转换为字符串。同时，因为生成的短链中不应该有 “=+/”，它会导致生成的 URL 有异常。于是，我们便替换掉伪随机码中的这些特殊字体。最后，截取生成的字符串的前 4 位。</p>
+<p>现在，我们就可以将其存储到数据中了。</p>
+<h3 id="存储到-dynamo-数据库中">存储到 Dynamo 数据库中。</h3>
+<p>对应的存储逻辑如下所示，我们 new 了一个 DocumentClient 对象，然后直接存储到数据库中。<code>put</code> 函数中的对象，即是对应的参数。</p>
+<pre><code>return docClient.put({
+  TableName: tableName,
+  Item: {
+    slug: slug,
+    url: submitted
+  },
+  Expected: {
+    url: {Exists: false}
+  }
+}).promise().then(() =&gt; { return slug; });</code></pre>
+<p>最后，我们返回了 <code>slug</code>，用于接下来的处理。</p>
+<h3 id="返回短链给用户">返回短链给用户</h3>
+<p>一切处理正常的话，我们将向用户返回最后的内容：</p>
+<pre><code>return callback(
+  null,
+  {
+    statusCode: 200,
+    body: RenderPage(path.join(prefix, slug).replace(&#39;:/&#39;, &#39;://&#39;), prefix),
+    headers: {&#39;Content-Type&#39;: &#39;text/html&#39;}
+  }
+);</code></pre>
+<p>其中的 HTML 部分的渲染逻辑如下所示：</p>
+<pre><code>function RenderPage (link, submitted) {
+  return `
+&lt;html&gt;
+&lt;body&gt;
+&lt;h3&gt;
+  &lt;a href=&quot;${link}&quot;&gt;${link}&lt;/a&gt;
+&lt;/h3&gt;
+&lt;p&gt;URL ${submitted} was shortened to:
+  &lt;a href=&quot;${link}&quot;&gt;${link}&lt;/a&gt;
+&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;`
+};</code></pre>
+<p>是的，只是返回短链和原有的链接了。</p>
+<p>好了，现在我们已经拥有这个短链了。接下来，就是点击这个短链，看看背后会发生些什么？</p>
+<h2 id="重定向短链">重定向短链</h2>
+<p>首先，我们先在我们的 <code>serverless.yml</code> 中，将短链的路径配置为参数：</p>
+<pre><code>functions :
+  ...
+  redirect:
+    handler: redirect/index.handler
+    events:
+      - http:
+          path: /{slug}
+          method: get</code></pre>
+<p>然后，从数据库中按短链的 slug 查找对应的 URL：</p>
+<pre><code>const slug = event.pathParameters.slug;
+
+docClient.get({
+  TableName: tableName,
+  Key: {
+    slug: slug
+  }
+}, (err, data) =&gt; {
+
+})</code></pre>
+<p>如果存在对应的短链，则 302 重定向对原有的 URL：</p>
+<pre><code>const item = data.Item;
+
+if (item &amp;&amp; item.url) {
+  callback(
+    null,
+    {
+      statusCode: 302,
+      body: item.url,
+      headers: {
+        &#39;Location&#39;: item.url,
+        &#39;Content-Type&#39;: &#39;text/plain&#39;
+      }
+    }
+  )
+}</code></pre>
+<p>如果没有，则返回一个 404。</p>
+<p>我们的代码就是这么的简单，现在让我们来部署测试一下。</p>
+<h2 id="部署及测试短链服务">部署及测试短链服务</h2>
+<p>如果你还没有 clone 代码的话，执行下面的命令来安装：</p>
+<pre><code>serverless install -u https://github.com/phodal/serverless-guide/tree/master/url-shorter -n url-shorter</code></pre>
+<p>然后执行 <code>yarn install</code> 来安装对应的依赖。</p>
+<p>如果你在 Route53 上注册有相应的域名，修改一下 <code>serverless.yml</code> 文件中的域名，我们就可以使用 <code>serverless create_domain</code> 来创建域名的路由。</p>
+<p>紧接着，执行 <code>serverless deploy</code> 来部署。</p>
+<pre><code>api keys:
+  None
+endpoints:
+  GET - https://4rr5ndhaw3.execute-api.us-east-1.amazonaws.com/dev/
+  POST - https://4rr5ndhaw3.execute-api.us-east-1.amazonaws.com/dev/
+  GET - https://4rr5ndhaw3.execute-api.us-east-1.amazonaws.com/dev/{slug}
+functions:
+  main: url-shorter-dev-main
+  create: url-shorter-dev-create
+  redirect: url-shorter-dev-redirect
+Serverless Domain Manager Summary
+Domain Name
+  x.pho.im
+Distribution Domain Name
+  d2s4y0p5nuw3k7.cloudfront.net
+Serverless: Removing old service versions...</code></pre>
+<p>一切准备就绪了。</p>
+<ol type="1">
+<li>访问 <a href="https://x.pho.im/" class="uri">https://x.pho.im/</a></li>
+<li>然后输入一个链接，如：<a href="https://github.com/phodal/serverless-guide" class="uri">https://github.com/phodal/serverless-guide</a></li>
+<li>复制生成的地址：<a href="https://x.pho.im/rgQC" class="uri">https://x.pho.im/rgQC</a>，并返回</li>
+<li>看是否会重定向到我们的网站上。</li>
+</ol>
+<p>Done!</p>
 <h1 id="创建登录系统">创建登录系统</h1>
 <p>在多次尝试了使用 Amazon Cognito 前端授权无果，我转而使用和其它教程类似的 Auth0 授权登录。虽然 Amazon 提供了一个用于 Cognito 授权的前端组件，但是它仍然不是很成熟。在浏览器端，好像用得不是很普遍，而 Auth0 则是一个更通用的方案。</p>
 <blockquote>
