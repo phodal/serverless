@@ -1,6 +1,12 @@
 'use strict';
 
 module.exports.hello = (event, context, callback) => {
+    /** Immediate response for WarmUP plugin */
+  if (event.source === 'serverless-plugin-warmup') {
+    console.log('WarmUP - Lambda is warm!')
+    return callback(null, 'Lambda is warm!')
+  }
+
   const response = {
     statusCode: 200,
     body: JSON.stringify({

@@ -1,0 +1,15 @@
+{
+  "name": "warmup",
+  "version": "1.0.0",
+  "description": "",
+  "main": "handler.js",
+  "dependencies": {},
+  "devDependencies": {
+    "serverless-plugin-warmup": "^3.3.0-rc.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

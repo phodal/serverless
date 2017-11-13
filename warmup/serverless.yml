@@ -1,9 +1,24 @@
 service: warmup
 
+plugins:
+  - serverless-plugin-warmup
+
 provider:
   name: aws
   runtime: nodejs6.10
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource:
+      - Fn::Join:
+        - ':'
+        - - arn:aws:lambda
+          - Ref: AWS::Region
+          - Ref: AWS::AccountId
+          - function:${self:service}-${opt:stage, self:provider.stage}-*
 
 functions:
   hello:
     handler: handler.hello
+    warmup: true
