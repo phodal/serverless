@@ -43,7 +43,11 @@
 <ul>
 <li><a href="#serverless-架构应用开发指南">Serverless 架构应用开发指南</a></li>
 <li><a href="#serverless-架构">Serverless 架构</a><ul>
-<li><a href="#什么是-serverless-架构">什么是 Serverless 架构？？</a></li>
+<li><a href="#什么是-serverless-架构">什么是 Serverless 架构？？</a><ul>
+<li><a href="#为什么是花了-40g">为什么是花了 40G ？</a></li>
+<li><a href="#serverless">Serverless</a></li>
+<li><a href="#tips">Tips</a></li>
+</ul></li>
 <li><a href="#serverless-的优势">Serverless 的优势</a><ul>
 <li><a href="#运营成本优势">运营成本优势</a></li>
 <li><a href="#开发成本">开发成本</a></li>
@@ -81,7 +85,7 @@
 <li><a href="#serverelss-的原则">Serverelss 的原则</a></li>
 <li><a href="#迁移方案">迁移方案</a></li>
 <li><a href="#serverless-框架">Serverless 框架</a><ul>
-<li><a href="#serverless">Serverless</a></li>
+<li><a href="#serverless-1">Serverless</a></li>
 <li><a href="#apex">Apex</a></li>
 <li><a href="#apache-openwhisk">Apache OpenWhisk</a></li>
 </ul></li>
@@ -206,24 +210,16 @@
 </blockquote>
 <h1 id="serverless-架构">Serverless 架构</h1>
 <blockquote>
-<p>花了 20G，我终于弄清楚了 Serverless 是什么？</p>
+<p>花了 40G，我终于弄清楚了 Serverless 是什么？</p>
 </blockquote>
+<p>为了弄清 Serverless 究竟是什么东西？Serverless 到底是个什么？我使用 Serverless 尝试了一个又一个示例，自己做了四五个应用，总算是对 Serverelss 有了一个大致上的认识。现在，让我简单地解释『花了 40G，我终于弄清楚了 Serverless 是什么？』这句话，来说说 Serverless 到底是什么鬼？</p>
 <h2 id="什么是-serverless-架构">什么是 Serverless 架构？？</h2>
-<p>对于我而言，缺乏大量的后台架构实践经验，也需要大量的 DevOps。</p>
-<p>开发者无需考虑服务器细节，只需要负责编写发生某些事件后所需执行的代码。</p>
-<p>事件驱动</p>
-<p>JavaScript 机制。</p>
-<p>并不一定使用这些云服务，如 AWS，才能称为 Serverless。诸如我的同事 《<a href="https://blog.jimmylv.info/2017-06-30-serverless-in-action-build-personal-reading-statistics-system/">Serverless 实战：打造个人阅读追踪系统</a>》，采用的是</p>
-<p>IFTTT + WebTask + GitHub Webhook + GitHub</p>
-<p>意味着，你所有的服务中的一部分运行在 xxx 上，</p>
-<figure>
-<img src="images/server-growth.jpg" alt="Serverless Growth" /><figcaption>Serverless Growth</figcaption>
-</figure>
-<h2 id="serverless-的优势">Serverless 的优势</h2>
-<h3 id="运营成本优势">运营成本优势</h3>
-<p>对于，初创公司来说，他们没有基础设施，也没有财力，也可能没有能力去建设基础设施。采用云服务往往是最好的选择，可以节省大量的资金。与此同时，诸如 AWS 这样庞大的系统，对于创业公司的程序员来说，也不能容易消化掉的一个系统。</p>
-<p>而如果一家创业公司采用的是 Serverless，而不是使用云服务器。那么，他就会拥有更多的时间去开发，不需要担心维护。只需要为运行时的软件付钱。</p>
-<p>按需计算就意味着，在请求到来的时候，才运行函数。没有请求的时候，是不算钱的。</p>
+<h3 id="为什么是花了-40g">为什么是花了 40G ？</h3>
+<p>这是一个非常好的问题。</p>
+<p>在实践的过程中，我采用的是 AWS Lambda 作为 Serverless 服务背后的计算引擎。AWS Lambda 是一种函数即服务（Function-as-a-Servcie，FaaS）的计算服务，简单的来说就是：开发人员直接编写运行在云上的函数、功能、服务。由云服务产商提供操作系统、运行环境、网关等一系列的基础环境，我们只需要关注于编写我们的业务代码即可。</p>
+<p>是的，你没听错，我们只需要<strong>考虑怎么用代码提供价值即可</strong>。我们甚至连可扩展、蓝绿部署等一系列的问题都不用考虑，Amazon 优秀的运营工程师已经帮助我们打造了这一系列的基础设施。并且与传统的 AWS 服务一样，如 Elastic Compute Cloud（EC2），它们都是按流量算钱的。</p>
+<p>那么问题又来了，它到底是怎么对一个函数收钱的。我在 Lambda 函数上运行一个 Hello, world 它会怎么收我的钱呢？</p>
+<p>如果要对一个运行的函数收费，那么想必只有运行时间、CPU、内存占用、硬盘这几个条件。可针对于不同的需求，提供不同的 CPU 是一件很麻烦的事。对于代码来说，一个应用占用的硬盘空间几乎可以忽略不计。当然，这些应用会在你的 S3 上有一个备份。于是，诸如 AWS 采用的是运行时间 + 内存的计算方式。</p>
 <table>
 <thead>
 <tr class="header">
@@ -239,12 +235,51 @@
 <td>0.000000208</td>
 </tr>
 <tr class="even">
+<td>192</td>
+<td>2,133,333</td>
+<td>0.000000313</td>
+</tr>
+<tr class="odd">
+<td>256</td>
+<td>1,600,000</td>
+<td>0.000000417</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
 <td>1024</td>
 <td>400,000</td>
 <td>0.000001667</td>
 </tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+<td>…</td>
+</tr>
 </tbody>
 </table>
+<p>在运行程序的时候，AWS 会统计出一个时间和内存，如下所示：</p>
+<pre><code>REPORT RequestId: 041138f9-bc81-11e7-aa63-0dbab83f773d  Duration: 2.49 ms   Billed Duration: 100 ms     Memory Size: 1024 MB    Max Memory Used: 20 MB</code></pre>
+<p>其中的 <code>Memory Size</code> 即是我们选用的套餐类型，Duration 即是运行的时间，Max Memory Used 是我们应用运行时占用的内存。根据我们的 Max Memory Used 数值及应用的计算量，我们可以很轻松地计算出我们所需要的套餐。</p>
+<p>因此，如果我们选用 128M 的套餐，然后运行了 320 次，一共算是使用了 320G 的计算量。而其运行时间会被舍入到最近的 100ms，就算我们运行了 2.49ms，那么也是按 100ms 算的。那么假设，我们的 320 次计算都花了 1s，也就是 10<em>100ms，那么我们要支付的费用是：10</em>320*0.000000208=0.0006656刀，即使转成人民币也就是不到 1 毛钱的 0.00452608。</p>
+<p>不过如上表所示，AWS 为 Lambda 提供了一个免费套餐（无期限地提供给新老用户）包含每月 1M 免费请求以及每月 400 000 GB 秒的计算时间。这就意味着，在很长的时间里，我们一分钟都不用花。</p>
+<h3 id="serverless">Serverless</h3>
+<p>好了，让我们来做一个简单的总结：</p>
+<p>事件驱动</p>
+<p>JavaScript 机制。</p>
+<h3 id="tips">Tips</h3>
+<p>并不一定使用这些云服务，如 AWS，才能称为 Serverless。诸如我的同事 《<a href="https://blog.jimmylv.info/2017-06-30-serverless-in-action-build-personal-reading-statistics-system/">Serverless 实战：打造个人阅读追踪系统</a>》，采用的是：IFTTT + WebTask + GitHub Webhook 的技术栈。它只是意味着，你所有的服务中的一部分运行在云上运行：</p>
+<figure>
+<img src="images/server-growth.jpg" alt="Serverless Growth" /><figcaption>Serverless Growth</figcaption>
+</figure>
+<h2 id="serverless-的优势">Serverless 的优势</h2>
+<h3 id="运营成本优势">运营成本优势</h3>
+<p>对于，初创公司来说，他们没有基础设施，也没有财力，也可能没有能力去建设基础设施。采用云服务往往是最好的选择，可以节省大量的资金。与此同时，诸如 AWS 这样庞大的系统，对于创业公司的程序员来说，也不能容易消化掉的一个系统。</p>
+<p>而如果一家创业公司采用的是 Serverless，而不是使用云服务器。那么，他就会拥有更多的时间去开发，不需要担心维护。只需要为运行时的软件付钱。</p>
+<p>按需计算就意味着，在请求到来的时候，才运行函数。没有请求的时候，是不算钱的。</p>
 <h3 id="开发成本">开发成本</h3>
 <h3 id="更少的代码">更少的代码</h3>
 <p>更少的代码，意味着更少的 bug</p>
@@ -257,6 +292,7 @@
 <h3 id="快速启动">快速启动</h3>
 <h3 id="适应微服务架构">适应微服务架构</h3>
 <h3 id="运维成本">运维成本</h3>
+<p>对于我而言，缺乏大量的后台架构实践经验，也需要大量的 DevOps。</p>
 <p>不需要考虑系统底层安全问题，</p>
 <p>我不再需要担心有人尝试登录系统, blabla</p>
 <p>唯一需要担心的，可能是有人发起 DDOS 攻击。而根据<a href="https://thenewstack.io/zombie-toasters-eat-startup/">Could Zombie Toasters DDoS My Serverless Deployment?</a>的计算</p>
@@ -347,7 +383,7 @@
 <h2 id="迁移方案">迁移方案</h2>
 <p>Express 应用示例</p>
 <h2 id="serverless-框架">Serverless 框架</h2>
-<h3 id="serverless">Serverless</h3>
+<h3 id="serverless-1">Serverless</h3>
 <h3 id="apex">Apex</h3>
 <h3 id="apache-openwhisk">Apache OpenWhisk</h3>
 <h1 id="serverless-的-hello-world">Serverless 的 hello, world</h1>
