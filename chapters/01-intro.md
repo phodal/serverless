@@ -62,6 +62,12 @@ Serverless 的背后是 诸如 AWS Lambda 这样的 FaaS（Function as a Service
 
 不需要考虑系统底层安全问题，
 
+我不再需要担心有人尝试登录系统, blabla
+
+唯一需要担心的，可能是有人发起 DDOS 攻击。而根据[Could Zombie Toasters DDoS My Serverless Deployment?](https://thenewstack.io/zombie-toasters-eat-startup/)的计算
+
+每百万的请求，大概是 0.2 刀，每小时 360000000 个请求，也就 72 刀。
+
 Serverless 的适用场景
 ---
 
