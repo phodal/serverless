@@ -44,9 +44,15 @@
 <li><a href="#serverless-架构应用开发指南">Serverless 架构应用开发指南</a></li>
 <li><a href="#什么是-serverless-架构">什么是 Serverless 架构？？</a><ul>
 <li><a href="#serverless-的优势">Serverless 的优势</a><ul>
-<li><a href="#更少的代码更快的速度">更少的代码、更快的速度</a></li>
+<li><a href="#运营成本优势">运营成本优势</a></li>
+<li><a href="#开发成本">开发成本</a></li>
+<li><a href="#更少的代码">更少的代码</a></li>
+<li><a href="#更快的开发速度">更快的开发速度</a></li>
+<li><a href="#扩展能力">扩展能力</a></li>
 <li><a href="#管理">管理？？</a></li>
 <li><a href="#快速启动">快速启动</a></li>
+<li><a href="#适应微服务架构">适应微服务架构</a></li>
+<li><a href="#运维成本">运维成本</a></li>
 </ul></li>
 <li><a href="#serverless-的适用场景">Serverless 的适用场景</a><ul>
 <li><a href="#发送通知邮件短信等">发送通知（邮件、短信等）</a></li>
@@ -200,8 +206,11 @@
 <p>并不一定使用这些云服务，如 AWS，才能称为 Serverless。诸如我的同事 《<a href="https://blog.jimmylv.info/2017-06-30-serverless-in-action-build-personal-reading-statistics-system/">Serverless 实战：打造个人阅读追踪系统</a>》，采用的是</p>
 <p>IFTTT + WebTask + GitHub Webhook + GitHub</p>
 <p>意味着，你所有的服务中的一部分运行在 xxx 上，</p>
+<figure>
+<img src="images/server-growth.jpg" alt="Serverless Growth" /><figcaption>Serverless Growth</figcaption>
+</figure>
 <h2 id="serverless-的优势">Serverless 的优势</h2>
-<p><strong>运营成本</strong></p>
+<h3 id="运营成本优势">运营成本优势</h3>
 <p>对于，初创公司来说，他们没有基础设施，也没有财力，也可能没有能力去建设基础设施。采用云服务往往是最好的选择，可以节省大量的资金。与此同时，诸如 AWS 这样庞大的系统，对于创业公司的程序员来说，也不能容易消化掉的一个系统。</p>
 <p>而如果一家创业公司采用的是 Serverless，而不是使用云服务器。那么，他就会拥有更多的时间去开发，不需要担心维护。只需要为运行时的软件付钱。</p>
 <p>按需计算就意味着，在请求到来的时候，才运行函数。没有请求的时候，是不算钱的。</p>
@@ -226,14 +235,19 @@
 </tr>
 </tbody>
 </table>
-<p><strong>开发成本</strong></p>
-<h3 id="更少的代码更快的速度">更少的代码、更快的速度</h3>
+<h3 id="开发成本">开发成本</h3>
+<h3 id="更少的代码">更少的代码</h3>
 <p>更少的代码，意味着更少的 bug</p>
-<p><strong>扩展能力</strong></p>
+<h3 id="更快的开发速度">更快的开发速度</h3>
+<p>关注于业务，而非技术</p>
+<h3 id="扩展能力">扩展能力</h3>
 <p>Serverless 的背后是 诸如 AWS Lambda 这样的 FaaS（Function as a Services）。</p>
 <p>对于传统应用来说，要应对更多的请求的方式，就是部署更多的实例。然而，这个时候往往已经来不及了。而对于 FaaS 来说，我们并不需要这么做，FaaS 会自动的扩展。它可以在需要时尽可能多地启动实例副本，而不会发生冗长的部署和配置延迟。</p>
 <h3 id="管理">管理？？</h3>
 <h3 id="快速启动">快速启动</h3>
+<h3 id="适应微服务架构">适应微服务架构</h3>
+<h3 id="运维成本">运维成本</h3>
+<p>不需要考虑系统底层安全问题，</p>
 <h2 id="serverless-的适用场景">Serverless 的适用场景</h2>
 <ul>
 <li>事件驱动的数据编程</li>
