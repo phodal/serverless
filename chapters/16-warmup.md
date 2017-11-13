@@ -1,4 +1,4 @@
-Serverless 架构应用开发：使用 warmup 插件保活，避免应用冷启动
+使用 warmup 插件保活，避免应用冷启动
 ===
 
 我们采用的 Serverless 底层的技术是 Lambda 计算。Lambda 计算是在调用时才运行，我们的程序不是时刻在后台运行的，当我们的 HTTP API 请求到了 API Gateway 的时候，才会开始调用我们的 Lambda 函数。这个时候，我们的应用程序才正式开发运行。从启动到运行的这段时间，就是 Lambda 函数的冷启动时间。

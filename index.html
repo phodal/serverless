@@ -181,7 +181,7 @@
 <li><a href="#部署-aws-iot-serverless-服务">部署 AWS IoT Serverless 服务</a></li>
 <li><a href="#查看日志">查看日志</a></li>
 </ul></li>
-<li><a href="#serverless-架构应用开发使用-warmup-插件保活避免应用冷启动">Serverless 架构应用开发：使用 warmup 插件保活，避免应用冷启动</a><ul>
+<li><a href="#使用-warmup-插件保活避免应用冷启动">使用 warmup 插件保活，避免应用冷启动</a><ul>
 <li><a href="#使用-serverless-plugin-warmup-保持唤醒">使用 serverless-plugin-warmup 保持唤醒</a></li>
 <li><a href="#部署及测试-1">部署及测试</a></li>
 <li><a href="#结论-2">结论</a></li>
@@ -2238,7 +2238,7 @@ functions:
 END RequestId: 76ad40d4-bc84-11e7-885a-6182fb121f8c
 REPORT RequestId: 76ad40d4-bc84-11e7-885a-6182fb121f8c  Duration: 68.80 ms  Billed Duration: 100 ms   Memory Size: 1024 MB  Max Memory Used: 22 MB</code></pre>
 <p>如果只是测试用途，可以在执行完成后执行 <code>serverless remove</code> 来删除对应的服务，以减少开支。</p>
-<h1 id="serverless-架构应用开发使用-warmup-插件保活避免应用冷启动">Serverless 架构应用开发：使用 warmup 插件保活，避免应用冷启动</h1>
+<h1 id="使用-warmup-插件保活避免应用冷启动">使用 warmup 插件保活，避免应用冷启动</h1>
 <p>我们采用的 Serverless 底层的技术是 Lambda 计算。Lambda 计算是在调用时才运行，我们的程序不是时刻在后台运行的，当我们的 HTTP API 请求到了 API Gateway 的时候，才会开始调用我们的 Lambda 函数。这个时候，我们的应用程序才正式开发运行。从启动到运行的这段时间，就是 Lambda 函数的冷启动时间。</p>
 <p>据今年初 <a href="https://blog.newrelic.com/2017/01/11/aws-lambda-cold-start-optimization/">New Relic</a> 的统计数据表明，Lambda 函数的冷启动时间，在 50ms~200ms 之间——幸运的是，大多部分都是在 50ms 内。</p>
 <p>除了，我们之前提到的使用<a href="https://www.phodal.com/blog/serverless-development-guide-cron-scheduled-job/">CRON 定时执行 Lambda 任务</a>。我们还就可以试 serverless-plugin-warmup 插件。</p>
