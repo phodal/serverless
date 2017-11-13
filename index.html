@@ -42,7 +42,8 @@
 <nav id="TOC">
 <ul>
 <li><a href="#serverless-架构应用开发指南">Serverless 架构应用开发指南</a></li>
-<li><a href="#什么是-serverless-架构">什么是 Serverless 架构？？</a><ul>
+<li><a href="#serverless-架构">Serverless 架构</a><ul>
+<li><a href="#什么是-serverless-架构">什么是 Serverless 架构？？</a></li>
 <li><a href="#serverless-的优势">Serverless 的优势</a><ul>
 <li><a href="#运营成本优势">运营成本优势</a></li>
 <li><a href="#开发成本">开发成本</a></li>
@@ -180,6 +181,11 @@
 <li><a href="#部署-aws-iot-serverless-服务">部署 AWS IoT Serverless 服务</a></li>
 <li><a href="#查看日志">查看日志</a></li>
 </ul></li>
+<li><a href="#serverless-架构应用开发使用-warmup-插件保活避免应用冷启动">Serverless 架构应用开发：使用 warmup 插件保活，避免应用冷启动</a><ul>
+<li><a href="#使用-serverless-plugin-warmup-保持唤醒">使用 serverless-plugin-warmup 保持唤醒</a></li>
+<li><a href="#部署及测试-1">部署及测试</a></li>
+<li><a href="#结论-2">结论</a></li>
+</ul></li>
 <li><a href="#定时执行任务">定时执行任务</a><ul>
 <li><a href="#serverless-定时任务">Serverless 定时任务</a><ul>
 <li><a href="#rate-表达式">rate 表达式</a></li>
@@ -198,7 +204,11 @@
 <blockquote>
 <p>Serverless Framework是无服务器应用框架和生态系统，旨在简化开发和部署AWS Lambda应用程序的工作。Serverless Framework 作为 Node.js NPM 模块提供，填补了AWS Lambda 存在的许多缺口。它提供了多个样本模板，可以迅速启动 AWS Lambda 开发。</p>
 </blockquote>
-<h1 id="什么是-serverless-架构">什么是 Serverless 架构？？</h1>
+<h1 id="serverless-架构">Serverless 架构</h1>
+<blockquote>
+<p>花了 20G，我终于弄清楚了 Serverless 是什么？</p>
+</blockquote>
+<h2 id="什么是-serverless-架构">什么是 Serverless 架构？？</h2>
 <p>对于我而言，缺乏大量的后台架构实践经验，也需要大量的 DevOps。</p>
 <p>开发者无需考虑服务器细节，只需要负责编写发生某些事件后所需执行的代码。</p>
 <p>事件驱动</p>
@@ -2228,6 +2238,94 @@ functions:
 END RequestId: 76ad40d4-bc84-11e7-885a-6182fb121f8c
 REPORT RequestId: 76ad40d4-bc84-11e7-885a-6182fb121f8c  Duration: 68.80 ms  Billed Duration: 100 ms   Memory Size: 1024 MB  Max Memory Used: 22 MB</code></pre>
 <p>如果只是测试用途，可以在执行完成后执行 <code>serverless remove</code> 来删除对应的服务，以减少开支。</p>
+<h1 id="serverless-架构应用开发使用-warmup-插件保活避免应用冷启动">Serverless 架构应用开发：使用 warmup 插件保活，避免应用冷启动</h1>
+<p>我们采用的 Serverless 底层的技术是 Lambda 计算。Lambda 计算是在调用时才运行，我们的程序不是时刻在后台运行的，当我们的 HTTP API 请求到了 API Gateway 的时候，才会开始调用我们的 Lambda 函数。这个时候，我们的应用程序才正式开发运行。从启动到运行的这段时间，就是 Lambda 函数的冷启动时间。</p>
+<p>据今年初 <a href="https://blog.newrelic.com/2017/01/11/aws-lambda-cold-start-optimization/">New Relic</a> 的统计数据表明，Lambda 函数的冷启动时间，在 50ms~200ms 之间——幸运的是，大多部分都是在 50ms 内。</p>
+<p>除了，我们之前提到的使用<a href="https://www.phodal.com/blog/serverless-development-guide-cron-scheduled-job/">CRON 定时执行 Lambda 任务</a>。我们还就可以试 serverless-plugin-warmup 插件。</p>
+<h2 id="使用-serverless-plugin-warmup-保持唤醒">使用 serverless-plugin-warmup 保持唤醒</h2>
+<p>首先，让我们添加 <code>serverless-plugin-warmup</code> 插件：</p>
+<pre><code>npm install serverless-plugin-warmup --save-dev</code></pre>
+<p>然后，将插件添加到 <code>serverless.yml</code> 中：</p>
+<pre><code>plugins:
+  - serverless-plugin-warmup</code></pre>
+<p>接着添加对应的 <code>warmup</code> 属性：</p>
+<pre><code>functions:
+  hello:
+    warmup: true</code></pre>
+<p>也可以设置成只在生产环境运行：</p>
+<pre><code>functions:
+  hello:
+    warmup:
+      - production
+      - staging</code></pre>
+<p>添加对应的 role 和权限</p>
+<pre><code>
+provider:
+  name: aws
+  runtime: nodejs6.10
+  iamRoleStatements:
+    - Effect: &#39;Allow&#39;
+      Action:
+        - &#39;lambda:InvokeFunction&#39;
+      Resource:
+      - Fn::Join:
+        - &#39;:&#39;
+        - - arn:aws:lambda
+          - Ref: AWS::Region
+          - Ref: AWS::AccountId
+          - function:${self:service}-${opt:stage, self:provider.stage}-*</code></pre>
+<p>接着，在我们的响应里添加一个处理函数：</p>
+<pre><code>  /** Immediate response for WarmUP plugin */
+  if (event.source === &#39;serverless-plugin-warmup&#39;) {
+    console.log(&#39;WarmUP - Lambda is warm!&#39;)
+    return callback(null, &#39;Lambda is warm!&#39;)
+  }</code></pre>
+<p>步骤上可能有些麻烦，现在也差不多了。</p>
+<h2 id="部署及测试-1">部署及测试</h2>
+<p>下面就可以部署了：</p>
+<pre><code>$ serverless deploy
+
+..............................
+Serverless: Stack update finished...
+Service Information
+service: warmup
+stage: dev
+region: us-east-1
+stack: warmup-dev
+api keys:
+  None
+endpoints:
+  None
+functions:
+  hello: warmup-dev-hello
+  warmUpPlugin: warmup-dev-warmUpPlugin</code></pre>
+<p>等个十几分钟，就可以看到日志：</p>
+<pre><code>START RequestId: 94e89a8f-c820-11e7-bc6a-d3e2ee9afad9 Version: $LATEST
+2017-11-13 11:13:12.382 (+08:00)  94e89a8f-c820-11e7-bc6a-d3e2ee9afad9  WarmUP - Lambda is warm!
+END RequestId: 94e89a8f-c820-11e7-bc6a-d3e2ee9afad9
+REPORT RequestId: 94e89a8f-c820-11e7-bc6a-d3e2ee9afad9  Duration: 3.14 ms Billed Duration: 100 ms   Memory Size: 1024 MB  Max Memory Used: 20 MB
+
+START RequestId: 468dbf48-c821-11e7-9753-29196147d2a5 Version: $LATEST
+2017-11-13 11:18:10.224 (+08:00)  468dbf48-c821-11e7-9753-29196147d2a5  WarmUP - Lambda is warm!
+END RequestId: 468dbf48-c821-11e7-9753-29196147d2a5
+REPORT RequestId: 468dbf48-c821-11e7-9753-29196147d2a5  Duration: 0.80 ms Billed Duration: 100 ms   Memory Size: 1024 MB  Max Memory Used: 20 MB</code></pre>
+<p>这个时候，我们的应用程序一直在运行，因此我们需要考虑的一个问题是：费用。该插件在官方上，帮我们算了一下钱：</p>
+<blockquote>
+<p>WarmUP: runs 8640 times per month = $0.18 10 warm lambdas: each invoked 8640 times per month = $14.4 Total = $14.58</p>
+</blockquote>
+<p>一个唤醒函数，一个月才 0.18 刀，想想觉得还是可以的。</p>
+<p>当然，它还可以自定义参数：</p>
+<pre><code>custom:
+  warmup:
+    cleanFolder: false,
+    memorySize: 256
+    name: &#39;make-them-pop&#39;
+    schedule: &#39;cron(0/5 8-17 ? * MON-FRI *)&#39; // Run WarmUP every 5 minutes Mon-Fri between 8:00am and 5:55pm (UTC)
+    timeout: 20
+    prewarm: true // Run WarmUp immediately after a deployment
+    folderName: &#39;_warmup&#39; // Name of the folder created for the generated warmup lambda</code></pre>
+<h2 id="结论-2">结论</h2>
+<p>有了这个插件，我们就可以在用户活跃的时间里，如白天，让 Lambda 函数保活。在用户不活跃的时间里，我们就可以连这点钱也省下。</p>
 <h1 id="定时执行任务">定时执行任务</h1>
 <p>原文链接：<a href="https://www.phodal.com/blog/serverless-development-guide-cron-scheduled-job/">Serverless 应用开发指南：CRON 定时执行 Lambda 任务</a></p>
 <p>在上一篇文章《<a href="https://www.phodal.com/blog/serverless-development-guide-create-github-hooks/">Serverless 应用开发指南：基于 Serverless 的 GitHub Webhook</a>》里，我们介绍了如何用 Webhook 来触发定时的 Lambda 函数。这种方式与我们平时的 CI（持续集成）服务器相似，而CI（持续集成）服务器除了会监听 PUSH 事件。还会执行一些定时的任务，比如说每日构建出二进制包，用于 RELEASE。</p>
