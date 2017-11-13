@@ -157,7 +157,21 @@ But，由于国内的条件限制（信息监管），这并不是一件容易�
 Serverless 的问题
 ---
 
-### 完全依赖于第三方服务
+### 完全依赖于云服务
+
+
+应对方案，建立隔离层。
+
+这意味着，你需要建议隔离层，
+
+ - 隔离 API 网关
+ - 隔离数据库层，考虑到市面上还没有成熟的 ORM 工具，让你即支持 Firebase，又支持 DynamoDB 
+
+### 冷启动
+
+据 New Relic 官方博客《[Understanding AWS Lambda Performance—How Much Do Cold Starts Really Matter?](https://blog.newrelic.com/2017/01/11/aws-lambda-cold-start-optimization/)》称，AWS Lambda 的冷启动时间。
+
+![AWS 启动时间](aws-lambda-monitoring-functions-chart.png)
 
 ### 严重依赖第三方 API
 

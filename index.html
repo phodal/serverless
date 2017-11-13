@@ -61,7 +61,8 @@
 <li><a href="#博客系统">博客系统</a></li>
 </ul></li>
 <li><a href="#serverless-的问题">Serverless 的问题</a><ul>
-<li><a href="#完全依赖于第三方服务">完全依赖于第三方服务</a></li>
+<li><a href="#完全依赖于云服务">完全依赖于云服务</a></li>
+<li><a href="#冷启动">冷启动</a></li>
 <li><a href="#严重依赖第三方-api">严重依赖第三方 API</a></li>
 <li><a href="#缺乏调试和开发工具">缺乏调试和开发工具</a></li>
 <li><a href="#构建复杂">构建复杂</a></li>
@@ -284,7 +285,18 @@
 <p>这一点与微服务是相当类似。</p>
 <p>相似的，它们是相辅相成的。</p>
 <h2 id="serverless-的问题">Serverless 的问题</h2>
-<h3 id="完全依赖于第三方服务">完全依赖于第三方服务</h3>
+<h3 id="完全依赖于云服务">完全依赖于云服务</h3>
+<p>应对方案，建立隔离层。</p>
+<p>这意味着，你需要建议隔离层，</p>
+<ul>
+<li>隔离 API 网关</li>
+<li>隔离数据库层，考虑到市面上还没有成熟的 ORM 工具，让你即支持 Firebase，又支持 DynamoDB</li>
+</ul>
+<h3 id="冷启动">冷启动</h3>
+<p>据 New Relic 官方博客《<a href="https://blog.newrelic.com/2017/01/11/aws-lambda-cold-start-optimization/">Understanding AWS Lambda Performance—How Much Do Cold Starts Really Matter?</a>》称，AWS Lambda 的冷启动时间。</p>
+<figure>
+<img src="aws-lambda-monitoring-functions-chart.png" alt="AWS 启动时间" /><figcaption>AWS 启动时间</figcaption>
+</figure>
 <h3 id="严重依赖第三方-api">严重依赖第三方 API</h3>
 <p>是的，</p>
 <p>在这种情况下，只能将不重要的 API 放在 Serverless 上。</p>
