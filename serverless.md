@@ -63,19 +63,6 @@ Serverless 的背后是 诸如 AWS Lambda 这样的 FaaS（Function as a Service
 
 ### 快速启动
 
-Serverelss 的原则
----
-
-**编写单一用途的无状态函数**
-
-每一个服务尽可能的小，不一定拥有数据库，也可以共用。
-
-**设计基于推送的、事件驱动的管道**
-
-**集成第三方服务**
-
-Auth0 例子、GitHub Hook 示例
-
 Serverless 的适用场景
 ---
 
@@ -173,6 +160,8 @@ Serverless 的问题
 
 ![AWS 启动时间](aws-lambda-monitoring-functions-chart.png)
 
+### 不适合长期运行应用
+
 ### 严重依赖第三方 API
 
 是的，
@@ -203,15 +192,34 @@ Serverless 的问题
 
 ### 缺乏基础设施
 
+### 语言版本落后
+
+如 Node.js
+
+
+
+Serverelss 的原则
+---
+
+**编写单一用途的无状态函数**
+
+每一个服务尽可能的小，不一定拥有数据库，也可以共用。
+
+**设计基于推送的、事件驱动的管道**
+
+**集成第三方服务**
+
+Auth0 例子、GitHub Hook 示例
+
 迁移方案
 ---
 
 Express 应用示例
 
-Serverless 框架 
+Serverless 框架
 ---
 
-### Serverless 
+### Serverless
 
 ### Apex
 

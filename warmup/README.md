@@ -75,6 +75,23 @@ custom:
     folderName: '_warmup' // Name of the folder created for the generated warmup lambda
 ```
 
+```
+..............................
+Serverless: Stack update finished...
+Service Information
+service: warmup
+stage: dev
+region: us-east-1
+stack: warmup-dev
+api keys:
+  None
+endpoints:
+  None
+functions:
+  hello: warmup-dev-hello
+  warmUpPlugin: warmup-dev-warmUpPlugin
+```
+
 花费
 ---
 

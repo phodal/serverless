@@ -48,7 +48,6 @@
 <li><a href="#管理">管理？？</a></li>
 <li><a href="#快速启动">快速启动</a></li>
 </ul></li>
-<li><a href="#serverelss-的原则">Serverelss 的原则</a></li>
 <li><a href="#serverless-的适用场景">Serverless 的适用场景</a><ul>
 <li><a href="#发送通知邮件短信等">发送通知（邮件、短信等）</a></li>
 <li><a href="#轻量级-api">轻量级 API</a></li>
@@ -63,13 +62,16 @@
 <li><a href="#serverless-的问题">Serverless 的问题</a><ul>
 <li><a href="#完全依赖于云服务">完全依赖于云服务</a></li>
 <li><a href="#冷启动">冷启动</a></li>
+<li><a href="#不适合长期运行应用">不适合长期运行应用</a></li>
 <li><a href="#严重依赖第三方-api">严重依赖第三方 API</a></li>
 <li><a href="#缺乏调试和开发工具">缺乏调试和开发工具</a></li>
 <li><a href="#构建复杂">构建复杂</a></li>
 <li><a href="#自然限制">自然限制</a></li>
 <li><a href="#复杂的逻辑不易迁移">复杂的逻辑不易迁移</a></li>
 <li><a href="#缺乏基础设施">缺乏基础设施</a></li>
+<li><a href="#语言版本落后">语言版本落后</a></li>
 </ul></li>
+<li><a href="#serverelss-的原则">Serverelss 的原则</a></li>
 <li><a href="#迁移方案">迁移方案</a></li>
 <li><a href="#serverless-框架">Serverless 框架</a><ul>
 <li><a href="#serverless">Serverless</a></li>
@@ -232,12 +234,6 @@
 <p>对于传统应用来说，要应对更多的请求的方式，就是部署更多的实例。然而，这个时候往往已经来不及了。而对于 FaaS 来说，我们并不需要这么做，FaaS 会自动的扩展。它可以在需要时尽可能多地启动实例副本，而不会发生冗长的部署和配置延迟。</p>
 <h3 id="管理">管理？？</h3>
 <h3 id="快速启动">快速启动</h3>
-<h2 id="serverelss-的原则">Serverelss 的原则</h2>
-<p><strong>编写单一用途的无状态函数</strong></p>
-<p>每一个服务尽可能的小，不一定拥有数据库，也可以共用。</p>
-<p><strong>设计基于推送的、事件驱动的管道</strong></p>
-<p><strong>集成第三方服务</strong></p>
-<p>Auth0 例子、GitHub Hook 示例</p>
 <h2 id="serverless-的适用场景">Serverless 的适用场景</h2>
 <ul>
 <li>事件驱动的数据编程</li>
@@ -297,6 +293,7 @@
 <figure>
 <img src="aws-lambda-monitoring-functions-chart.png" alt="AWS 启动时间" /><figcaption>AWS 启动时间</figcaption>
 </figure>
+<h3 id="不适合长期运行应用">不适合长期运行应用</h3>
 <h3 id="严重依赖第三方-api">严重依赖第三方 API</h3>
 <p>是的，</p>
 <p>在这种情况下，只能将不重要的 API 放在 Serverless 上。</p>
@@ -312,6 +309,14 @@
 <p>使用多少内存、CPU 限制等等</p>
 <h3 id="复杂的逻辑不易迁移">复杂的逻辑不易迁移</h3>
 <h3 id="缺乏基础设施">缺乏基础设施</h3>
+<h3 id="语言版本落后">语言版本落后</h3>
+<p>如 Node.js</p>
+<h2 id="serverelss-的原则">Serverelss 的原则</h2>
+<p><strong>编写单一用途的无状态函数</strong></p>
+<p>每一个服务尽可能的小，不一定拥有数据库，也可以共用。</p>
+<p><strong>设计基于推送的、事件驱动的管道</strong></p>
+<p><strong>集成第三方服务</strong></p>
+<p>Auth0 例子、GitHub Hook 示例</p>
 <h2 id="迁移方案">迁移方案</h2>
 <p>Express 应用示例</p>
 <h2 id="serverless-框架">Serverless 框架</h2>
