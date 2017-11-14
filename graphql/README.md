@@ -1,6 +1,9 @@
 
 
 
+GraphQL hello, world
+---
+
 ```
 serverless create --template aws-nodejs --path graphql
 ```
@@ -85,3 +88,47 @@ $ curl -G https://5ol2v4lnx3.execute-api.us-east-1.amazonaws.com/dev/query --dat
 {"data":{"hello":"world"}}
 ```
 
+更复杂的示例
+---
+
+> 一个GraphQL查询可以包含一个或者多个操作（operation），类似于一个RESTful API。操作（operation）可以使两种类型：查询（Query）或者修改（mutation）
+
+```
+serverless install -u https://github.com/serverless/examples/tree/master/aws-node-graphql-api-with-dynamodb -n graphql-dynamodb
+```
+
+部署：
+
+
+```
+$ serverless deploy
+
+...
+stack: graphql-dynamodb-dev
+api keys:
+  None
+endpoints:
+  GET - https://jzlqq3fgfd.execute-api.us-east-1.amazonaws.com/dev/query
+functions:
+  query: graphql-dynamodb-dev-query
+```
+
+```
+$ curl -G 'https://jzlqq3fgfd.execute-api.us-east-1.amazonaws.com/dev/query' --data-urlencode 'query={greeting(firstName: "world")}'
+
+{"data":{"greeting":"Hello, world."}}
+```
+
+修改
+
+```
+$ curl -G 'https://jzlqq3fgfd.execute-api.us-east-1.amazonaws.com/dev/query' --data-urlencode 'query=mutation {changeNickname(firstName: "world", nickname: "phodal")}'
+
+{"data":{"changeNickname":"phodal"}}
+```
+
+```
+$ curl -G 'https://jzlqq3fgfd.execute-api.us-east-1.amazonaws.com/dev/query' --data-urlencode 'query={greeting(firstName: "world")}'
+
+{"data":{"greeting":"Hello, phodal."}}
+```
