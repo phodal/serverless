@@ -22,6 +22,18 @@ Serverless 架构
 什么是 Serverless 架构？？
 ---
 
+> 开发人员为了保证开发环境的正确（即，这个 Bug 不是环境因素造成的），想出了一系列的隔离方式：虚拟机、容器虚拟化、语言虚拟机、应用容器（如 Java 的 Tomcat）、虚拟环境（如 Python 中的 virtualenv），甚至是独立于语言的 DSL。[^full_stack]
+
+从最早的物理服务器开始，我们都在不断地抽象或者虚拟化服务器。
+
+![服务器发展](images/server-growth.jpg)
+
+ - 我们使用 XEN、KVM等虚拟化技术，隔离了硬件以及运行在这之上的操作系统。
+ - 我们使用云计算进一步地自动管理这些虚拟化的资源。
+ - 我们使用 Docker 等容器技术，隔离了应用的操作系统与服务器的操作。
+
+现在，我们有了 Serverless，我们可以隔离操作系统，乃至更底层的技术细节。
+
 ### 为什么是花了 40G ？
 
 这是一个非常好的问题。
@@ -55,20 +67,19 @@ REPORT RequestId: 041138f9-bc81-11e7-aa63-0dbab83f773d	Duration: 2.49 ms	Billed 
 
 不过如上表所示，AWS 为 Lambda 提供了一个免费套餐（无期限地提供给新老用户）包含每月 1M 免费请求以及每月 400 000 GB 秒的计算时间。这就意味着，在很长的时间里，我们一分钟都不用花。
 
-### Serverless
+### Serverless 是什么？
 
-好了，让我们来做一个简单的总结：
+从上面的内容中，我们可以知道这么几点：
 
-事件驱动
+ - 在 Serverless 应用中，开发者只需要专注于业务，剩下的运维等工作都不需要操心
+ - Serverless 是**真正的按需使用**，请求到来时才开始运行
+ - Serverless 是按运行时间和内存来算钱的
+ - Serverless 应用严重依赖于特定的云平台、第三方服务
 
-JavaScript 机制。
+当然这些都是一些虚无缥缈地东西。
 
 
-### Tips
-
-并不一定使用这些云服务，如 AWS，才能称为 Serverless。诸如我的同事 《[Serverless 实战：打造个人阅读追踪系统](https://blog.jimmylv.info/2017-06-30-serverless-in-action-build-personal-reading-statistics-system/)》，采用的是：IFTTT + WebTask + GitHub Webhook 的技术栈。它只是意味着，你所有的服务中的一部分运行在云上运行：
-
-![Serverless Growth](images/server-growth.jpg)
+并不一定使用这些云服务（如 AWS），才能称为 Serverless。诸如我的同事在 《[Serverless 实战：打造个人阅读追踪系统](https://blog.jimmylv.info/2017-06-30-serverless-in-action-build-personal-reading-statistics-system/)》，采用的是：IFTTT + WebTask + GitHub Webhook 的技术栈。它只是意味着，你所有的应用中的一部分服务直接使用的是第三方服务。
 
 Serverless 的优势
 ---
@@ -85,7 +96,11 @@ Serverless 的优势
 
 #### 降低开发成本
 
+当然，将应用设计成无状态应用，对于早期的系统，可能是一种挑战。
+
 ### 实现快速上线
+
+在我使用 Serverless Framework 开发应用的过程中，最方便的莫过于，第一次部署和第二次、第三次部署没有什么区别。只需要执行``serverless deploy``，几分钟后，我们代码就运行在线上。如果是一个传统的 AWS 应用，我需要 SSH 到我的服务器上部署，这样才能写好我的自动部署脚本。除此，我还需要担忧这个过程中，有哪些用户有使用。
 
 #### 更少的代码
 
@@ -111,18 +126,23 @@ Serverless 的优势
 
 每百万的请求，大概是 0.2 刀，每小时 360000000 个请求，也就 72 刀。
 
+### 适应微服务架构
 
-### 架构优势
+微服务并不能替换大量的单体应用
 
-### 无状态
+优势：**编写单一用途的无状态函数**。
 
-#### 适应微服务架构
+这一点与微服务是相当类似。
+
+相似的，它们是相辅相成的。
 
 ### 自动扩展能力
 
 Serverless 的背后是 诸如 AWS Lambda 这样的 FaaS（Function as a Services）。
 
 对于传统应用来说，要应对更多的请求的方式，就是部署更多的实例。然而，这个时候往往已经来不及了。而对于 FaaS 来说，我们并不需要这么做，FaaS 会自动的扩展。它可以在需要时尽可能多地启动实例副本，而不会发生冗长的部署和配置延迟。
+
+这依赖于我们的服务是无状态的，我们才能次无忌惮地不断运行起新的实例。
 
 Serverless 的适用场景
 ---
@@ -189,18 +209,6 @@ But，由于国内的条件限制（信息监管），这并不是一件容易�
 
 过去的几年里，我一直在尝试将我的博客迁移到云服务上，而不是某个主机。
 
-与微服务的关系
-—--
-
-微服务并不能替换大量的单体应用
-
-
-优势：**编写单一用途的无状态函数**。
-
-这一点与微服务是相当类似。
-
-相似的，它们是相辅相成的。
-
 Serverless 的问题
 ---
 
@@ -263,30 +271,22 @@ Serverless 的问题
 
 如 Node.js
 
-Serverelss 设计原则
+其它
 ---
 
-**编写单一用途的无状态函数**
-
-每一个服务尽可能的小，不一定拥有数据库，也可以共用。
-
-**设计基于推送的、事件驱动的管道**
-
-**隔离平台代码与业务代码**
-
-迁移方案
----
+### 迁移方案
 
 Express 应用示例
 
-Serverless 框架
----
+### Serverless 框架
 
 ### Serverless
 
 ### Apex
 
 ### Apache OpenWhisk
+
+[^full_stack]: 选自《全栈应用开发：精益实践》的『隔离与运行环境』一节
 
 Serverless 的 hello, world
 ===
