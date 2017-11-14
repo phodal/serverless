@@ -13,6 +13,7 @@ functions:
     events:
       - http:
           method: get
+          path: hello
 
 custom:
   simulate:
