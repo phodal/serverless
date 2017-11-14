@@ -191,6 +191,11 @@
 </ul></li>
 <li><a href="#部署-1">部署</a></li>
 </ul></li>
+<li><a href="#使用-simulate-插件在本地运行-lambda">使用 Simulate 插件在本地运行 Lambda</a><ul>
+<li><a href="#serverless-plugin-simulate-插件">serverless-plugin-simulate 插件</a></li>
+<li><a href="#安装-serverless-plugin-simulate-及环境">安装 serverless-plugin-simulate 及环境</a></li>
+<li><a href="#运行及测试">运行及测试</a></li>
+</ul></li>
 </ul>
 </nav>
 <h1 id="serverless-架构应用开发指南">Serverless 架构应用开发指南</h1>
@@ -2504,6 +2509,97 @@ REPORT RequestId: 8ea1a80f-bee0-11e7-a0c9-331175998dc2  Duration: 4.08 ms Billed
 <p>当我们想做一个 Serverless 的爬虫定期执行某个任务，这样做可以帮我们节省大量的成本。</p>
 <p>末了，记得执行：</p>
 <pre><code>$ serverless remove</code></pre>
+<h1 id="使用-simulate-插件在本地运行-lambda">使用 Simulate 插件在本地运行 Lambda</h1>
+<p>Serverless 应用的一个不方便之处：缺少一个本地的调试环境。在之前的那篇《<a href="https://www.phodal.com/blog/serverless-architecture-development-serverless-offline-localhost-debug-test/">Serverless 架构应用开发：使用 serverless-offline 在本地部署与调试</a>》中， 我们提到了使用 <code>serverless-offline</code> 插件来在本地部署和调试。在本文中，我们将介绍 <code>serverless-plugin-simulate</code> 插件来解决相似的问题。</p>
+<h2 id="serverless-plugin-simulate-插件">serverless-plugin-simulate 插件</h2>
+<p><code>serverless-plugin-simulate</code> 是一个的概念证明，用来尝试使用 docker 镜像复制 Amazon API Gateway 来运行lambda。</p>
+<p>它可以支持以下的功能：</p>
+<ul>
+<li>由 docker-lambda 支持的 λ 运行时环境。</li>
+<li>CORS</li>
+<li>授权
+<ul>
+<li>自定义授权者（支持）</li>
+<li>Coginito 授权（暂不支持）</li>
+</ul></li>
+<li>Lambda集成
+<ul>
+<li>Velocity 模板（支持）。</li>
+</ul></li>
+<li>Lambda代理集成（支持的）。</li>
+</ul>
+<p>那么，让我们来试试使用 <code>serverless-plugin-simulate</code> 插件来模拟 Lambda 环境。</p>
+<h2 id="安装-serverless-plugin-simulate-及环境">安装 serverless-plugin-simulate 及环境</h2>
+<p><code>注意</code>：由于这里需要使用 Docker，建议读者先行安装 Docker。</p>
+<p>然后，让我们来创建 Serverless 应用：</p>
+<pre><code>serverless create --template aws-nodejs --path simulate-lambda</code></pre>
+<p>接着，就可以安装 serverless-plugin-simulate 插件了</p>
+<pre><code>yarn add --dev serverless-plugin-simulate</code></pre>
+<p>然后，添加到 <code>serverless.yml</code> 中：</p>
+<pre><code>plugins:
+  - serverless-plugin-simulate
+
+
+custom:
+  simulate:
+    services: docker-compose.yml</code></pre>
+<p>上面的配置中依赖于 <code>docker-compose.yml</code> 文件，创建、然后输入：</p>
+<pre><code>version: &#39;2&#39;</code></pre>
+<p>保存，并退出。</p>
+<p>紧接着，运行：<code>docker pull lambci/lambda</code>。</p>
+<pre><code>$ docker pull lambci/lambda
+
+Using default tag: latest
+latest: Pulling from lambci/lambda
+5aed7bd8313c: Pull complete
+d60049111ce7: Pull complete
+7791f7ad5cf2: Pull complete
+Digest: sha256:4d511dfc1a264ccc69081ceb00116dd0bea380080ad1e89c2f48752f6c4670df
+Status: Downloaded newer image for lambci/lambda:latest</code></pre>
+<p>它将从服务端下载 lambci 的 lambda 镜像。</p>
+<h2 id="运行及测试">运行及测试</h2>
+<p>然后运行 simlaute</p>
+<pre><code>$ sls simulate apigateway -p 5000
+
+Serverless: Starting mock services.
+Serverless:
+Serverless: [GET /undefined] =&gt; λ:hello
+Serverless: Invoke URL: http://localhost:5000
+Serverless: HTTP Event Not Found: Try checking your serverless.yml</code></pre>
+<p>发现少了一个入口，于是在 <code>serverless.yml</code> 中添加了路径</p>
+<p>于是：</p>
+<pre><code>
+functions:
+  hello:
+    handler: handler.hello
+    events:
+      - http:
+          method: get
+          path: hello</code></pre>
+<p>接着再次运行，然后访问：<a href="http://localhost:5000/hello" class="uri">http://localhost:5000/hello</a></p>
+<pre><code>$ npm start
+
+&gt; simulate@1.0.0 start /Users/fdhuang/learing/serverless-guide/simulate
+&gt; sls simulate apigateway -p 5000
+
+Serverless: Starting mock services.
+Serverless:
+Serverless: [GET /hello] =&gt; λ:hello
+Serverless: Invoke URL: http://localhost:5000
+Serverless: Creating event
+Serverless: Invoking hello
+Serverless: Invoking function handler.hello
+START RequestId: 18b5b89b-7118-1344-7f1e-a3b49c5c26d4 Version: $LATEST
+END RequestId: 18b5b89b-7118-1344-7f1e-a3b49c5c26d4
+REPORT RequestId: 18b5b89b-7118-1344-7f1e-a3b49c5c26d4  Duration: 6.27 ms   Billed Duration: 100 ms Memory Size: 1024 MB    Max Memory Used: 28 MB
+
+{&quot;statusCode&quot;:200,&quot;body&quot;:&quot;{\&quot;message\&quot;:\&quot;Go Serverless v1.0! Your function executed successfully!\&quot;,\&quot;input\&quot;:{\&quot;path\&quot;:\&quot;/hello\&quot;,\&quot;headers\&quot;:{\&quot;host\&quot;:\&quot;localhost:5000\&quot;,\&quot;connection\&quot;:\&quot;keep-alive\&quot;,\&quot;cache-control\&quot;:\&quot;max-age=0\&quot;,\&quot;user-agent\&quot;:\&quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36\&quot;,\&quot;upgrade-insecure-requests\&quot;:\&quot;1\&quot;,\&quot;accept\&quot;:\&quot;text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8\&quot;,\&quot;dnt\&quot;:\&quot;1\&quot;,\&quot;accept-encoding\&quot;:\&quot;gzip, deflate, br\&quot;,\&quot;accept-language\&quot;:\&quot;zh-CN,zh;q=0.8,en-GB;q=0.6,en;q=0.4,it;q=0.2,zh-TW;q=0.2,ja;q=0.2\&quot;,\&quot;cookie\&quot;:\&quot;mezzanine-rating=\\\&quot;\\\\054blog.blogpost.20\\\\054blog.blogpost.13\\\\054blog.blogpost.5\\\\054blog.blogpost.19\\\\054blog.blogpost.21\\\\054blog.blogpost.9\\\&quot;; csrftoken=A9i99HpofF4q19ehVQY4D8w0cRwddlnSwbz4DUQV0yqax3cufTN8Np5gzldqkotH; _ga=GA1.1.427084651.1503497781\&quot;,\&quot;if-none-match\&quot;:\&quot;W/\\\&quot;6a9-Sps0n/Pmo7hiZsErZVJqVbiAPPk\\\&quot;\&quot;},\&quot;pathParameters\&quot;:{},\&quot;requestContext\&quot;:{\&quot;accountId\&quot;:\&quot;localContext_accountId\&quot;,\&quot;resourceId\&quot;:\&quot;localContext_resourceId\&quot;,\&quot;stage\&quot;:\&quot;dev\&quot;,\&quot;requestId\&quot;:\&quot;localContext_requestId_30305881537279267\&quot;,\&quot;identity\&quot;:{\&quot;cognitoIdentityPoolId\&quot;:\&quot;localContext_cognitoIdentityPoolId\&quot;,\&quot;accountId\&quot;:\&quot;localContext_accountId\&quot;,\&quot;cognitoIdentityId\&quot;:\&quot;localContext_cognitoIdentityId\&quot;,\&quot;caller\&quot;:\&quot;localContext_caller\&quot;,\&quot;apiKey\&quot;:\&quot;localContext_apiKey\&quot;,\&quot;sourceIp\&quot;:\&quot;::ffff:127.0.0.1\&quot;,\&quot;cognitoAuthenticationType\&quot;:\&quot;localContext_cognitoAuthenticationType\&quot;,\&quot;cognitoAuthenticationProvider\&quot;:\&quot;localContext_cognitoAuthenticationProvider\&quot;,\&quot;userArn\&quot;:\&quot;localContext_userArn\&quot;,\&quot;userAgent\&quot;:\&quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36\&quot;,\&quot;user\&quot;:\&quot;localContext_user\&quot;}},\&quot;resource\&quot;:\&quot;localContext_resource\&quot;,\&quot;httpMethod\&quot;:\&quot;GET\&quot;,\&quot;queryStringParameters\&quot;:{},\&quot;body\&quot;:\&quot;{}\&quot;,\&quot;stageVariables\&quot;:{}}}&quot;}
+Serverless: Mapping response
+GET /hello 200 1518.527 ms - 1802
+Serverless: HTTP Event Not Found: Try checking your serverless.yml
+GET /favicon.ico 403 1.084 ms - 23
+HTTP Event Not Found: Try checking your serverless.yml</code></pre>
+<p>就可以得到类似于生产环境的 Lambda 函数的结果。</p>
 <section class="footnotes">
 <hr />
 <ol>
