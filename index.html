@@ -49,15 +49,13 @@
 <li><a href="#tips">Tips</a></li>
 </ul></li>
 <li><a href="#serverless-的优势">Serverless 的优势</a><ul>
-<li><a href="#运营成本优势">运营成本优势</a></li>
-<li><a href="#开发成本">开发成本</a></li>
-<li><a href="#更少的代码">更少的代码</a></li>
-<li><a href="#更快的开发速度">更快的开发速度</a></li>
-<li><a href="#扩展能力">扩展能力</a></li>
-<li><a href="#管理">管理？？</a></li>
-<li><a href="#快速启动">快速启动</a></li>
-<li><a href="#适应微服务架构">适应微服务架构</a></li>
+<li><a href="#降低成本">降低成本</a></li>
+<li><a href="#实现快速上线">实现快速上线</a></li>
 <li><a href="#运维成本">运维成本</a></li>
+<li><a href="#系统安全性更高">系统安全性更高</a></li>
+<li><a href="#架构优势">架构优势</a></li>
+<li><a href="#无状态">无状态</a></li>
+<li><a href="#自动扩展能力">自动扩展能力</a></li>
 </ul></li>
 <li><a href="#serverless-的适用场景">Serverless 的适用场景</a><ul>
 <li><a href="#发送通知邮件短信等">发送通知（邮件、短信等）</a></li>
@@ -78,11 +76,10 @@
 <li><a href="#缺乏调试和开发工具">缺乏调试和开发工具</a></li>
 <li><a href="#构建复杂">构建复杂</a></li>
 <li><a href="#自然限制">自然限制</a></li>
-<li><a href="#复杂的逻辑不易迁移">复杂的逻辑不易迁移</a></li>
 <li><a href="#缺乏基础设施">缺乏基础设施</a></li>
 <li><a href="#语言版本落后">语言版本落后</a></li>
 </ul></li>
-<li><a href="#serverelss-的原则">Serverelss 的原则</a></li>
+<li><a href="#serverelss-设计原则">Serverelss 设计原则</a></li>
 <li><a href="#迁移方案">迁移方案</a></li>
 <li><a href="#serverless-框架">Serverless 框架</a><ul>
 <li><a href="#serverless-1">Serverless</a></li>
@@ -276,35 +273,38 @@
 <img src="images/server-growth.jpg" alt="Serverless Growth" /><figcaption>Serverless Growth</figcaption>
 </figure>
 <h2 id="serverless-的优势">Serverless 的优势</h2>
-<h3 id="运营成本优势">运营成本优势</h3>
+<h3 id="降低成本">降低成本</h3>
+<h4 id="减少运营成本">减少运营成本</h4>
 <p>对于，初创公司来说，他们没有基础设施，也没有财力，也可能没有能力去建设基础设施。采用云服务往往是最好的选择，可以节省大量的资金。与此同时，诸如 AWS 这样庞大的系统，对于创业公司的程序员来说，也不能容易消化掉的一个系统。</p>
 <p>而如果一家创业公司采用的是 Serverless，而不是使用云服务器。那么，他就会拥有更多的时间去开发，不需要担心维护。只需要为运行时的软件付钱。</p>
 <p>按需计算就意味着，在请求到来的时候，才运行函数。没有请求的时候，是不算钱的。</p>
-<h3 id="开发成本">开发成本</h3>
-<h3 id="更少的代码">更少的代码</h3>
+<h4 id="降低开发成本">降低开发成本</h4>
+<h3 id="实现快速上线">实现快速上线</h3>
+<h4 id="更少的代码">更少的代码</h4>
 <p>更少的代码，意味着更少的 bug</p>
-<h3 id="更快的开发速度">更快的开发速度</h3>
+<h4 id="更快的开发速度">更快的开发速度</h4>
 <p>关注于业务，而非技术</p>
-<h3 id="扩展能力">扩展能力</h3>
-<p>Serverless 的背后是 诸如 AWS Lambda 这样的 FaaS（Function as a Services）。</p>
-<p>对于传统应用来说，要应对更多的请求的方式，就是部署更多的实例。然而，这个时候往往已经来不及了。而对于 FaaS 来说，我们并不需要这么做，FaaS 会自动的扩展。它可以在需要时尽可能多地启动实例副本，而不会发生冗长的部署和配置延迟。</p>
-<h3 id="管理">管理？？</h3>
-<h3 id="快速启动">快速启动</h3>
-<h3 id="适应微服务架构">适应微服务架构</h3>
 <h3 id="运维成本">运维成本</h3>
+<h4 id="减少运维开销">减少运维开销</h4>
 <p>对于我而言，缺乏大量的后台架构实践经验，也需要大量的 DevOps。</p>
 <p>不需要考虑系统底层安全问题，</p>
+<h3 id="系统安全性更高">系统安全性更高</h3>
 <p>我不再需要担心有人尝试登录系统, blabla</p>
 <p>唯一需要担心的，可能是有人发起 DDOS 攻击。而根据<a href="https://thenewstack.io/zombie-toasters-eat-startup/">Could Zombie Toasters DDoS My Serverless Deployment?</a>的计算</p>
 <p>每百万的请求，大概是 0.2 刀，每小时 360000000 个请求，也就 72 刀。</p>
+<h3 id="架构优势">架构优势</h3>
+<h3 id="无状态">无状态</h3>
+<h4 id="适应微服务架构">适应微服务架构</h4>
+<h3 id="自动扩展能力">自动扩展能力</h3>
+<p>Serverless 的背后是 诸如 AWS Lambda 这样的 FaaS（Function as a Services）。</p>
+<p>对于传统应用来说，要应对更多的请求的方式，就是部署更多的实例。然而，这个时候往往已经来不及了。而对于 FaaS 来说，我们并不需要这么做，FaaS 会自动的扩展。它可以在需要时尽可能多地启动实例副本，而不会发生冗长的部署和配置延迟。</p>
 <h2 id="serverless-的适用场景">Serverless 的适用场景</h2>
 <ul>
-<li>事件驱动的数据编程</li>
-<li>Web 应用</li>
+<li>事件驱动的编程，如数据、聊天机器人等等</li>
 <li>移动应用</li>
 <li>物联网应用</li>
-<li>事件流</li>
-<li>应用生态</li>
+<li>精益创业</li>
+<li>定时任务</li>
 </ul>
 <h3 id="发送通知邮件短信等">发送通知（邮件、短信等）</h3>
 <p>事件触发，对实时性的要求相对没有那么高~~</p>
@@ -370,16 +370,22 @@
 <p>我使用的是 Serverless，考虑到 CloudForamtion 的复杂度。</p>
 <h3 id="自然限制">自然限制</h3>
 <p>使用多少内存、CPU 限制等等</p>
-<h3 id="复杂的逻辑不易迁移">复杂的逻辑不易迁移</h3>
 <h3 id="缺乏基础设施">缺乏基础设施</h3>
 <h3 id="语言版本落后">语言版本落后</h3>
+<p>在 Node.js 6 出来的时候，AWS Lambda 只支持 Node.js 4.3.2；在 Node.js 9.0 出来的时候，AWS Lambda 支持到 6.10.3。</p>
+<p>如下是 AWS Lambda 支持以下运行时版本：</p>
+<ul>
+<li>Node.js – v4.3.2 和 6.10.3</li>
+<li>Java - Java 8</li>
+<li>Python – Python 3.6 和 2.7</li>
+<li>.NET 内核 – .NET 内核 1.0.1 (C#)</li>
+</ul>
 <p>如 Node.js</p>
-<h2 id="serverelss-的原则">Serverelss 的原则</h2>
+<h2 id="serverelss-设计原则">Serverelss 设计原则</h2>
 <p><strong>编写单一用途的无状态函数</strong></p>
 <p>每一个服务尽可能的小，不一定拥有数据库，也可以共用。</p>
 <p><strong>设计基于推送的、事件驱动的管道</strong></p>
-<p><strong>集成第三方服务</strong></p>
-<p>Auth0 例子、GitHub Hook 示例</p>
+<p><strong>隔离平台代码与业务代码</strong></p>
 <h2 id="迁移方案">迁移方案</h2>
 <p>Express 应用示例</p>
 <h2 id="serverless-框架">Serverless 框架</h2>
