@@ -5,5 +5,9 @@ provider:
   runtime: nodejs6.10
 
 functions:
-  hello:
-    handler: handler.hello
+  query:
+    handler: handler.query
+    events:
+      - http:
+          path: query
+          method: get

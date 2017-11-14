@@ -1,16 +1,29 @@
-'use strict';
+/* handler.js */
+const {
+  graphql,
+  GraphQLSchema,
+  GraphQLObjectType,
+  GraphQLString,
+  GraphQLNonNull
+} = require('graphql')
 
-module.exports.hello = (event, context, callback) => {
-  const response = {
-    statusCode: 200,
-    body: JSON.stringify({
-      message: 'Go Serverless v1.0! Your function executed successfully!',
-      input: event,
-    }),
-  };
+const getGreeting = firstName => `Hello, ${firstName}.`
 
-  callback(null, response);
+const schema = new GraphQLSchema({
+  query: new GraphQLObjectType({
+    name: 'RootQueryType',
+    fields: {
+      greeting: {
+        args: { firstName: { name: 'firstName', type: new GraphQLNonNull(GraphQLString) } },
+        type: GraphQLString,
+        resolve: (parent, args) => getGreeting(args.firstName)
+      }
+    }
+  }),
+})
 
-  // Use this code if you don't use the http event with the LAMBDA-PROXY integration
-  // callback(null, { message: 'Go Serverless v1.0! Your function executed successfully!', event });
-};
+module.exports.query = (event, context, callback) => graphql(schema, event.queryStringParameters.query)
+  .then(
+    result => callback(null, {statusCode: 200, body: JSON.stringify(result)}),
+    err => callback(err)
+  )
