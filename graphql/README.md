@@ -5,6 +5,7 @@
 serverless create --template aws-nodejs --path graphql
 ```
 
+按 GraqhQL.js 在 GitHub 的示例：
 
 ```
 yarn add graphql
@@ -20,34 +21,29 @@ const {
   GraphQLNonNull
 } = require('graphql')
 
-// This method just inserts the user's first name into the greeting message.
-const getGreeting = firstName => `Hello, ${firstName}.`
-
-// Here we declare the schema and resolvers for the query
 const schema = new GraphQLSchema({
   query: new GraphQLObjectType({
-    name: 'RootQueryType', // an arbitrary name
+    name: 'RootQueryType',
     fields: {
-      // the query has a field called 'greeting'
-      greeting: {
-        // we need to know the user's name to greet them
-        args: { firstName: { name: 'firstName', type: new GraphQLNonNull(GraphQLString) } },
-        // the greeting message is a string
+      hello: {
         type: GraphQLString,
-        // resolve to a greeting message
-        resolve: (parent, args) => getGreeting(args.firstName)
+        resolve() {
+          return 'world';
+        }
       }
     }
   }),
 })
 
-// We want to make a GET request with ?query=<graphql query>
-// The event properties are specific to AWS. Other providers will differ.
-module.exports.query = (event, context, callback) => graphql(schema, event.queryStringParameters.query)
+module.exports.query = (event, context, callback) => {
+  console.log(event.queryStringParameters, event.queryStringParameters.query)
+  return graphql(schema, event.queryStringParameters.query)
   .then(
     result => callback(null, {statusCode: 200, body: JSON.stringify(result)}),
     err => callback(err)
   )
+}
+
 ```
 
 
@@ -83,9 +79,9 @@ functions:
 查询：
 
 ```
-$ curl -G https://5ol2v4lnx3.execute-api.us-east-1.amazonaws.com/dev/query --data-urlencode 'query={greeting(firstName: "world")}'
+$ curl -G https://5ol2v4lnx3.execute-api.us-east-1.amazonaws.com/dev/query --data-urlencode 'query={ hello }'
 
 
-{"data":{"greeting":"Hello, world."}}
+{"data":{"hello":"world"}}
 ```
 
