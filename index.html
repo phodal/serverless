@@ -68,13 +68,12 @@
 </ul></li>
 <li><a href="#serverless-的问题">Serverless 的问题</a><ul>
 <li><a href="#完全依赖于云服务">完全依赖于云服务</a></li>
-<li><a href="#冷启动">冷启动</a></li>
+<li><a href="#冷启动时间">冷启动时间</a></li>
 <li><a href="#不适合长期运行应用">不适合长期运行应用</a></li>
 <li><a href="#严重依赖第三方-api">严重依赖第三方 API</a></li>
 <li><a href="#缺乏调试和开发工具">缺乏调试和开发工具</a></li>
 <li><a href="#构建复杂">构建复杂</a></li>
 <li><a href="#自然限制">自然限制</a></li>
-<li><a href="#缺乏基础设施">缺乏基础设施</a></li>
 <li><a href="#语言版本落后">语言版本落后</a></li>
 </ul></li>
 <li><a href="#其它">其它</a><ul>
@@ -283,6 +282,23 @@
 <li>Serverless 应用严重依赖于特定的云平台、第三方服务</li>
 </ul>
 <p>当然这些都是一些虚无缥缈地东西。</p>
+<p>在一个基于 AWS 的 Serverless 应用里，应用的组成是：</p>
+<ul>
+<li>网关 API Gateway 来接受和处理成千上万个并发 API 调用，包括流量管理、授权和访问控制、监控等</li>
+<li>计算服务 Lambda 来进行代码相关的一切计算工作，诸如授权验证、请求、输出等等</li>
+<li>基础设施管理 CloudFormation 来创建和配置 AWS 基础设施部署，诸如所使用的 S3 存储桶的名称等</li>
+<li>静态存储 S3 作为前端代码和静态资源存放的地方</li>
+<li>数据库 DynamoDB 来存储应用的数据</li>
+<li>等等</li>
+</ul>
+<p>如下图所示：</p>
+<figure>
+<img src="serverless-spa-architecture.png" alt="Serverless SPA 架构" /><figcaption>Serverless SPA 架构</figcaption>
+</figure>
+<p>在这种情况下，系统间的分层可能会变成一个又一个的服务。原本，在今天主流的微服务设计里，每一个领域或者子域都是一个服务。而在 Serverless 应用中，这些领域及子域因为他们的功能，又可能会进一步切分成一个又一个 Serverless 服务。</p>
+<figure>
+<img src="images/mono-ms-sls.jpg" alt="更小的函数" /><figcaption>更小的函数</figcaption>
+</figure>
 <p>并不一定使用这些云服务（如 AWS），才能称为 Serverless。诸如我的同事在 《<a href="https://blog.jimmylv.info/2017-06-30-serverless-in-action-build-personal-reading-statistics-system/">Serverless 实战：打造个人阅读追踪系统</a>》，采用的是：IFTTT + WebTask + GitHub Webhook 的技术栈。它只是意味着，你所有的应用中的一部分服务直接使用的是第三方服务。</p>
 <h2 id="serverless-的优势">Serverless 的优势</h2>
 <h3 id="降低成本">降低成本</h3>
@@ -363,12 +379,14 @@
 <li>隔离 API 网关</li>
 <li>隔离数据库层，考虑到市面上还没有成熟的 ORM 工具，让你即支持 Firebase，又支持 DynamoDB</li>
 </ul>
-<h3 id="冷启动">冷启动</h3>
+<h3 id="冷启动时间">冷启动时间</h3>
 <p>据 New Relic 官方博客《<a href="https://blog.newrelic.com/2017/01/11/aws-lambda-cold-start-optimization/">Understanding AWS Lambda Performance—How Much Do Cold Starts Really Matter?</a>》称，AWS Lambda 的冷启动时间。</p>
 <figure>
 <img src="aws-lambda-monitoring-functions-chart.png" alt="AWS 启动时间" /><figcaption>AWS 启动时间</figcaption>
 </figure>
 <h3 id="不适合长期运行应用">不适合长期运行应用</h3>
+<p>因为冷启动时间的存长，应用在</p>
+<p>当然，可以结合 CRON 的方式来定期唤醒应用。</p>
 <h3 id="严重依赖第三方-api">严重依赖第三方 API</h3>
 <p>是的，</p>
 <p>在这种情况下，只能将不重要的 API 放在 Serverless 上。</p>
@@ -382,7 +400,6 @@
 <p>我使用的是 Serverless，考虑到 CloudForamtion 的复杂度。</p>
 <h3 id="自然限制">自然限制</h3>
 <p>使用多少内存、CPU 限制等等</p>
-<h3 id="缺乏基础设施">缺乏基础设施</h3>
 <h3 id="语言版本落后">语言版本落后</h3>
 <p>在 Node.js 6 出来的时候，AWS Lambda 只支持 Node.js 4.3.2；在 Node.js 9.0 出来的时候，AWS Lambda 支持到 6.10.3。</p>
 <p>如下是 AWS Lambda 支持以下运行时版本：</p>

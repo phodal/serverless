@@ -78,6 +78,25 @@ REPORT RequestId: 041138f9-bc81-11e7-aa63-0dbab83f773d	Duration: 2.49 ms	Billed 
 
 当然这些都是一些虚无缥缈地东西。
 
+在一个基于 AWS 的 Serverless 应用里，应用的组成是：
+
+ - 网关 API Gateway
+ 来接受和处理成千上万个并发 API 调用，包括流量管理、授权和访问控制、监控等
+ - 计算服务 Lambda 来进行代码相关的一切计算工作，诸如授权验证、请求、输出等等
+ - 基础设施管理 CloudFormation 来创建和配置 AWS 基础设施部署，诸如所使用的 S3 存储桶的名称等
+ - 静态存储 S3 作为前端代码和静态资源存放的地方
+ - 数据库 DynamoDB 来存储应用的数据
+ - 等等
+
+如下图所示：
+
+![Serverless SPA 架构](serverless-spa-architecture.png)
+
+
+
+在这种情况下，系统间的分层可能会变成一个又一个的服务。原本，在今天主流的微服务设计里，每一个领域或者子域都是一个服务。而在 Serverless 应用中，这些领域及子域因为他们的功能，又可能会进一步切分成一个又一个 Serverless 服务。
+
+![更小的函数](images/mono-ms-sls.jpg)
 
 并不一定使用这些云服务（如 AWS），才能称为 Serverless。诸如我的同事在 《[Serverless 实战：打造个人阅读追踪系统](https://blog.jimmylv.info/2017-06-30-serverless-in-action-build-personal-reading-statistics-system/)》，采用的是：IFTTT + WebTask + GitHub Webhook 的技术栈。它只是意味着，你所有的应用中的一部分服务直接使用的是第三方服务。
 
@@ -222,13 +241,17 @@ Serverless 的问题
  - 隔离 API 网关
  - 隔离数据库层，考虑到市面上还没有成熟的 ORM 工具，让你即支持 Firebase，又支持 DynamoDB 
 
-### 冷启动
+### 冷启动时间
 
 据 New Relic 官方博客《[Understanding AWS Lambda Performance—How Much Do Cold Starts Really Matter?](https://blog.newrelic.com/2017/01/11/aws-lambda-cold-start-optimization/)》称，AWS Lambda 的冷启动时间。
 
 ![AWS 启动时间](aws-lambda-monitoring-functions-chart.png)
 
 ### 不适合长期运行应用
+
+因为冷启动时间的存长，应用在
+
+当然，可以结合 CRON 的方式来定期唤醒应用。
 
 ### 严重依赖第三方 API
 
@@ -255,8 +278,6 @@ Serverless 的问题
 ### 自然限制
 
 使用多少内存、CPU 限制等等
-
-### 缺乏基础设施
 
 ### 语言版本落后
 
