@@ -15,7 +15,7 @@ Serverless 架构应用开发指南
 Serverless 架构
 ===
 
-> 花了 40G，我终于弄清楚了 Serverless 是什么？
+> 花了 200G，我终于弄清楚了 Serverless 是什么？
 
 为了弄清 Serverless 究竟是什么东西？Serverless 到底是个什么？我使用 Serverless 尝试了一个又一个示例，自己做了四五个应用，总算是对 Serverelss 有了一个大致上的认识。现在，让我简单地解释『花了 40G，我终于弄清楚了 Serverless 是什么？』这句话，来说说 Serverless 到底是什么鬼？
 
@@ -34,7 +34,7 @@ Serverless 架构
 
 现在，我们有了 Serverless，我们可以隔离操作系统，乃至更底层的技术细节。
 
-### 为什么是花了 40G ？
+### 为什么是花了 200G ？
 
 这是一个非常好的问题。
 
@@ -63,13 +63,15 @@ REPORT RequestId: 041138f9-bc81-11e7-aa63-0dbab83f773d	Duration: 2.49 ms	Billed 
 
 其中的 ``Memory Size`` 即是我们选用的套餐类型，Duration 即是运行的时间，Max Memory Used 是我们应用运行时占用的内存。根据我们的 Max Memory Used 数值及应用的计算量，我们可以很轻松地计算出我们所需要的套餐。
 
-因此，如果我们选用 128M 的套餐，然后运行了 320 次，一共算是使用了 320G 的计算量。而其运行时间会被舍入到最近的 100ms，就算我们运行了 2.49ms，那么也是按 100ms 算的。那么假设，我们的 320 次计算都花了 1s，也就是 10*100ms，那么我们要支付的费用是：10*320*0.000000208=0.0006656刀，即使转成人民币也就是不到 1 毛钱的 0.00452608。
+因此，如果我们选用 1024M 的套餐，然后运行了 320 次，一共算是使用了 320G 的计算量。而其运行时间会被舍入到最近的 100ms，就算我们运行了 2.49ms，那么也是按 100ms 算的。那么假设，我们的 320 次计算都花了 1s，也就是 10*100ms，那么我们要支付的费用是：10*320*0.000001667=0.0053344刀，即使转成人民币也就是不到 4 毛钱的 0.03627392。
+
+如果我们先用的是 128M 的套餐，那么运行了 2000 次，就是 200G 的计算量了。
 
 不过如上表所示，AWS 为 Lambda 提供了一个免费套餐（无期限地提供给新老用户）包含每月 1M 免费请求以及每月 400 000 GB 秒的计算时间。这就意味着，在很长的时间里，我们一分钟都不用花。
 
 ### Serverless 是什么？
 
-从上面的内容中，我们可以知道这么几点：
+而从上节的内容中，我们可以知道这么几点：
 
  - 在 Serverless 应用中，开发者只需要专注于业务，剩下的运维等工作都不需要操心
  - Serverless 是**真正的按需使用**，请求到来时才开始运行
@@ -77,6 +79,12 @@ REPORT RequestId: 041138f9-bc81-11e7-aa63-0dbab83f773d	Duration: 2.49 ms	Billed 
  - Serverless 应用严重依赖于特定的云平台、第三方服务
 
 当然这些都是一些虚无缥缈地东西。
+
+按 AWS 官方对于 Serverless 的介绍是这样的：
+
+> 服务器架构是基于互联网的系统，其中应用开发不使用常规的服务进程。相反，它们仅依赖于第三方服务（例如AWS Lambda服务），客户端逻辑和服务托管远程过程调用的组合。”[^aws_serverless]
+
+[^aws_serverless]: https://aws.amazon.com/cn/blogs/china/iaas-faas-serverless/
 
 在一个基于 AWS 的 Serverless 应用里，应用的组成是：
 
@@ -88,17 +96,28 @@ REPORT RequestId: 041138f9-bc81-11e7-aa63-0dbab83f773d	Duration: 2.49 ms	Billed 
  - 数据库 DynamoDB 来存储应用的数据
  - 等等
 
-如下图所示：
+以博客系统为例，当我们访问一篇博客的时候，只是一个 GET 请求，可以由 S3 为我们提供前端的静态资源和响应的 HTML。
 
 ![Serverless SPA 架构](serverless-spa-architecture.png)
 
+而当我们创建一个博客的时候：
 
+ - 我们的请求先来到了 API Gateway，API Gateway 计费器 + 1
+ - 接着请求来到了 Lambda，进行数据处理，如生成 ID、创建时间等等，Lambda 计费器 + 1
+ - Lambda 在计算完后，将数据存储到 DynamoDB 上，DynamoDB 计费器 + 1
+ - 最后，我们会生成静态的博客到 S3 上，而 S3 只在使用的时候按存储收费。
 
-在这种情况下，系统间的分层可能会变成一个又一个的服务。原本，在今天主流的微服务设计里，每一个领域或者子域都是一个服务。而在 Serverless 应用中，这些领域及子域因为他们的功能，又可能会进一步切分成一个又一个 Serverless 服务。
+在这个过程中，我们使用了一系列稳定存在的云服务，并且只在使用时才计费。由于这些服务可以自然、方便地进行调用，我们实际上只需要关注在我们的 Lambda 函数上，以及如何使用这些服务完成整个开发流程。
+
+因此，Serverless 并不意味着没有服务器，只是服务器以特定功能的第三方服务的形式存在。
+
+当然并不一定使用这些云服务（如 AWS），才能称为 Serverless。诸如我的同事在 《[Serverless 实战：打造个人阅读追踪系统](https://blog.jimmylv.info/2017-06-30-serverless-in-action-build-personal-reading-statistics-system/)》，采用的是：IFTTT + WebTask + GitHub Webhook 的技术栈。它只是意味着，你所有的应用中的一部分服务直接使用的是第三方服务。
+
+在这种情况下，系统间的分层可能会变成一个又一个的服务。原本，在今天主流的微服务设计里，每一个领域或者子域都是一个服务。而在 Serverless 应用中，这些领域及子域因为他们的功能，又可能会进一步切分成一个又一个 Serverless 函数。
 
 ![更小的函数](images/mono-ms-sls.jpg)
 
-并不一定使用这些云服务（如 AWS），才能称为 Serverless。诸如我的同事在 《[Serverless 实战：打造个人阅读追踪系统](https://blog.jimmylv.info/2017-06-30-serverless-in-action-build-personal-reading-statistics-system/)》，采用的是：IFTTT + WebTask + GitHub Webhook 的技术栈。它只是意味着，你所有的应用中的一部分服务直接使用的是第三方服务。
+只是这些服务、函数比以往的粒度更加细致。
 
 Serverless 的优势
 ---
@@ -270,6 +289,8 @@ Serverless 的问题
 然而，对于日志系统来说，这仍然是一个艰巨的挑战。
 
 ### 构建复杂
+
+Serverless 很便宜，但是这并不意味着它很简单。
 
 早先，在知道 AWS Lambda 之后，我本来想进行一些尝试。但是 CloudForamtion 让我觉得太难了，它的配置是如此的复杂，并且难以编写。
 
