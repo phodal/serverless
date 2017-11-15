@@ -257,6 +257,8 @@ Serverless 的问题
 
 ### 构建复杂
 
+Serverless 很便宜，但是这并不意味着它很简单。
+
 早先，在知道 AWS Lambda 之后，我本来想进行一些尝试。但是 CloudForamtion 让我觉得太难了，它的配置是如此的复杂，并且难以编写。
 
 我使用的是 Serverless，考虑到 CloudForamtion 的复杂度。
