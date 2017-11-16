@@ -15,9 +15,17 @@ Serverless 架构应用开发指南
 Serverless 架构
 ===
 
-> 花了 200G，我终于弄清楚了 Serverless 是什么？
+> 花了 1000G，我终于弄清楚了 Serverless 是什么？
 
+在过去的 24 小时，我通过微信公号的『电子书』一事，大概处理了 8000 个请求：
 
+![Serverless 请求统计](images/counts.png)
+
+大部分的请求都是在 200ms 内完成的，而在最开始的请求潮里（刚发推送的时候，十分钟里近 1500 个请求），平均的响应时间都在 50ms 内。
+
+![Serverless 请求时间](images/times.png)
+
+这也表明了，Serverless 相当的可靠。显然，当请求越多的时候，响应时间越快，这简直也违常理——一般来说，随着请求的增加，响应时间会越来越慢。
 
 毫无疑问，在最近的几年里，微服务渐渐成为了一个相当流行的架构风格。微服务大致从 2014 年起，开始流行开来，如下图所示：
 
@@ -77,6 +85,8 @@ REPORT RequestId: 041138f9-bc81-11e7-aa63-0dbab83f773d	Duration: 2.49 ms	Billed 
 
 如果我们先用的是 128M 的套餐，那么运行了 2000 次，就是 200G 的计算量了。
 
+如果我们先用的是 128M 的套餐，那么运行了 8000 次，就是 1000G 的计算量了。
+
 不过如上表所示，AWS 为 Lambda 提供了一个免费套餐（无期限地提供给新老用户）包含每月 1M 免费请求以及每月 400 000 GB 秒的计算时间。这就意味着，在很长的时间里，我们一分钟都不用花。
 
 ### Serverless 是什么？
@@ -108,7 +118,7 @@ REPORT RequestId: 041138f9-bc81-11e7-aa63-0dbab83f773d	Duration: 2.49 ms	Billed 
 
 以博客系统为例，当我们访问一篇博客的时候，只是一个 GET 请求，可以由 S3 为我们提供前端的静态资源和响应的 HTML。
 
-![Serverless SPA 架构](serverless-spa-architecture.png)
+![Serverless SPA 架构](images/serverless-spa-architecture.png)
 
 而当我们创建一个博客的时候：
 

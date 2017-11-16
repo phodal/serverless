@@ -216,8 +216,17 @@
 </blockquote>
 <h1 id="serverless-架构">Serverless 架构</h1>
 <blockquote>
-<p>花了 200G，我终于弄清楚了 Serverless 是什么？</p>
+<p>花了 1000G，我终于弄清楚了 Serverless 是什么？</p>
 </blockquote>
+<p>在过去的 24 小时，我通过微信公号的『电子书』一事，大概处理了 8000 个请求：</p>
+<figure>
+<img src="images/counts.png" alt="Serverless 请求统计" /><figcaption>Serverless 请求统计</figcaption>
+</figure>
+<p>大部分的请求都是在 200ms 内完成的，而在最开始的请求潮里（刚发推送的时候，十分钟里近 1500 个请求），平均的响应时间都在 50ms 内。</p>
+<figure>
+<img src="images/times.png" alt="Serverless 请求时间" /><figcaption>Serverless 请求时间</figcaption>
+</figure>
+<p>这也表明了，Serverless 相当的可靠。显然，当请求越多的时候，响应时间越快，这简直也违常理——一般来说，随着请求的增加，响应时间会越来越慢。</p>
 <p>毫无疑问，在最近的几年里，微服务渐渐成为了一个相当流行的架构风格。微服务大致从 2014 年起，开始流行开来，如下图所示：</p>
 <figure>
 <img src="images/microservice-compare-serverless.png" alt="microservices vs serverless" /><figcaption>microservices vs serverless</figcaption>
@@ -291,6 +300,7 @@
 <p>其中的 <code>Memory Size</code> 即是我们选用的套餐类型，Duration 即是运行的时间，Max Memory Used 是我们应用运行时占用的内存。根据我们的 Max Memory Used 数值及应用的计算量，我们可以很轻松地计算出我们所需要的套餐。</p>
 <p>因此，如果我们选用 1024M 的套餐，然后运行了 320 次，一共算是使用了 320G 的计算量。而其运行时间会被舍入到最近的 100ms，就算我们运行了 2.49ms，那么也是按 100ms 算的。那么假设，我们的 320 次计算都花了 1s，也就是 10<em>100ms，那么我们要支付的费用是：10</em>320*0.000001667=0.0053344刀，即使转成人民币也就是不到 4 毛钱的 0.03627392。</p>
 <p>如果我们先用的是 128M 的套餐，那么运行了 2000 次，就是 200G 的计算量了。</p>
+<p>如果我们先用的是 128M 的套餐，那么运行了 8000 次，就是 1000G 的计算量了。</p>
 <p>不过如上表所示，AWS 为 Lambda 提供了一个免费套餐（无期限地提供给新老用户）包含每月 1M 免费请求以及每月 400 000 GB 秒的计算时间。这就意味着，在很长的时间里，我们一分钟都不用花。</p>
 <h3 id="serverless-是什么">Serverless 是什么？</h3>
 <p>而从上节的内容中，我们可以知道这么几点：</p>
@@ -316,7 +326,7 @@
 </ul>
 <p>以博客系统为例，当我们访问一篇博客的时候，只是一个 GET 请求，可以由 S3 为我们提供前端的静态资源和响应的 HTML。</p>
 <figure>
-<img src="serverless-spa-architecture.png" alt="Serverless SPA 架构" /><figcaption>Serverless SPA 架构</figcaption>
+<img src="images/serverless-spa-architecture.png" alt="Serverless SPA 架构" /><figcaption>Serverless SPA 架构</figcaption>
 </figure>
 <p>而当我们创建一个博客的时候：</p>
 <ul>
