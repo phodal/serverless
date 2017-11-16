@@ -3,10 +3,20 @@ Serverless 架构
 
 > 花了 200G，我终于弄清楚了 Serverless 是什么？
 
-为了弄清 Serverless 究竟是什么东西？Serverless 到底是个什么？我使用 Serverless 尝试了一个又一个示例，自己做了四五个应用，总算是对 Serverelss 有了一个大致上的认识。现在，让我简单地解释『花了 40G，我终于弄清楚了 Serverless 是什么？』这句话，来说说 Serverless 到底是什么鬼？
+
+
+毫无疑问，在最近的几年里，微服务渐渐成为了一个相当流行的架构风格。微服务大致从 2014 年起，开始流行开来，如下图所示：
+
+![microservices vs serverless](images/microservice-compare-serverless.png)
+
+而微服务是从 2016 年起，开始受到开发者的关注。并且从其发展趋势来看，它大有可能在两年后，拥有今天微服务一样的地位。可见，它是一个相当具有潜力的架构。
 
 什么是 Serverless 架构？？
 ---
+
+为了弄清 Serverless 究竟是什么东西？Serverless 到底是个什么？我使用 Serverless 尝试了一个又一个示例，我自己也做了四五个应用，总算是对 Serverelss 有了一个大致上的认识。
+
+### 虚拟化与隔离
 
 > 开发人员为了保证开发环境的正确（即，这个 Bug 不是环境因素造成的），想出了一系列的隔离方式：虚拟机、容器虚拟化、语言虚拟机、应用容器（如 Java 的 Tomcat）、虚拟环境（如 Python 中的 virtualenv），甚至是独立于语言的 DSL。[^full_stack]
 
@@ -22,7 +32,7 @@ Serverless 架构
 
 ### 为什么是花了 200G ？
 
-这是一个非常好的问题。
+现在，让我简单地解释『花了 200G，我终于弄清楚了 Serverless 是什么？』这句话，来说说 Serverless 到底是什么鬼？
 
 在实践的过程中，我采用的是 AWS Lambda 作为 Serverless 服务背后的计算引擎。AWS Lambda 是一种函数即服务（Function-as-a-Servcie，FaaS）的计算服务，简单的来说就是：开发人员直接编写运行在云上的函数、功能、服务。由云服务产商提供操作系统、运行环境、网关等一系列的基础环境，我们只需要关注于编写我们的业务代码即可。
 
