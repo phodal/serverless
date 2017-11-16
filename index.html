@@ -206,9 +206,6 @@
 </ul>
 </nav>
 <h1 id="serverless-架构应用开发指南">Serverless 架构应用开发指南</h1>
-<blockquote>
-<p>Serverless 架构是指大量依赖第三方服务(也叫做后端即服务，即“BaaS”)或暂存容器中运行的自定义代码(函数即服务，即“FaaS”)的应用程序，函数是无服务器架构中抽象语言运行时的最小单位。在这种架构中，我们并不看重运行一个函数需要多少 CPU 或 RAM 或任何其他资源，而是更看重运行函数所需的时间，我们也只为这些函数的运行时间付费。<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a></p>
-</blockquote>
 <p><code>注意事项</code></p>
 <p>在本系列的文章中，主要采用了 Serverless Framework 来简化开发和部署流程。</p>
 <blockquote>
@@ -236,7 +233,7 @@
 <p>为了弄清 Serverless 究竟是什么东西？Serverless 到底是个什么？我使用 Serverless 尝试了一个又一个示例，我自己也做了四五个应用，总算是对 Serverelss 有了一个大致上的认识。</p>
 <h3 id="虚拟化与隔离">虚拟化与隔离</h3>
 <blockquote>
-<p>开发人员为了保证开发环境的正确（即，这个 Bug 不是环境因素造成的），想出了一系列的隔离方式：虚拟机、容器虚拟化、语言虚拟机、应用容器（如 Java 的 Tomcat）、虚拟环境（如 Python 中的 virtualenv），甚至是独立于语言的 DSL。<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a></p>
+<p>开发人员为了保证开发环境的正确（即，这个 Bug 不是环境因素造成的），想出了一系列的隔离方式：虚拟机、容器虚拟化、语言虚拟机、应用容器（如 Java 的 Tomcat）、虚拟环境（如 Python 中的 virtualenv），甚至是独立于语言的 DSL。<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a></p>
 </blockquote>
 <p>从最早的物理服务器开始，我们都在不断地抽象或者虚拟化服务器。</p>
 <figure>
@@ -313,7 +310,7 @@
 <p>当然这些都是一些虚无缥缈地东西。</p>
 <p>按 AWS 官方对于 Serverless 的介绍是这样的：</p>
 <blockquote>
-<p>服务器架构是基于互联网的系统，其中应用开发不使用常规的服务进程。相反，它们仅依赖于第三方服务（例如AWS Lambda服务），客户端逻辑和服务托管远程过程调用的组合。”<a href="#fn3" class="footnoteRef" id="fnref3"><sup>3</sup></a></p>
+<p>服务器架构是基于互联网的系统，其中应用开发不使用常规的服务进程。相反，它们仅依赖于第三方服务（例如AWS Lambda服务），客户端逻辑和服务托管远程过程调用的组合。”<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a></p>
 </blockquote>
 <p>在一个基于 AWS 的 Serverless 应用里，应用的组成是：</p>
 <ul>
@@ -2787,9 +2784,8 @@ functions:
 <section class="footnotes">
 <hr />
 <ol>
-<li id="fn1"><p>http://www.infoq.com/cn/news/2017/04/2017-Serverless<a href="#fnref1">↩</a></p></li>
-<li id="fn2"><p>选自《全栈应用开发：精益实践》的『隔离与运行环境』一节<a href="#fnref2">↩</a></p></li>
-<li id="fn3"><p>https://aws.amazon.com/cn/blogs/china/iaas-faas-serverless/<a href="#fnref3">↩</a></p></li>
+<li id="fn1"><p>选自《全栈应用开发：精益实践》的『隔离与运行环境』一节<a href="#fnref1">↩</a></p></li>
+<li id="fn2"><p>https://aws.amazon.com/cn/blogs/china/iaas-faas-serverless/<a href="#fnref2">↩</a></p></li>
 </ol>
 </section>
 </body>
