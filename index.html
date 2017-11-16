@@ -196,6 +196,12 @@
 <li><a href="#安装-serverless-plugin-simulate-及环境">安装 serverless-plugin-simulate 及环境</a></li>
 <li><a href="#运行及测试">运行及测试</a></li>
 </ul></li>
+<li><a href="#使用-graphql-实现更好的-api">使用 GraphQL 实现更好的 API</a><ul>
+<li><a href="#graphql-hello-world">GraphQL hello, world</a></li>
+<li><a href="#更复杂的示例">更复杂的示例</a><ul>
+<li><a href="#graphql-修改-dymanodb-的值">GraphQL 修改 DymanoDB 的值：</a></li>
+</ul></li>
+</ul></li>
 </ul>
 </nav>
 <h1 id="serverless-架构应用开发指南">Serverless 架构应用开发指南</h1>
@@ -2616,6 +2622,151 @@ Serverless: HTTP Event Not Found: Try checking your serverless.yml
 GET /favicon.ico 403 1.084 ms - 23
 HTTP Event Not Found: Try checking your serverless.yml</code></pre>
 <p>就可以得到类似于生产环境的 Lambda 函数的结果。</p>
+<h1 id="使用-graphql-实现更好的-api">使用 GraphQL 实现更好的 API</h1>
+<p>AWS Lambda 上可以运行不同的语言，提供不同语言的运行环境。这也就意味着，它不仅可以<a href="https://www.phodal.com/blog/serverless-developement-gui-lambda-api-gateway-dynamodb-create-restful-services/">跑 Express 来提供一个 RESTful API</a>，它也可以运行各式各样的 Node.js 库，比如说 GraphQL。</p>
+<p>GraphQL是一种API查询语言，是一个对自定义类型系统执行查询的服务端运行环境。我们可以编写一个使用 GraphQL 编写一个查询：</p>
+<pre><code>{
+  me {
+    name
+  }
+}</code></pre>
+<p>以此来，获取我们想到的 JSON 结果：</p>
+<pre><code>{
+  &quot;me&quot;: {
+    &quot;name&quot;: &quot;Luke Skywalker&quot;
+  }
+}</code></pre>
+<p>它看上更像是一层 BFF 层，在前端和后台之间，提供一个更适合于前端使用的接口。</p>
+<h2 id="graphql-hello-world">GraphQL hello, world</h2>
+<p>现在，让我们愉快地开始我们的学习之旅吧。</p>
+<p>首先，让我们创建我们的应用：</p>
+<pre><code>serverless create --template aws-nodejs --path graphql</code></pre>
+<p>然后添加 <code>graphql</code> 库：</p>
+<pre><code>yarn add graphql</code></pre>
+<p>接着，根据 GraqhQL.js 在 GitHub 的示例，编写我们的 <code>handler.js</code>：</p>
+<pre><code>/* handler.js */
+const {
+  graphql,
+  GraphQLSchema,
+  GraphQLObjectType,
+  GraphQLString,
+  GraphQLNonNull
+} = require(&#39;graphql&#39;)
+
+const schema = new GraphQLSchema({
+  query: new GraphQLObjectType({
+    name: &#39;RootQueryType&#39;,
+    fields: {
+      hello: {
+        type: GraphQLString,
+        resolve() {
+          return &#39;world&#39;;
+        }
+      }
+    }
+  }),
+})
+
+module.exports.query = (event, context, callback) =&gt; {
+  console.log(event.queryStringParameters, event.queryStringParameters.query)
+  return graphql(schema, event.queryStringParameters.query)
+  .then(
+    result =&gt; callback(null, {statusCode: 200, body: JSON.stringify(result)}),
+    err =&gt; callback(err)
+  )
+}
+</code></pre>
+<p>代码分为了两部分，第一部分是创建了一个 GraphQL 的 Schema；第二部分则是对应的查询代码。在查询部分，我们取出 Lambda 事件中的 queryStringParameters，然后其中的查询代码。接着，由 graphql 执行对应的查询。</p>
+<p>然后，配置一下我们的 <code>serverless.yml</code>：</p>
+<pre><code>
+functions:
+  query:
+    handler: handler.query
+    events:
+      - http:
+          path: query
+          method: get</code></pre>
+<p>并部署代码到服务器上:</p>
+<pre><code>service: graphql
+stage: dev
+region: us-east-1
+stack: graphql-dev
+api keys:
+  None
+endpoints:
+  GET - https://5ol2v4lnx3.execute-api.us-east-1.amazonaws.com/dev/query
+functions:
+  query: graphql-dev-query</code></pre>
+<p>现在让我们发起一次查询：</p>
+<pre><code>$ curl -G https://5ol2v4lnx3.execute-api.us-east-1.amazonaws.com/dev/query --data-urlencode &#39;query={ hello }&#39;
+
+
+{&quot;data&quot;:{&quot;hello&quot;:&quot;world&quot;}}</code></pre>
+<p>显然，我们的 hello, world 是成功的。</p>
+<h2 id="更复杂的示例">更复杂的示例</h2>
+<p>接着，让我们看一个更复杂的示例。</p>
+<blockquote>
+<p>一个 GraphQL 查询可以包含一个或者多个操作（operation），类似于一个RESTful API。操作（operation）可以使两种类型：查询（Query）或者修改（mutation）</p>
+</blockquote>
+<p>这意味着，我们还能使用 GraphQL 对相应的数据进行操作。在这里，我们可以直接使用官方的 DEMO，先安装它：</p>
+<pre><code>serverless install -u https://github.com/serverless/examples/tree/master/aws-node-graphql-api-with-dynamodb -n graphql-dynamodb</code></pre>
+<p>然后，部署：</p>
+<pre><code>$ serverless deploy
+
+...
+stack: graphql-dynamodb-dev
+api keys:
+  None
+endpoints:
+  GET - https://jzlqq3fgfd.execute-api.us-east-1.amazonaws.com/dev/query
+functions:
+  query: graphql-dynamodb-dev-query</code></pre>
+<p>接着编写一个查询的请求：</p>
+<pre><code>$ curl -G &#39;https://jzlqq3fgfd.execute-api.us-east-1.amazonaws.com/dev/query&#39; --data-urlencode &#39;query={greeting(firstName: &quot;world&quot;)}&#39;
+
+{&quot;data&quot;:{&quot;greeting&quot;:&quot;Hello, world.&quot;}}</code></pre>
+<p>尝试使用 mutation 来修改内容：</p>
+<pre><code>$ curl -G &#39;https://jzlqq3fgfd.execute-api.us-east-1.amazonaws.com/dev/query&#39; --data-urlencode &#39;query=mutation {changeNickname(firstName: &quot;world&quot;, nickname: &quot;phodal&quot;)}&#39;
+
+{&quot;data&quot;:{&quot;changeNickname&quot;:&quot;phodal&quot;}}</code></pre>
+<p>再次查询看相应的内容是否有修改：</p>
+<pre><code>$ curl -G &#39;https://jzlqq3fgfd.execute-api.us-east-1.amazonaws.com/dev/query&#39; --data-urlencode &#39;query={greeting(firstName: &quot;world&quot;)}&#39;
+
+{&quot;data&quot;:{&quot;greeting&quot;:&quot;Hello, phodal.&quot;}}</code></pre>
+<p>然后，让我们来看看对应的修改逻辑。</p>
+<h3 id="graphql-修改-dymanodb-的值">GraphQL 修改 DymanoDB 的值：</h3>
+<p>先看看新的 schema：</p>
+<pre><code>const schema = new GraphQLSchema({
+  query: new GraphQLObjectType({
+    ...
+    }),
+  mutation: new GraphQLObjectType({
+    name: &#39;RootMutationType&#39;, // an arbitrary name
+    fields: {
+      changeNickname: {
+        args: {
+          firstName: { name: &#39;firstName&#39;, type: new GraphQLNonNull(GraphQLString) },
+          nickname: { name: &#39;nickname&#39;, type: new GraphQLNonNull(GraphQLString) },
+        },
+        type: GraphQLString,
+        resolve: (parent, args) =&gt; changeNickname(args.firstName, args.nickname),
+      },
+    },
+  })
+});</code></pre>
+<p>在新的 schema 中定义了一个 mutation，在这个 mutation 对象里，我们通过 <code>resolve</code> 来调用 <code>changeNickname</code> 方法来处理数据库：</p>
+<pre><code>const changeNickname = (firstName, nickname) =&gt; promisify(callback =&gt;
+  dynamoDb.update({
+    TableName: process.env.DYNAMODB_TABLE,
+    Key: { firstName },
+    UpdateExpression: &#39;SET nickname = :nickname&#39;,
+    ExpressionAttributeValues: {
+      &#39;:nickname&#39;: nickname,
+    },
+  }, callback))
+  .then(() =&gt; nickname);</code></pre>
+<p>我们从通过原有的 name 作为 Key 查找，然后替换其中的 nickname 的值。</p>
+<p>有了这个 DEMO，就意味着，未来我们可以轻松地在我们所有的 RESTful API 前加上这一层，来提供一个 BFF 层。</p>
 <section class="footnotes">
 <hr />
 <ol>
