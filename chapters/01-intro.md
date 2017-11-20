@@ -197,6 +197,80 @@ Serverless 的背后是 诸如 AWS Lambda 这样的 FaaS（Function as a Service
 
 这依赖于我们的服务是无状态的，我们才能次无忌惮地不断运行起新的实例。
 
+
+Serverless 的问题
+---
+
+### 不适合长期运行应用
+
+如果你的应用需要一直长期不间断的运行、处理大量的请求，那么采用 EC2 这样的云服务器往往是一种更好的选择。因为 EC2 从价格上来说，更加便宜。
+
+引用 [Lu Zou](https://www.zhihu.com/people/lu-zou-36) 在 《[花了 1000G，我终于弄清楚了 Serverless 是什么（上）：什么是 Serverless 架构？](https://zhuanlan.zhihu.com/p/31122433)》上的评论：
+
+> EC2  相当于你买了一辆车，而 Lambda 相当于你租了你一辆车。
+
+长期租车的成本肯定比买车贵，但是你不需要维护。
+
+当然，可以结合 CRON 的方式来定期唤醒应用。
+
+因为冷启动时间的存长，应用在
+
+### 完全依赖于云服务
+
+应对方案，建立隔离层。
+
+这意味着，你需要建议隔离层，
+
+ - 隔离 API 网关
+ - 隔离数据库层，考虑到市面上还没有成熟的 ORM 工具，让你即支持 Firebase，又支持 DynamoDB 
+
+### 冷启动时间
+
+据 New Relic 官方博客《[Understanding AWS Lambda Performance—How Much Do Cold Starts Really Matter?](https://blog.newrelic.com/2017/01/11/aws-lambda-cold-start-optimization/)》称，AWS Lambda 的冷启动时间。
+
+![AWS 启动时间](./images/aws-lambda-monitoring-functions-chart.png)
+
+### 严重依赖第三方 API
+
+是的，
+
+在这种情况下，只能将不重要的 API 放在 Serverless 上。
+
+当你已经有大量的基础设施的时候，Serverless 对于你来说，并不是一个好东西。
+
+### 缺乏调试和开发工具
+
+你需要一遍又一遍地上传代码，每次上传的时候，你就好像是在部署服务器。然后 Fuck the。
+
+当我使用 Serverless Framework 的时候，遇到了这样的问题。后来，我发现了 serverless-offline，问题有一些改善。
+
+然而，对于日志系统来说，这仍然是一个艰巨的挑战。
+
+### 构建复杂
+
+Serverless 很便宜，但是这并不意味着它很简单。
+
+早先，在知道 AWS Lambda 之后，我本来想进行一些尝试。但是 CloudForamtion 让我觉得太难了，它的配置是如此的复杂，并且难以编写。
+
+我使用的是 Serverless，考虑到 CloudForamtion 的复杂度。
+
+### 自然限制
+
+使用多少内存、CPU 限制等等
+
+### 语言版本落后
+
+在 Node.js 6 出来的时候，AWS Lambda 只支持 Node.js 4.3.2；在 Node.js 9.0 出来的时候，AWS Lambda 支持到 6.10.3。
+
+如下是 AWS Lambda 支持以下运行时版本：
+
+ - Node.js – v4.3.2 和 6.10.3
+ - Java - Java 8
+ - Python – Python 3.6 和 2.7
+ - .NET 内核 – .NET 内核 1.0.1 (C#)
+
+如 Node.js
+
 Serverless 的适用场景
 ---
 
@@ -261,72 +335,6 @@ But，由于国内的条件限制（信息监管），这并不是一件容易�
 ### 博客系统
 
 过去的几年里，我一直在尝试将我的博客迁移到云服务上，而不是某个主机。
-
-Serverless 的问题
----
-
-### 完全依赖于云服务
-
-
-应对方案，建立隔离层。
-
-这意味着，你需要建议隔离层，
-
- - 隔离 API 网关
- - 隔离数据库层，考虑到市面上还没有成熟的 ORM 工具，让你即支持 Firebase，又支持 DynamoDB 
-
-### 冷启动时间
-
-据 New Relic 官方博客《[Understanding AWS Lambda Performance—How Much Do Cold Starts Really Matter?](https://blog.newrelic.com/2017/01/11/aws-lambda-cold-start-optimization/)》称，AWS Lambda 的冷启动时间。
-
-![AWS 启动时间](./images/aws-lambda-monitoring-functions-chart.png)
-
-### 不适合长期运行应用
-
-因为冷启动时间的存长，应用在
-
-当然，可以结合 CRON 的方式来定期唤醒应用。
-
-### 严重依赖第三方 API
-
-是的，
-
-在这种情况下，只能将不重要的 API 放在 Serverless 上。
-
-当你已经有大量的基础设施的时候，Serverless 对于你来说，并不是一个好东西。
-
-### 缺乏调试和开发工具
-
-你需要一遍又一遍地上传代码，每次上传的时候，你就好像是在部署服务器。然后 Fuck the。
-
-当我使用 Serverless Framework 的时候，遇到了这样的问题。后来，我发现了 serverless-offline，问题有一些改善。
-
-然而，对于日志系统来说，这仍然是一个艰巨的挑战。
-
-### 构建复杂
-
-Serverless 很便宜，但是这并不意味着它很简单。
-
-早先，在知道 AWS Lambda 之后，我本来想进行一些尝试。但是 CloudForamtion 让我觉得太难了，它的配置是如此的复杂，并且难以编写。
-
-我使用的是 Serverless，考虑到 CloudForamtion 的复杂度。
-
-### 自然限制
-
-使用多少内存、CPU 限制等等
-
-### 语言版本落后
-
-在 Node.js 6 出来的时候，AWS Lambda 只支持 Node.js 4.3.2；在 Node.js 9.0 出来的时候，AWS Lambda 支持到 6.10.3。
-
-如下是 AWS Lambda 支持以下运行时版本：
-
- - Node.js – v4.3.2 和 6.10.3
- - Java - Java 8
- - Python – Python 3.6 和 2.7
- - .NET 内核 – .NET 内核 1.0.1 (C#)
-
-如 Node.js
 
 其它
 ---
