@@ -67,10 +67,9 @@
 <li><a href="#自动扩展能力">自动扩展能力</a></li>
 </ul></li>
 <li><a href="#serverless-的问题">Serverless 的问题</a><ul>
-<li><a href="#不适合长期运行应用">不适合长期运行应用</a></li>
-<li><a href="#完全依赖于云服务">完全依赖于云服务</a></li>
+<li><a href="#不适合长时间运行应用">不适合长时间运行应用</a></li>
+<li><a href="#完全依赖于第三方服务">完全依赖于第三方服务</a></li>
 <li><a href="#冷启动时间">冷启动时间</a></li>
-<li><a href="#严重依赖第三方服务">严重依赖第三方服务</a></li>
 <li><a href="#缺乏调试和开发工具">缺乏调试和开发工具</a></li>
 <li><a href="#构建复杂">构建复杂</a></li>
 <li><a href="#语言版本落后">语言版本落后</a></li>
@@ -399,41 +398,47 @@
 <p>对于传统应用来说，要应对更多的请求的方式，就是部署更多的实例。然而，这个时候往往已经来不及了。而对于 FaaS 来说，我们并不需要这么做，FaaS 会自动的扩展。它可以在需要时尽可能多地启动实例副本，而不会发生冗长的部署和配置延迟。</p>
 <p>这依赖于我们的服务是无状态的，我们才能次无忌惮地不断运行起新的实例。</p>
 <h2 id="serverless-的问题">Serverless 的问题</h2>
-<h3 id="不适合长期运行应用">不适合长期运行应用</h3>
-<p>如果你的应用需要一直长期不间断的运行、处理大量的请求，那么采用 EC2 这样的云服务器往往是一种更好的选择。因为 EC2 从价格上来说，更加便宜。</p>
+<p>作为一个运行时，才启动的应用来说，Serverless 也存在着一个个我们所需要的问题。</p>
+<h3 id="不适合长时间运行应用">不适合长时间运行应用</h3>
+<p>Serverless 在请求到来时才运行。这意味着，当应用不运行的时候就会进入 “休眠状态”，下次当请求来临时，应用将会需要一个启动时间，即<strong>冷启动</strong>。这个时候，可以结合 CRON 的方式或者 CloudWatch 来定期唤醒应用。</p>
+<p>如果你的应用需要一直长期不间断的运行、处理大量的请求，那么你可能就不适合采用 Serverless 架构。在这种情况下，采用 EC2 这样的云服务器往往是一种更好的选择。因为 EC2 从价格上来说，更加便宜。</p>
 <p>引用 <a href="https://www.zhihu.com/people/lu-zou-36">Lu Zou</a> 在 《<a href="https://zhuanlan.zhihu.com/p/31122433">花了 1000G，我终于弄清楚了 Serverless 是什么（上）：什么是 Serverless 架构？</a>》上的评论：</p>
 <blockquote>
 <p>EC2 相当于你买了一辆车，而 Lambda 相当于你租了你一辆车。</p>
 </blockquote>
-<p>长期租车的成本肯定比买车贵，但是你不需要维护。</p>
-<p>当然，可以结合 CRON 的方式来定期唤醒应用。</p>
-<p>因为冷启动时间的存长，应用在</p>
-<h3 id="完全依赖于云服务">完全依赖于云服务</h3>
-<p>应对方案，建立隔离层。</p>
-<p>这意味着，你需要建议隔离层，</p>
+<p>长期租车的成本肯定比买车贵，但是你就少掉了一部分的维护成本。因此，这个问题实际上是一个值得深入计算的问题。</p>
+<h3 id="完全依赖于第三方服务">完全依赖于第三方服务</h3>
+<p>是的，当你决定使用某个云服务的时候，也就意味着你可能走了一条不归路。在这种情况下，只能将不重要的 API 放在 Serverless 上。</p>
+<p>当你已经有大量的基础设施的时候，Serverless 对于你来说，并不是一个好东西。当我们采用 Serverless 架构的时候，我们就和特别的服务供应商绑定了。我们使用了 AWS 家的服务，那么我们再将服务迁到 Google Cloud 上就没有那么容易了。</p>
+<p>我们需要修改一下系列的底层代码，能采取的应对方案，便是建立隔离层。这意味着，在设计应用的时候，就需要：</p>
 <ul>
 <li>隔离 API 网关</li>
 <li>隔离数据库层，考虑到市面上还没有成熟的 ORM 工具，让你即支持 Firebase，又支持 DynamoDB</li>
+<li>等等</li>
 </ul>
+<p>这些也将带给我们一些额外的成本，可能<strong>带来的问题会比解决的问题多</strong>。</p>
 <h3 id="冷启动时间">冷启动时间</h3>
+<p>如上所说，Serverless 应用存在一个冷启动时间的问题。</p>
 <p>据 New Relic 官方博客《<a href="https://blog.newrelic.com/2017/01/11/aws-lambda-cold-start-optimization/">Understanding AWS Lambda Performance—How Much Do Cold Starts Really Matter?</a>》称，AWS Lambda 的冷启动时间。</p>
 <figure>
 <img src="./images/aws-lambda-monitoring-functions-chart.png" alt="AWS 启动时间" /><figcaption>AWS 启动时间</figcaption>
 </figure>
-<h3 id="严重依赖第三方服务">严重依赖第三方服务</h3>
-<p>是的，当你决定使用某个云服务的时候，也就意味着你可能走了一条不归路。</p>
-<p>在这种情况下，只能将不重要的 API 放在 Serverless 上。</p>
-<p>当你已经有大量的基础设施的时候，Serverless 对于你来说，并不是一个好东西。</p>
+<p>又或者是我之前统计的请求响应时间：</p>
+<figure>
+<img src="images/times.png" alt="Serverless 请求时间" /><figcaption>Serverless 请求时间</figcaption>
+</figure>
+<p>尽管这个冷启动时间大部分情况下，可以在 50ms 以内。而这是对于 Node.js 应用来说，对于拥有虚拟机的 Java 和 C# 可能就没有那么幸运了。</p>
 <h3 id="缺乏调试和开发工具">缺乏调试和开发工具</h3>
-<p>你需要一遍又一遍地上传代码，每次上传的时候，你就好像是在部署服务器。然后 Fuck the。</p>
-<p>当我使用 Serverless Framework 的时候，遇到了这样的问题。后来，我发现了 serverless-offline，问题有一些改善。</p>
+<p>当我使用 Serverless Framework 的时候，遇到了这样的问题：缺乏调试和开发工具。后来，我发现了 serverless-offline、dynamodb-local 等一系列插件之后，问题有一些改善。</p>
 <p>然而，对于日志系统来说，这仍然是一个艰巨的挑战。</p>
+<p>每次你调试的时候，你需要一遍又一遍地上传代码。而每次上传的时候，你就好像是在部署服务器。然后 Fuck 了，我并不能总是快速地定位出问题在哪。于是，我修改了一下代码，添加了一行 <code>console.log</code>，然后又一次地部署了下代码。问题解决了，挺好的，我删了一下 <code>console.log</code>，然后又一次地部署了下代码。</p>
+<p>后来，我学乖了，找了一个类似于 log4j 这样的可以分级别纪录日志的 Node.js 库 <code>winston</code>。它可以支持 error、warn、info、verbose、debug、silly 六个不同级别的日志。</p>
 <h3 id="构建复杂">构建复杂</h3>
 <p>Serverless 很便宜，但是这并不意味着它很简单。</p>
 <p>早先，在知道 AWS Lambda 之后，我本来想进行一些尝试。但是 CloudForamtion 让我觉得太难了，它的配置是如此的复杂，并且难以阅读及编写（JSON 格式）。</p>
 <p>考虑到 CloudForamtion 的复杂度，我是在接触了 Serverless Framework 之后，才重新燃起了一些信心。</p>
 <p>Serverless Framework 的配置更加简单，采用的是 YAML 格式。在部署的时候，Serverless Framework 会根据我们的配置生成 CloudForamtion 配置。</p>
-<p>在那篇《Serverless Kinestics》想着的数据统计文章里，我们介绍了 Serverless 框架的配置。与一般的 Lambda 配置来说，这里的配置就稍微复杂一些。然而，这也并非是一个真正用于生产的配置。我的意思是，真实的应用场景远远比这复杂。</p>
+<p>在那篇《<a href="https://www.phodal.com/blog/serverless-development-guide-use-kinesis-firehose-stream-data-s3/">Kinesis Firehose 持久化数据到 S3</a>》想着的数据统计文章里，我们介绍了 Serverless 框架的配置。与一般的 Lambda 配置来说，这里的配置就稍微复杂一些。然而，这也并非是一个真正用于生产的配置。我的意思是，真实的应用场景远远比这复杂。</p>
 <h3 id="语言版本落后">语言版本落后</h3>
 <p>在 Node.js 6 出来的时候，AWS Lambda 只支持 Node.js 4.3.2；在 Node.js 9.0 出来的时候，AWS Lambda 支持到 6.10.3。</p>
 <p>如下是 AWS Lambda 支持以下运行时版本：</p>
@@ -443,7 +448,7 @@
 <li>Python – Python 3.6 和 2.7</li>
 <li>.NET 内核 – .NET 内核 1.0.1 (C#)</li>
 </ul>
-<p>如 Node.js</p>
+<p>对于 Java 和 Python 来说，他们的版本上可能基本都是够用的，我不知道 C# 怎么样。但是 Node.js 的版本显然是有点老旧的，但是都 Node.js 9.2.0 了。不过，话说来说，这可能与版本帝 Chrome 带来的前端版本潮有一点关系。</p>
 <h2 id="serverless-的适用场景">Serverless 的适用场景</h2>
 <ul>
 <li>事件驱动的编程，如数据、聊天机器人等等</li>

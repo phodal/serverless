@@ -216,50 +216,58 @@ Serverless 的背后是 诸如 AWS Lambda 这样的 FaaS（Function as a Service
 Serverless 的问题
 ---
 
-### 不适合长期运行应用
+作为一个运行时，才启动的应用来说，Serverless 也存在着一个个我们所需要的问题。
 
-如果你的应用需要一直长期不间断的运行、处理大量的请求，那么采用 EC2 这样的云服务器往往是一种更好的选择。因为 EC2 从价格上来说，更加便宜。
+### 不适合长时间运行应用
+
+Serverless 在请求到来时才运行。这意味着，当应用不运行的时候就会进入 “休眠状态”，下次当请求来临时，应用将会需要一个启动时间，即**冷启动**。这个时候，可以结合 CRON 的方式或者 CloudWatch 来定期唤醒应用。
+
+如果你的应用需要一直长期不间断的运行、处理大量的请求，那么你可能就不适合采用 Serverless 架构。在这种情况下，采用 EC2 这样的云服务器往往是一种更好的选择。因为 EC2 从价格上来说，更加便宜。
 
 引用 [Lu Zou](https://www.zhihu.com/people/lu-zou-36) 在 《[花了 1000G，我终于弄清楚了 Serverless 是什么（上）：什么是 Serverless 架构？](https://zhuanlan.zhihu.com/p/31122433)》上的评论：
 
-> EC2  相当于你买了一辆车，而 Lambda 相当于你租了你一辆车。
+> EC2 相当于你买了一辆车，而 Lambda 相当于你租了你一辆车。
 
-长期租车的成本肯定比买车贵，但是你不需要维护。
+长期租车的成本肯定比买车贵，但是你就少掉了一部分的维护成本。因此，这个问题实际上是一个值得深入计算的问题。
 
-当然，可以结合 CRON 的方式来定期唤醒应用。
+### 完全依赖于第三方服务
 
-因为冷启动时间的存长，应用在
 
-### 完全依赖于云服务
+是的，当你决定使用某个云服务的时候，也就意味着你可能走了一条不归路。在这种情况下，只能将不重要的 API 放在 Serverless 上。
 
-应对方案，建立隔离层。
+当你已经有大量的基础设施的时候，Serverless 对于你来说，并不是一个好东西。当我们采用 Serverless 架构的时候，我们就和特别的服务供应商绑定了。我们使用了 AWS 家的服务，那么我们再将服务迁到 Google Cloud 上就没有那么容易了。
 
-这意味着，你需要建议隔离层，
+我们需要修改一下系列的底层代码，能采取的应对方案，便是建立隔离层。这意味着，在设计应用的时候，就需要：
 
  - 隔离 API 网关
  - 隔离数据库层，考虑到市面上还没有成熟的 ORM 工具，让你即支持 Firebase，又支持 DynamoDB 
+ - 等等
+
+这些也将带给我们一些额外的成本，可能**带来的问题会比解决的问题多**。
 
 ### 冷启动时间
+
+如上所说，Serverless 应用存在一个冷启动时间的问题。
 
 据 New Relic 官方博客《[Understanding AWS Lambda Performance—How Much Do Cold Starts Really Matter?](https://blog.newrelic.com/2017/01/11/aws-lambda-cold-start-optimization/)》称，AWS Lambda 的冷启动时间。
 
 ![AWS 启动时间](./images/aws-lambda-monitoring-functions-chart.png)
 
-### 严重依赖第三方服务
+又或者是我之前统计的请求响应时间：
 
-是的，当你决定使用某个云服务的时候，也就意味着你可能走了一条不归路。
+![Serverless 请求时间](images/times.png)
 
-在这种情况下，只能将不重要的 API 放在 Serverless 上。
-
-当你已经有大量的基础设施的时候，Serverless 对于你来说，并不是一个好东西。
+尽管这个冷启动时间大部分情况下，可以在 50ms 以内。而这是对于 Node.js 应用来说，对于拥有虚拟机的 Java 和 C# 可能就没有那么幸运了。
 
 ### 缺乏调试和开发工具
 
-你需要一遍又一遍地上传代码，每次上传的时候，你就好像是在部署服务器。然后 Fuck the。
-
-当我使用 Serverless Framework 的时候，遇到了这样的问题。后来，我发现了 serverless-offline，问题有一些改善。
+当我使用 Serverless Framework 的时候，遇到了这样的问题：缺乏调试和开发工具。后来，我发现了 serverless-offline、dynamodb-local 等一系列插件之后，问题有一些改善。
 
 然而，对于日志系统来说，这仍然是一个艰巨的挑战。
+
+每次你调试的时候，你需要一遍又一遍地上传代码。而每次上传的时候，你就好像是在部署服务器。然后 Fuck 了，我并不能总是快速地定位出问题在哪。于是，我修改了一下代码，添加了一行 ``console.log``，然后又一次地部署了下代码。问题解决了，挺好的，我删了一下 ``console.log``，然后又一次地部署了下代码。
+
+后来，我学乖了，找了一个类似于 log4j 这样的可以分级别纪录日志的 Node.js 库 ``winston``。它可以支持 error、warn、info、verbose、debug、silly 六个不同级别的日志。
 
 ### 构建复杂
 
@@ -271,7 +279,7 @@ Serverless 很便宜，但是这并不意味着它很简单。
 
 Serverless Framework 的配置更加简单，采用的是 YAML 格式。在部署的时候，Serverless Framework 会根据我们的配置生成 CloudForamtion 配置。
 
-在那篇《Serverless Kinestics》想着的数据统计文章里，我们介绍了 Serverless 框架的配置。与一般的 Lambda 配置来说，这里的配置就稍微复杂一些。然而，这也并非是一个真正用于生产的配置。我的意思是，真实的应用场景远远比这复杂。
+在那篇《[Kinesis Firehose 持久化数据到 S3](https://www.phodal.com/blog/serverless-development-guide-use-kinesis-firehose-stream-data-s3/)》想着的数据统计文章里，我们介绍了 Serverless 框架的配置。与一般的 Lambda 配置来说，这里的配置就稍微复杂一些。然而，这也并非是一个真正用于生产的配置。我的意思是，真实的应用场景远远比这复杂。
 
 ### 语言版本落后
 
@@ -284,7 +292,7 @@ Serverless Framework 的配置更加简单，采用的是 YAML 格式。在部�
  - Python – Python 3.6 和 2.7
  - .NET 内核 – .NET 内核 1.0.1 (C#)
 
-如 Node.js
+对于 Java 和 Python 来说，他们的版本上可能基本都是够用的，我不知道 C# 怎么样。但是 Node.js 的版本显然是有点老旧的，但是都 Node.js 9.2.0 了。不过，话说来说，这可能与版本帝 Chrome 带来的前端版本潮有一点关系。
 
 Serverless 的适用场景
 ---
