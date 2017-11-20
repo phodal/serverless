@@ -275,7 +275,7 @@ Serverless 的问题
 
 据 New Relic 官方博客《[Understanding AWS Lambda Performance—How Much Do Cold Starts Really Matter?](https://blog.newrelic.com/2017/01/11/aws-lambda-cold-start-optimization/)》称，AWS Lambda 的冷启动时间。
 
-![AWS 启动时间](aws-lambda-monitoring-functions-chart.png)
+![AWS 启动时间](./images/aws-lambda-monitoring-functions-chart.png)
 
 ### 不适合长期运行应用
 
