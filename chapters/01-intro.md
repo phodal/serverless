@@ -94,8 +94,6 @@ REPORT RequestId: 041138f9-bc81-11e7-aa63-0dbab83f773d	Duration: 2.49 ms	Billed 
 
 > 服务器架构是基于互联网的系统，其中应用开发不使用常规的服务进程。相反，它们仅依赖于第三方服务（例如AWS Lambda服务），客户端逻辑和服务托管远程过程调用的组合。”[^aws_serverless]
 
-[^aws_serverless]: https://aws.amazon.com/cn/blogs/china/iaas-faas-serverless/
-
 在一个基于 AWS 的 Serverless 应用里，应用的组成是：
 
  - 网关 API Gateway
@@ -128,6 +126,14 @@ REPORT RequestId: 041138f9-bc81-11e7-aa63-0dbab83f773d	Duration: 2.49 ms	Billed 
 ![更小的函数](images/mono-ms-sls.jpg)
 
 只是这些服务、函数比以往的粒度更加细致。
+
+### 事件驱动编程
+
+Serverless 的运行才计算，便意味着他是一种 “严格” 的事件驱动式计算。
+
+> 事件驱动编程（英语：Event-driven programming）是一种电脑程序设计模型。这种模型的程序运行流程是由用户的动作（如鼠标的按键，键盘的按键动作）或者是由其他程序的消息来决定的。相对于批处理程序设计（batch programming）而言，程序运行的流程是由程序员来决定。批量的程序设计在初级程序设计教学课程上是一种方式。然而，事件驱动程序设计这种设计模型是在交互程序（Interactive program）的情况下孕育而生的。[^wiki_event_driver]
+
+这也意味着，系统在编程模型上有着巨大的改变。在我们编写 GUI 程序，如桌面程序、Web 前端应用，我们都通过监听用户对按钮、链接等组件操作，才开始相应的处理逻辑。这和 Serverless 是相似的，只在用户使用的时候，才会对应用户的行为进行响应。
 
 Serverless 的优势
 ---
@@ -385,4 +391,9 @@ Express 应用示例
 
 ### Apache OpenWhisk
 
+[^aws_serverless]: https://aws.amazon.com/cn/blogs/china/iaas-faas-serverless/
+
 [^full_stack]: 选自《全栈应用开发：精益实践》的『隔离与运行环境』一节
+
+[^wiki_event_driver]:https://zh.wikipedia.org/wiki/%E4%BA%8B%E4%BB%B6%E9%A9%85%E5%8B%95%E7%A8%8B%E5%BC%8F%E8%A8%AD%E8%A8%88
+

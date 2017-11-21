@@ -58,6 +58,7 @@
 <li><a href="#虚拟化与隔离">虚拟化与隔离</a></li>
 <li><a href="#为什么是花了-200g">为什么是花了 200G ？</a></li>
 <li><a href="#serverless-是什么">Serverless 是什么？</a></li>
+<li><a href="#事件驱动编程">事件驱动编程</a></li>
 </ul></li>
 <li><a href="#serverless-的优势">Serverless 的优势</a><ul>
 <li><a href="#降低启动成本">降低启动成本</a></li>
@@ -353,6 +354,12 @@
 <img src="images/mono-ms-sls.jpg" alt="更小的函数" /><figcaption>更小的函数</figcaption>
 </figure>
 <p>只是这些服务、函数比以往的粒度更加细致。</p>
+<h3 id="事件驱动编程">事件驱动编程</h3>
+<p>Serverless 的运行才计算，便意味着他是一种 “严格” 的事件驱动式计算。</p>
+<blockquote>
+<p>事件驱动编程（英语：Event-driven programming）是一种电脑程序设计模型。这种模型的程序运行流程是由用户的动作（如鼠标的按键，键盘的按键动作）或者是由其他程序的消息来决定的。相对于批处理程序设计（batch programming）而言，程序运行的流程是由程序员来决定。批量的程序设计在初级程序设计教学课程上是一种方式。然而，事件驱动程序设计这种设计模型是在交互程序（Interactive program）的情况下孕育而生的。<a href="#fn3" class="footnoteRef" id="fnref3"><sup>3</sup></a></p>
+</blockquote>
+<p>这也意味着，系统在编程模型上有着巨大的改变。在我们编写 GUI 程序，如桌面程序、Web 前端应用，我们都通过监听用户对按钮、链接等组件操作，才开始相应的处理逻辑。这和 Serverless 是相似的，只在用户使用的时候，才会对应用户的行为进行响应。</p>
 <h2 id="serverless-的优势">Serverless 的优势</h2>
 <p>在我使用 Serverless Framework 开发 AWS Serverless 应用的过程中，最方便的莫过于，第一次部署和第二次、第三次部署没有什么区别。只需要执行 <code>serverless deploy</code>，几分钟后，我们代码就运行在线上。如果是一个传统的 AWS 应用，我需要 SSH 到我的服务器上部署，这样才能写好我的自动部署脚本。除此，我还需要担忧这个过程中，有哪些用户有使用。</p>
 <p>除了，我觉得的部署方便，还有就是价格合理。我的 AWS EC2 实例上运行着我的博客、以及其他的一些网络。然而，我那 PV 只有 500 左右的博客，大部分时间都是在空转。便觉得有些浪费，可是运行才收费的 Serverless 就不会有这样的问题。可以让我大胆地去使用这些服务。当然了，还有其它一些显著的优势。</p>
@@ -2828,6 +2835,7 @@ functions:
 <ol>
 <li id="fn1"><p>选自《全栈应用开发：精益实践》的『隔离与运行环境』一节<a href="#fnref1">↩</a></p></li>
 <li id="fn2"><p>https://aws.amazon.com/cn/blogs/china/iaas-faas-serverless/<a href="#fnref2">↩</a></p></li>
+<li id="fn3"><p>https://zh.wikipedia.org/wiki/%E4%BA%8B%E4%BB%B6%E9%A9%85%E5%8B%95%E7%A8%8B%E5%BC%8F%E8%A8%AD%E8%A8%88<a href="#fnref3">↩</a></p></li>
 </ol>
 </section>
 <!-- Global site tag (gtag.js) - Google Analytics -->
