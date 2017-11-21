@@ -89,8 +89,7 @@
 </ul></li>
 <li><a href="#其它">其它</a><ul>
 <li><a href="#迁移方案">迁移方案</a></li>
-<li><a href="#serverless-框架">Serverless 框架</a></li>
-<li><a href="#serverless">Serverless</a></li>
+<li><a href="#serverless-framework">Serverless Framework</a></li>
 <li><a href="#apex">Apex</a></li>
 <li><a href="#apache-openwhisk">Apache OpenWhisk</a></li>
 </ul></li>
@@ -457,13 +456,7 @@
 </ul>
 <p>对于 Java 和 Python 来说，他们的版本上可能基本都是够用的，我不知道 C# 怎么样。但是 Node.js 的版本显然是有点老旧的，但是都 Node.js 9.2.0 了。不过，话说来说，这可能与版本帝 Chrome 带来的前端版本潮有一点关系。</p>
 <h2 id="serverless-的适用场景">Serverless 的适用场景</h2>
-<ul>
-<li>事件驱动的编程，如数据、聊天机器人等等</li>
-<li>移动应用</li>
-<li>物联网应用</li>
-<li>精益创业</li>
-<li>定时任务</li>
-</ul>
+<p>尽管 Serverless 在编写传统的 Web 应用上，有一定的缺点。然而，它的事件驱动及运行时计算，使得它在某些场景上相当的合适。</p>
 <h3 id="发送通知邮件短信等">发送通知（邮件、短信等）</h3>
 <p>事件触发，对实时性的要求相对没有那么高~~</p>
 <h3 id="事件驱动">事件驱动</h3>
@@ -503,10 +496,18 @@
 <h2 id="其它">其它</h2>
 <h3 id="迁移方案">迁移方案</h3>
 <p>Express 应用示例</p>
-<h3 id="serverless-框架">Serverless 框架</h3>
-<h3 id="serverless">Serverless</h3>
+<h3 id="serverless-framework">Serverless Framework</h3>
+<blockquote>
+<p>Serverless Framework是无服务器应用框架和生态系统，旨在简化开发和部署AWS Lambda应用程序的工作。Serverless Framework 作为 Node.js NPM 模块提供，填补了AWS Lambda 存在的许多缺口。它提供了多个样本模板，可以迅速启动 AWS Lambda 开发。</p>
+</blockquote>
 <h3 id="apex">Apex</h3>
+<blockquote>
+<p>Apex可以轻松地构建、部署和管理AWS Lambda功能。通过节点可使用由AWS Lambda(如Golang)所不支持的语言，js shim注入到构建中，为测试功能、回滚部署、查看度量、跟踪日志、连接到构建系统以及更多的功能提供了各种工作流相关工具。</p>
+</blockquote>
 <h3 id="apache-openwhisk">Apache OpenWhisk</h3>
+<blockquote>
+<p>OpenWhisk是一个分布式的、事件驱动的计算服务。OpenWhisk运行应用程序逻辑，以应对事件或直接通过HTTP调用网络或移动应用。</p>
+</blockquote>
 <h1 id="serverless-的-hello-world">Serverless 的 hello, world</h1>
 <p>原文链接：<a href="https://www.phodal.com/blog/serverless-development-guid-serverless-framework-hello-world/">Serverless 应用开发指南：serverless 的 hello, world</a></p>
 <p>在翻译了几篇 serverless 与物联网相关的文章之后，我开始想着好好掌握一下 serverless 的相关知识。</p>
