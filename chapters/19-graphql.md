@@ -174,7 +174,7 @@ $ curl -G 'https://jzlqq3fgfd.execute-api.us-east-1.amazonaws.com/dev/query' --d
 
 然后，让我们来看看对应的修改逻辑。
 
-### GraphQL 修改 DymanoDB 的值：
+### GraphQL 修改 DymanoDB 的值
 
 先看看新的 schema：
 

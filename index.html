@@ -207,7 +207,7 @@
 <li><a href="#使用-graphql-实现更好的-api">使用 GraphQL 实现更好的 API</a><ul>
 <li><a href="#graphql-hello-world">GraphQL hello, world</a></li>
 <li><a href="#更复杂的示例">更复杂的示例</a><ul>
-<li><a href="#graphql-修改-dymanodb-的值">GraphQL 修改 DymanoDB 的值：</a></li>
+<li><a href="#graphql-修改-dymanodb-的值">GraphQL 修改 DymanoDB 的值</a></li>
 </ul></li>
 </ul></li>
 <li><a href="#serverless-应用示例前端错误日志及事件收集系统">Serverless 应用示例：前端错误日志及事件收集系统</a><ul>
@@ -2807,7 +2807,7 @@ functions:
 
 {&quot;data&quot;:{&quot;greeting&quot;:&quot;Hello, phodal.&quot;}}</code></pre>
 <p>然后，让我们来看看对应的修改逻辑。</p>
-<h3 id="graphql-修改-dymanodb-的值">GraphQL 修改 DymanoDB 的值：</h3>
+<h3 id="graphql-修改-dymanodb-的值">GraphQL 修改 DymanoDB 的值</h3>
 <p>先看看新的 schema：</p>
 <pre><code>const schema = new GraphQLSchema({
   query: new GraphQLObjectType({
