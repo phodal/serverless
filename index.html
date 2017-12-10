@@ -210,6 +210,17 @@
 <li><a href="#graphql-修改-dymanodb-的值">GraphQL 修改 DymanoDB 的值：</a></li>
 </ul></li>
 </ul></li>
+<li><a href="#serverless-应用示例前端错误日志及事件收集系统">Serverless 应用示例：前端错误日志及事件收集系统</a><ul>
+<li><a href="#molog-使用">Molog 使用</a></li>
+<li><a href="#serverless-错误收集系统架构设计">Serverless 错误收集系统架构设计</a><ul>
+<li><a href="#架构设计">架构设计</a></li>
+</ul></li>
+<li><a href="#molog-系统实现">Molog 系统实现</a><ul>
+<li><a href="#存储日志和事件">1. 存储日志和事件</a></li>
+<li><a href="#读取日志">2. 读取日志</a></li>
+</ul></li>
+<li><a href="#问题">问题</a></li>
+</ul></li>
 </ul>
 </nav>
 <h1 id="serverless-架构应用开发指南">Serverless 架构应用开发指南</h1>
@@ -2829,6 +2840,100 @@ functions:
   .then(() =&gt; nickname);</code></pre>
 <p>我们从通过原有的 name 作为 Key 查找，然后替换其中的 nickname 的值。</p>
 <p>有了这个 DEMO，就意味着，未来我们可以轻松地在我们所有的 RESTful API 前加上这一层，来提供一个 BFF 层。</p>
+<h1 id="serverless-应用示例前端错误日志及事件收集系统">Serverless 应用示例：前端错误日志及事件收集系统</h1>
+<p>最近在交接项目，也因此有了一些时间。之前想过做一个前端的错误日志系统，便想着直接用 Serverlss 做了好了。</p>
+<p>开始之前先让我简单地介绍一下：<a href="https://github.com/phodal/molog" class="uri">https://github.com/phodal/molog</a>，以便于了解我们的需求及功能。</p>
+<h2 id="molog-使用">Molog 使用</h2>
+<p>先让我们看看最后要怎么用，在网页上引入：</p>
+<pre><code>&lt;script data-component=&quot;homepage&quot; data-env=&quot;dev&quot; src=&quot;//static.pho.im/molog.min.js&quot;&gt;&lt;/script&gt;</code></pre>
+<p>顾名思义，其中的 component 针对的不是不同组件的名字，而 env 便是具体的环境。</p>
+<p>前端的代码是基于 sherlog.js，因此在事件上也是差不多的：</p>
+<pre><code>Molog.push({field: &#39;xxx&#39;, action:&#39; &#39;}, function() { })</code></pre>
+<h2 id="serverless-错误收集系统架构设计">Serverless 错误收集系统架构设计</h2>
+<p>在之前的文章中，我们讨论过错误日志收集是一个很好的 Serverless 应用使用场景。</p>
+<h3 id="架构设计">架构设计</h3>
+<p>事实上，这样的系统很简单：</p>
+<figure>
+<img src="images/molog-architecture.png" alt="系统架构图" /><figcaption>系统架构图</figcaption>
+</figure>
+<p>1.<strong>前端通过 window.onerror 来捕获错误日志</strong></p>
+<pre><code>window.onerror = function(message, source, lineno, colno, error) {
+ ... 
+}</code></pre>
+<ol start="2" type="1">
+<li><p><strong>然后将错误日志发给 AWS Lambda 来处理</strong></p></li>
+<li><p><strong>AWS Lambda 将数据存储到 AWS DynamoDB 数据库里</strong></p></li>
+<li><p><strong>当用户打开后台时，从 AWS DynamoDB 获取相应的数据</strong></p></li>
+<li><p><strong>前端的静态文件，通过 S3 + Cloudfront 作为 CDN 来分发前端资源</strong></p></li>
+</ol>
+<h2 id="molog-系统实现">Molog 系统实现</h2>
+<h3 id="存储日志和事件">1. 存储日志和事件</h3>
+<p>要在 AWS 上实际这样的系统，就便得很简单了。我们只需要存储一下这些数据即可，相关的存储逻辑如下所示：</p>
+<pre><code>  const params = {
+    TableName: process.env.DYNAMODB_TABLE,
+    Item: {
+      id: uuid.v1(),
+      data: JSON.stringify(event.queryStringParameters),
+      env: env,
+      component: component,
+      createdAt: timestamp
+    },
+  };</code></pre>
+<p>这里的 <code>env</code> 和 <code>component</code> 是在 script 标签中遍历解析出来的：</p>
+<pre><code>env: function() {
+  var s = doc.getElementsByTagName(&#39;script&#39;)
+    , env;
+  for( var i = 0, l = s.length; i &lt; l; i++) {
+    if (s[i].src.indexOf(&#39;molog&#39;) &gt; -1) {
+      env = s[i].getAttribute(&#39;data-env&#39;);
+      break;
+    }
+  }
+  this.env = env || &#39;&#39;;
+}</code></pre>
+<p>然后，再将这个 URL 放置到 POST 的 URL 中，即 <code>serverless.yml</code> 的配置文件中：</p>
+<pre><code>
+functions:
+  create:
+    handler: create/index.handler
+    events:
+      - http:
+          path: /{component}/{env}/
+          method: get
+          cors: true</code></pre>
+<p>从 URL 中获取这些相关的参数</p>
+<h3 id="读取日志">2. 读取日志</h3>
+<p>有了上面的基础，有读取日志也很简单，首先配置好 URL：</p>
+<pre><code>  list:
+    handler: list/index.list
+    events:
+      - http:
+          path: /{component}/{env}/logs
+          method: get
+          cors: true</code></pre>
+<p>然后从数据库中获取这些结果：</p>
+<pre><code>  const params = {
+    TableName: process.env.DYNAMODB_TABLE,
+    FilterExpression: &#39;env = :env and component = :component&#39;,
+    ExpressionAttributeValues: {
+      &#39;:env&#39;: env,
+      &#39;:component&#39;: component,
+    }
+  };
+  dynamoDb.scan(params, (error, result) =&gt; {
+
+    const response = {
+      statusCode: 200,
+      headers: {
+        &quot;Access-Control-Allow-Origin&quot; : &quot;*&quot; // Required for CORS support to work
+      },
+      body: JSON.stringify(result.Items),
+    };
+    callback(null, response);
+  });</code></pre>
+<p>这样就可以得到相关的日志了。</p>
+<h2 id="问题">问题</h2>
+<p>就这么简单，发现由于 CloudFront 在国内有点水土不服，并且提供压缩的功能，导致加载速度有点慢。</p>
 <section class="footnotes">
 <hr />
 <ol>
