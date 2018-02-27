@@ -1,11 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
 <head>
-  <meta charset="utf-8">
-  <meta name="generator" content="pandoc">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>Serverless 架构应用开发指南 – </title>
-  <style type="text/css">code{white-space: pre;}</style>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Serverless 架构应用开发指南 – serverless</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      div.line-block{white-space: pre-line;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
   <link rel="stylesheet" href="style.css">
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
@@ -221,6 +226,15 @@
 </ul></li>
 <li><a href="#问题">问题</a></li>
 </ul></li>
+<li><a href="#serverless-应用示例二维码生成">Serverless 应用示例：二维码生成</a><ul>
+<li><a href="#总揽">总揽</a></li>
+<li><a href="#生成应用">生成应用</a></li>
+<li><a href="#配置资源">配置资源</a></li>
+<li><a href="#生成二维码">生成二维码</a></li>
+<li><a href="#上传-aws-s3">上传 AWS S3</a></li>
+<li><a href="#优化二维码">优化二维码</a></li>
+<li><a href="#部署及测试-2">部署及测试</a></li>
+</ul></li>
 </ul>
 </nav>
 <h1 id="serverless-架构应用开发指南">Serverless 架构应用开发指南</h1>
@@ -251,7 +265,7 @@
 <p>为了弄清 Serverless 究竟是什么东西？Serverless 到底是个什么？我使用 Serverless 尝试了一个又一个示例，我自己也做了四五个应用，总算是对 Serverelss 有了一个大致上的认识。</p>
 <h3 id="虚拟化与隔离">虚拟化与隔离</h3>
 <blockquote>
-<p>开发人员为了保证开发环境的正确（即，这个 Bug 不是环境因素造成的），想出了一系列的隔离方式：虚拟机、容器虚拟化、语言虚拟机、应用容器（如 Java 的 Tomcat）、虚拟环境（如 Python 中的 virtualenv），甚至是独立于语言的 DSL。<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a></p>
+<p>开发人员为了保证开发环境的正确（即，这个 Bug 不是环境因素造成的），想出了一系列的隔离方式：虚拟机、容器虚拟化、语言虚拟机、应用容器（如 Java 的 Tomcat）、虚拟环境（如 Python 中的 virtualenv），甚至是独立于语言的 DSL。<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></p>
 </blockquote>
 <p>从最早的物理服务器开始，我们都在不断地抽象或者虚拟化服务器。</p>
 <figure>
@@ -332,7 +346,7 @@
 <p>当然这些都是一些虚无缥缈地东西。</p>
 <p>按 AWS 官方对于 Serverless 的介绍是这样的：</p>
 <blockquote>
-<p>服务器架构是基于互联网的系统，其中应用开发不使用常规的服务进程。相反，它们仅依赖于第三方服务（例如AWS Lambda服务），客户端逻辑和服务托管远程过程调用的组合。”<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a></p>
+<p>服务器架构是基于互联网的系统，其中应用开发不使用常规的服务进程。相反，它们仅依赖于第三方服务（例如AWS Lambda服务），客户端逻辑和服务托管远程过程调用的组合。”<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a></p>
 </blockquote>
 <p>在一个基于 AWS 的 Serverless 应用里，应用的组成是：</p>
 <ul>
@@ -365,7 +379,7 @@
 <h3 id="事件驱动编程">事件驱动编程</h3>
 <p>Serverless 的运行才计算，便意味着他是一种 “严格” 的事件驱动式计算。</p>
 <blockquote>
-<p>事件驱动编程（英语：Event-driven programming）是一种电脑程序设计模型。这种模型的程序运行流程是由用户的动作（如鼠标的按键，键盘的按键动作）或者是由其他程序的消息来决定的。相对于批处理程序设计（batch programming）而言，程序运行的流程是由程序员来决定。批量的程序设计在初级程序设计教学课程上是一种方式。然而，事件驱动程序设计这种设计模型是在交互程序（Interactive program）的情况下孕育而生的。<a href="#fn3" class="footnoteRef" id="fnref3"><sup>3</sup></a></p>
+<p>事件驱动编程（英语：Event-driven programming）是一种电脑程序设计模型。这种模型的程序运行流程是由用户的动作（如鼠标的按键，键盘的按键动作）或者是由其他程序的消息来决定的。相对于批处理程序设计（batch programming）而言，程序运行的流程是由程序员来决定。批量的程序设计在初级程序设计教学课程上是一种方式。然而，事件驱动程序设计这种设计模型是在交互程序（Interactive program）的情况下孕育而生的。<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a></p>
 </blockquote>
 <p>这也意味着，系统在编程模型上有着巨大的改变。在我们编写 GUI 程序，如桌面程序、Web 前端应用，我们都通过监听用户对按钮、链接等组件操作，才开始相应的处理逻辑。这和 Serverless 是相似的，只在用户使用的时候，才会对应用户的行为进行响应。</p>
 <h2 id="serverless-的优势">Serverless 的优势</h2>
@@ -2934,12 +2948,168 @@ functions:
 <p>这样就可以得到相关的日志了。</p>
 <h2 id="问题">问题</h2>
 <p>就这么简单，发现由于 CloudFront 在国内有点水土不服，并且提供压缩的功能，导致加载速度有点慢。</p>
+<h1 id="serverless-应用示例二维码生成">Serverless 应用示例：二维码生成</h1>
+<p>昨天看到了一篇关于二维码使用的文章，其设计初衷是使用二维码卡片来帮助小朋友控制智能音箱。即在 Raspberry Pi 上使用摄像头来识别二维码，二维码卡片上是一些简单的操作，如播放音乐、暂停等等，卡片的另外一面则是相应的解释。这是一个有趣的二维码在物联网应用的场景。</p>
+<p>于是乎，我便想尝试一下直接在云端生成二维码图片，并保存。当然了，对于二维码来说，直接在浏览器上生成显然是更加简单友好的。</p>
+<h2 id="总揽">总揽</h2>
+<p>在这个项目里，我们的主要流程是：</p>
+<ol type="1">
+<li>从 URL 中获取要生成的二维码字符串</li>
+<li>将生成的二维码图片上传到 AWS S3</li>
+<li>重定向 URL 到生成的 AWS S3 上</li>
+</ol>
+<p>对，就是这么简单，实现起来也很简单。</p>
+<h2 id="生成应用">生成应用</h2>
+<p>照例我们需要生安装有 <code>serverless</code>，如果没有的话，请使用：</p>
+<pre><code>npm install -g serverless</code></pre>
+<p>然后来创建我们的应用：</p>
+<pre><code>serverless create --template aws-nodejs --path qrcode</code></pre>
+<p>愉快地进行我们的 init commmit。</p>
+<h2 id="配置资源">配置资源</h2>
+<p>在这个项目里，我们所需要的 AWS 资源有：</p>
+<ul>
+<li>AWS S3 用于存储图片</li>
+<li>Route 53 用于分配路由</li>
+</ul>
+<p>那么，接下来就是打开 <code>serverless.yml</code> 文件进行配置。</p>
+<pre><code>resources:
+  Resources:
+    PackageStorage:
+      Type: AWS::S3::Bucket
+      Properties:
+        AccessControl: PublicRead
+        BucketName: ${self:custom.qrcodeBucket}
+        LifecycleConfiguration:
+          Rules:
+            - ExpirationInDays: 1
+              Status: Enabled</code></pre>
+<p>以及配置，相应的权限：</p>
+<pre><code>provider:
+  name: aws
+  runtime: nodejs6.10
+  iamRoleStatements:
+    - Effect: &quot;Allow&quot;
+      Action:
+        - &quot;s3:ListBucket&quot;
+        - &quot;s3:PutObject&quot;
+        - &quot;s3:PutObjectAcl&quot;
+      Resource:
+        - &quot;arn:aws:s3:::${self:custom.qrcodeBucket}&quot;
+        - &quot;arn:aws:s3:::${self:custom.qrcodeBucket}/*&quot;</code></pre>
+<p>还有 Route 53 中的域名：</p>
+<pre><code>plugins:
+  - serverless-domain-manager
+
+custom:
+  # change this, so it&#39;s unique for your setup
+  qrcodeBucket: ${self:service}.${self:provider.stage,opt:stage}
+  stageVariables:
+    bucketName: ${self:custom.qrcodeBucket}
+  customDomain:
+    domainName: qrcode.pho.im
+    basePath: &#39;&#39;
+    stage: ${self:provider.stage}
+    createRoute53Record: true</code></pre>
+<p>接下来，就可以愉快地写代码了。</p>
+<h2 id="生成二维码">生成二维码</h2>
+<p>为了生成二维码，我找到了项目：<a href="https://github.com/soldair/node-qrcode">node-qrcode</a>，然后安装之：</p>
+<pre><code>yarn add qrcode</code></pre>
+<p>试了试 DEMO：</p>
+<pre><code>QRCode.toFile(&#39;path/to/filename.png&#39;, &#39;Some text&#39;, {
+  color: {
+    dark: &#39;#00F&#39;,  // Blue dots
+    light: &#39;#0000&#39; // Transparent background
+  }
+}, function (err) {
+  if (err) throw err
+  console.log(&#39;done&#39;)
+})</code></pre>
+<p>不对，这样好像有问题：</p>
+<pre><code>  QRCode.toDataURL(string, {
+    errorCorrectionLevel: &#39;H&#39;
+  }, function (err, url) {
+
+  }</code></pre>
+<p>在尝试了多次之后，我手动将 base64 转成了 png：</p>
+<pre><code>new Buffer(url.replace(/^data:image\/\w+;base64,/, &quot;&quot;), &#39;base64&#39;)</code></pre>
+<p>随后，就可以上传图片了 AWS S3 上。</p>
+<h2 id="上传-aws-s3">上传 AWS S3</h2>
+<p>只需要配置好相应的权限和 Key、Bucket，然后使用 ContentEncoding 为 base64：</p>
+<pre><code>const params = {
+  Bucket: process.env.bucketName,
+  Key: key,
+  ACL: &#39;public-read&#39;,
+  Body: new Buffer(url.replace(/^data:image\/\w+;base64,/, &quot;&quot;), &#39;base64&#39;),
+  ContentEncoding: &#39;base64&#39;,
+  ContentType: &#39;image/png&#39;
+};
+
+s3.putObject(params, function (err, data) {
+  if (err) {
+    return callback(new Error(`Failed to put s3 object: ${err}`));
+  }
+
+  const response = {
+    statusCode: 302,
+    headers: {
+      location: `https://s3.amazonaws.com/${process.env.bucketName}/${key}`
+    }
+  };
+
+  return callback(null, response);
+})</code></pre>
+<p>将 ACL 配置为 public-read，就可以在外网访问了。</p>
+<h2 id="优化二维码">优化二维码</h2>
+<p>在多次测试之后，我决定优化一下上传的参数：</p>
+<pre><code>  QRCode.toDataURL(string, {
+    errorCorrectionLevel: &#39;H&#39;,
+    width: 512,
+    margin: 2,
+    color: {
+      light: &#39;#fdfdfd&#39;,
+      dark: &#39;#384452&#39;
+    }
+  }</code></pre>
+<h2 id="部署及测试-2">部署及测试</h2>
+<p>好了，现在我们就可以部署，执行相应的部署命令：</p>
+<pre><code>$ sls deploy
+
+Serverless: Packaging service...
+Serverless: Excluding development dependencies...
+Serverless: Uploading CloudFormation file to S3...
+Serverless: Uploading artifacts...
+Serverless: Uploading service .zip file to S3 (699.08 KB)...
+Serverless: Validating template...
+Serverless: Updating Stack...
+Serverless: Checking Stack update progress...
+..............
+Serverless: Stack update finished...
+Service Information
+service: qrcode
+stage: dev
+region: us-east-1
+stack: qrcode-dev
+api keys:
+  None
+endpoints:
+  GET - https://swsaner181.execute-api.us-east-1.amazonaws.com/dev/
+functions:
+  create: qrcode-dev-create
+Serverless Domain Manager Summary
+Domain Name
+  qrcode.pho.im
+Distribution Domain Name
+  d1vpwj4ctk345u.cloudfront.net
+Serverless: Removing old service versions...</code></pre>
+<p>然后在网页上测试，我们创建的服务地址是：https://qrcode.pho.im/?q={string}</p>
+<p>使用这个 URL 进行测试：https://qrcode.pho.im/?q=http://weixin.qq.com/r/mnVYQHrEVicprT4j9yCI</p>
+<p>加上使用的短链服务就是：<a href="https://x.pho.im/Z5t7" class="uri">https://x.pho.im/Z5t7</a></p>
 <section class="footnotes">
 <hr />
 <ol>
-<li id="fn1"><p>选自《全栈应用开发：精益实践》的『隔离与运行环境』一节<a href="#fnref1">↩</a></p></li>
-<li id="fn2"><p>https://aws.amazon.com/cn/blogs/china/iaas-faas-serverless/<a href="#fnref2">↩</a></p></li>
-<li id="fn3"><p>https://zh.wikipedia.org/wiki/%E4%BA%8B%E4%BB%B6%E9%A9%85%E5%8B%95%E7%A8%8B%E5%BC%8F%E8%A8%AD%E8%A8%88<a href="#fnref3">↩</a></p></li>
+<li id="fn1"><p>选自《全栈应用开发：精益实践》的『隔离与运行环境』一节<a href="#fnref1" class="footnote-back">↩</a></p></li>
+<li id="fn2"><p>https://aws.amazon.com/cn/blogs/china/iaas-faas-serverless/<a href="#fnref2" class="footnote-back">↩</a></p></li>
+<li id="fn3"><p>https://zh.wikipedia.org/wiki/%E4%BA%8B%E4%BB%B6%E9%A9%85%E5%8B%95%E7%A8%8B%E5%BC%8F%E8%A8%AD%E8%A8%88<a href="#fnref3" class="footnote-back">↩</a></p></li>
 </ol>
 </section>
 <!-- Global site tag (gtag.js) - Google Analytics -->
