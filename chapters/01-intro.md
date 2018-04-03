@@ -17,7 +17,7 @@ Serverless 架构
 
 ![microservices vs serverless](images/microservice-compare-serverless.png)
 
-而微服务是从 2016 年起，开始受到开发者的关注。并且从其发展趋势来看，它大有可能在两年后，拥有今天微服务一样的地位。可见，它是一个相当具有潜力的架构。
+而Serverless是从 2016 年起，开始受到开发者的关注。并且从其发展趋势来看，它大有可能在两年后，拥有今天微服务一样的地位。可见，它是一个相当具有潜力的架构。
 
 什么是 Serverless 架构？？
 ---
