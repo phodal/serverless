@@ -8,10 +8,10 @@
   <style type="text/css">
       code{white-space: pre-wrap;}
       span.smallcaps{font-variant: small-caps;}
-      div.line-block{white-space: pre-line;}
+      span.underline{text-decoration: underline;}
       div.column{display: inline-block; vertical-align: top; width: 50%;}
   </style>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
@@ -147,7 +147,7 @@
 <li><a href="#serverless-email-发送">Serverless Email 发送</a></li>
 <li><a href="#serverless-email-发送测试">Serverless Email 发送测试</a></li>
 </ul></li>
-<li><a href="#创建自己的-serverless-短链服务"><a href="https://www.phodal.com/blog/serverless-architecture-develoment-create-self-short-url-services/">创建自己的 Serverless 短链服务</a></a><ul>
+<li><a href="#创建自己的-serverless-短链服务"><span>创建自己的 Serverless 短链服务</span></a><ul>
 <li><a href="#代码逻辑">代码逻辑</a></li>
 <li><a href="#创建首页">创建首页</a></li>
 <li><a href="#生成短链">生成短链</a><ul>
@@ -238,6 +238,9 @@
 </ul>
 </nav>
 <h1 id="serverless-架构应用开发指南">Serverless 架构应用开发指南</h1>
+<blockquote>
+<p>Serverless 架构是指大量依赖第三方服务（也叫做后端即服务，即“BaaS”）或暂存容器中运行的自定义代码（函数即服务，即“FaaS”）的应用程序，函数是无服务器架构中抽象语言运行时的最小单位。在这种架构中，我们并不看重运行一个函数需要多少 CPU 或 RAM 或任何其他资源，而是更看重运行函数所需的时间，我们也只为这些函数的运行时间付费。</p>
+</blockquote>
 <p><code>注意事项</code></p>
 <p>在本系列的文章中，主要采用了 Serverless Framework 来简化开发和部署流程。</p>
 <blockquote>
