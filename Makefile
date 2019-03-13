@@ -22,7 +22,8 @@ html: markdown
 epub: markdown
 	pandoc -s $(filename).md -t epub -o $(filename).epub \
 		--epub-metadata $(include_dir)/metadata.xml \
-		--epub-cover-image img/cover.jpg \
+		--metadata title="$(title)" \
+		--metadata pagetitle="$(title)" \
 		--title-prefix $(title) \
 		--toc
 
