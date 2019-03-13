@@ -36,7 +36,7 @@ pdf: markdown
 	# Then symlink it: ln -s /path/to/pdflatex /usr/local/bin
 	pandoc -s $(filename).md -o $(filename).pdf \
 		--title-prefix $(title) \
-		--listings -H listings-setup.tex \
+		--listings -H template/listings-setup.tex \
 		--template=template/template.tex \
 		--toc
 
