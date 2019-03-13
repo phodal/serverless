@@ -5,11 +5,74 @@
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <title>Serverless 架构应用开发指南 – serverless</title>
-  <style type="text/css">
+  <style>
       code{white-space: pre-wrap;}
       span.smallcaps{font-variant: small-caps;}
       span.underline{text-decoration: underline;}
       div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <style>
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
   </style>
   <link rel="stylesheet" href="style.css" />
   <!--[if lt IE 9]>
@@ -66,8 +129,14 @@
 <li><a href="#事件驱动编程">事件驱动编程</a></li>
 </ul></li>
 <li><a href="#serverless-的优势">Serverless 的优势</a><ul>
-<li><a href="#降低启动成本">降低启动成本</a></li>
-<li><a href="#实现快速上线">实现快速上线</a></li>
+<li><a href="#降低启动成本">降低启动成本</a><ul>
+<li><a href="#减少运营成本">减少运营成本</a></li>
+<li><a href="#降低开发成本">降低开发成本</a></li>
+</ul></li>
+<li><a href="#实现快速上线">实现快速上线</a><ul>
+<li><a href="#更快的部署流水线">更快的部署流水线</a></li>
+<li><a href="#更快的开发速度">更快的开发速度</a></li>
+</ul></li>
 <li><a href="#系统安全性更高">系统安全性更高</a></li>
 <li><a href="#适应微服务架构">适应微服务架构</a></li>
 <li><a href="#自动扩展能力">自动扩展能力</a></li>
@@ -234,6 +303,36 @@
 <li><a href="#上传-aws-s3">上传 AWS S3</a></li>
 <li><a href="#优化二维码">优化二维码</a></li>
 <li><a href="#部署及测试-2">部署及测试</a></li>
+</ul></li>
+<li><a href="#serverless-应用示例serverless-密码管理器">Serverless 应用示例：Serverless 密码管理器</a><ul>
+<li><a href="#取个密码">取个密码</a><ul>
+<li><a href="#特定平台-固定密码">特定平台 + 固定密码</a></li>
+<li><a href="#密码表-特定平台-固定密码">密码表 + 特定平台 + 固定密码</a></li>
+<li><a href="#随机密码-固定密码">随机密码 + 固定密码</a></li>
+<li><a href="#密码管理器">密码管理器</a></li>
+<li><a href="#开启-mfa">开启 MFA</a></li>
+</ul></li>
+<li><a href="#serverless-架构下的密码管理器mopass">Serverless 架构下的密码管理器：MoPass</a><ul>
+<li><a href="#在终端中使用-cli">在终端中使用 CLI</a></li>
+<li><a href="#通过-chrome-插件中使用">通过 Chrome 插件中使用</a></li>
+</ul></li>
+<li><a href="#结论-3">结论</a></li>
+</ul></li>
+<li><a href="#serverless-框架-openwhisk-开发指南">Serverless 框架 OpenWhisk 开发指南</a><ul>
+<li><a href="#openwhisk-简介">OpenWhisk 简介</a></li>
+<li><a href="#macos-搭建-openwhisk-环境">macOS 搭建 OpenWhisk 环境</a></li>
+<li><a href="#serverless-框架-openwhisk-开发指南使用-serverless-framework-开发-openwhisk-应用">Serverless 框架 OpenWhisk 开发指南：使用 Serverless Framework 开发 OpenWhisk 应用</a><ul>
+<li><a href="#serverless-openwhisk">Serverless OpenWhisk</a></li>
+<li><a href="#测试服务">测试服务</a></li>
+</ul></li>
+<li><a href="#serverless-框架-openwhisk-开发指南使用-node.js-编写-hello-world">Serverless 框架 OpenWhisk 开发指南：使用 Node.js 编写 hello, world</a></li>
+<li><a href="#配置-openwhisk-客户端">配置 OpenWhisk 客户端</a><ul>
+<li><a href="#获取-cli">获取 CLI</a></li>
+<li><a href="#为客户端获取密钥">为客户端获取密钥</a></li>
+<li><a href="#在客户端设置">在客户端设置</a></li>
+<li><a href="#openwhisk-node.js-hello-world">OpenWhisk Node.js Hello, world</a></li>
+<li><a href="#openwhisk-node.js-传递参数">OpenWhisk Node.js 传递参数</a></li>
+</ul></li>
 </ul></li>
 </ul>
 </nav>
@@ -795,7 +894,7 @@ Serverless: Uploading file error.html to bucket wdsm.io...
 Serverless: If successful this should be deployed at: https://s3.amazonaws.com/wdsm.io/error.html
 Serverless: Uploading file index.html to bucket wdsm.io...
 Serverless: If successful this should be deployed at: https://s3.amazonaws.com/wdsm.io/index.html</code></pre>
-<p>由于配置了 Router53 指向了 S3，因此可以直接访问：<a href="http://wdsm.io/" class="uri">http://wdsm.io/</a> 来看最后的内容。</p>
+<p>由于配置了 Router53 指向了 S3，因此可以直接访问：<a href="http://wdsm.io/">http://wdsm.io/</a> 来看最后的内容。</p>
 <p>并且，对应的删除命令也变成了：<code>serverless client remove</code>。</p>
 <h1 id="为基于-s3-的网站支持-crud">为基于 S3 的网站支持 CRUD</h1>
 <p>原文链接：<a href="https://www.phodal.com/blog/serverless-development-guide-use-s3-api-gateway-create-crud/">Serverless 应用开发指南：API Gateway + S3 + AWS Lambda 打造 CRUD</a></p>
@@ -1215,7 +1314,7 @@ endpoints:
 functions:
   lambda: serverless-react-boilerplate-dev-lambda
 Serverless: Invoke aws:deploy:finalize</code></pre>
-<p>最后访问 <a href="https://qdt3kt80x3.execute-api.us-east-1.amazonaws.com/dev" class="uri">https://qdt3kt80x3.execute-api.us-east-1.amazonaws.com/dev</a> 就可以读取到返回的 HTML，如：</p>
+<p>最后访问 <a href="https://qdt3kt80x3.execute-api.us-east-1.amazonaws.com/dev">https://qdt3kt80x3.execute-api.us-east-1.amazonaws.com/dev</a> 就可以读取到返回的 HTML，如：</p>
 <pre><code>&lt;!DOCTYPE html&gt;
 &lt;html&gt;
   &lt;head&gt;
@@ -1374,7 +1473,7 @@ custom:
     });
   }
 });</code></pre>
-<p>最后代码见：<a href="https://github.com/phodal/mp/blob/master/index.js" class="uri">https://github.com/phodal/mp/blob/master/index.js</a></p>
+<p>最后代码见：<a href="https://github.com/phodal/mp/blob/master/index.js">https://github.com/phodal/mp/blob/master/index.js</a></p>
 <h2 id="部署">部署</h2>
 <p>最后，让我们愉快地执行 <code>serverless deploy</code>，对应的日志如下：</p>
 <pre><code>stack: serverless-wechat-dev
@@ -1665,8 +1764,8 @@ module.exports.sendMail = (event, context, callback) =&gt; {
 <p>试了 gmszone@qq.com 、网易邮箱都不行，最后用了 Google 的。</p>
 <p>最后，终于可以接收到邮件了。</p>
 <h1 id="创建自己的-serverless-短链服务"><a href="https://www.phodal.com/blog/serverless-architecture-develoment-create-self-short-url-services/">创建自己的 Serverless 短链服务</a></h1>
-<p>在想用 Serverless 可以做点什么简单的在线应用后，我想到了一个是在线短链生成服务。最后的结果见：<a href="http://x.pho.im/" class="uri">http://x.pho.im/</a>，一个非常简单的在线应用。</p>
-<p>这里的代码基于：<a href="https://github.com/vannio/serverless-shrink" class="uri">https://github.com/vannio/serverless-shrink</a>。</p>
+<p>在想用 Serverless 可以做点什么简单的在线应用后，我想到了一个是在线短链生成服务。最后的结果见：<a href="http://x.pho.im/">http://x.pho.im/</a>，一个非常简单的在线应用。</p>
+<p>这里的代码基于：<a href="https://github.com/vannio/serverless-shrink">https://github.com/vannio/serverless-shrink</a>。</p>
 <p>因为上面的代码中，不能自动创建域名。然后，再针对数据库进行了一些优化。</p>
 <h3 id="代码逻辑">代码逻辑</h3>
 <p>这里的代码逻辑比如简单：</p>
@@ -1826,9 +1925,9 @@ Distribution Domain Name
 Serverless: Removing old service versions...</code></pre>
 <p>一切准备就绪了。</p>
 <ol type="1">
-<li>访问 <a href="https://x.pho.im/" class="uri">https://x.pho.im/</a></li>
-<li>然后输入一个链接，如：<a href="https://github.com/phodal/serverless-guide" class="uri">https://github.com/phodal/serverless-guide</a></li>
-<li>复制生成的地址：<a href="https://x.pho.im/rgQC" class="uri">https://x.pho.im/rgQC</a>，并返回</li>
+<li>访问 <a href="https://x.pho.im/">https://x.pho.im/</a></li>
+<li>然后输入一个链接，如：<a href="https://github.com/phodal/serverless-guide">https://github.com/phodal/serverless-guide</a></li>
+<li>复制生成的地址：<a href="https://x.pho.im/rgQC">https://x.pho.im/rgQC</a>，并返回</li>
 <li>看是否会重定向到我们的网站上。</li>
 </ol>
 <p>Done!</p>
@@ -2016,14 +2115,14 @@ Serverless: Uploading file app.js to bucket auth.wdsm.io...
 Serverless: If successful this should be deployed at: https://s3.amazonaws.com/auth.wdsm.io/app.js
 Serverless: Uploading file index.html to bucket auth.wdsm.io...
 Serverless: If successful this should be deployed at: https://s3.amazonaws.com/auth.wdsm.io/index.html</code></pre>
-<p>然后打开 <a href="https://s3.amazonaws.com/auth.wdsm.io/index.html" class="uri">https://s3.amazonaws.com/auth.wdsm.io/index.html</a> 就可以尝试授权。</p>
+<p>然后打开 <a href="https://s3.amazonaws.com/auth.wdsm.io/index.html">https://s3.amazonaws.com/auth.wdsm.io/index.html</a> 就可以尝试授权。</p>
 <p>不过，在那之间，我们需要填写对应平台的授权信息：</p>
 <figure>
 <img src="images/auth0-github-example.png" alt="Auth GitHub" /><figcaption>Auth GitHub</figcaption>
 </figure>
 <p>接着，点击上面的 GitHub 『！』号，会提示我们填写对应的授权信息。</p>
-<p>打开我们的 GitHub ，申请一个新的 OAuth 应用，地址：<a href="https://github.com/settings/applications/new" class="uri">https://github.com/settings/applications/new</a></p>
-<p>详细的信息见：<a href="https://auth0.com/docs/github-clientid" class="uri">https://auth0.com/docs/github-clientid</a>。</p>
+<p>打开我们的 GitHub ，申请一个新的 OAuth 应用，地址：<a href="https://github.com/settings/applications/new">https://github.com/settings/applications/new</a></p>
+<p>详细的信息见：<a href="https://auth0.com/docs/github-clientid">https://auth0.com/docs/github-clientid</a>。</p>
 <p>如我的配置是：</p>
 <pre><code>Homepage URL: https://phodal.auth0.com
 Authorization callback URL  https://phodal.auth0.com/login/callback</code></pre>
@@ -2688,7 +2787,7 @@ functions:
       - http:
           method: get
           path: hello</code></pre>
-<p>接着再次运行，然后访问：<a href="http://localhost:5000/hello" class="uri">http://localhost:5000/hello</a></p>
+<p>接着再次运行，然后访问：<a href="http://localhost:5000/hello">http://localhost:5000/hello</a></p>
 <pre><code>$ npm start
 
 &gt; simulate@1.0.0 start /Users/fdhuang/learing/serverless-guide/simulate
@@ -2859,7 +2958,7 @@ functions:
 <p>有了这个 DEMO，就意味着，未来我们可以轻松地在我们所有的 RESTful API 前加上这一层，来提供一个 BFF 层。</p>
 <h1 id="serverless-应用示例前端错误日志及事件收集系统">Serverless 应用示例：前端错误日志及事件收集系统</h1>
 <p>最近在交接项目，也因此有了一些时间。之前想过做一个前端的错误日志系统，便想着直接用 Serverlss 做了好了。</p>
-<p>开始之前先让我简单地介绍一下：<a href="https://github.com/phodal/molog" class="uri">https://github.com/phodal/molog</a>，以便于了解我们的需求及功能。</p>
+<p>开始之前先让我简单地介绍一下：<a href="https://github.com/phodal/molog">https://github.com/phodal/molog</a>，以便于了解我们的需求及功能。</p>
 <h2 id="molog-使用">Molog 使用</h2>
 <p>先让我们看看最后要怎么用，在网页上引入：</p>
 <pre><code>&lt;script data-component=&quot;homepage&quot; data-env=&quot;dev&quot; src=&quot;//static.pho.im/molog.min.js&quot;&gt;&lt;/script&gt;</code></pre>
@@ -3106,7 +3205,298 @@ Distribution Domain Name
 Serverless: Removing old service versions...</code></pre>
 <p>然后在网页上测试，我们创建的服务地址是：https://qrcode.pho.im/?q={string}</p>
 <p>使用这个 URL 进行测试：https://qrcode.pho.im/?q=http://weixin.qq.com/r/mnVYQHrEVicprT4j9yCI</p>
-<p>加上使用的短链服务就是：<a href="https://x.pho.im/Z5t7" class="uri">https://x.pho.im/Z5t7</a></p>
+<p>加上使用的短链服务就是：<a href="https://x.pho.im/Z5t7">https://x.pho.im/Z5t7</a></p>
+<h1 id="serverless-应用示例serverless-密码管理器">Serverless 应用示例：Serverless 密码管理器</h1>
+<p>最近的几年里，每个人在密码上都遇到越来越多的挑战，即需要一个复杂的密码，又需要能记得住它们——两者几乎不可兼得。于是乎，我们开始使用上各式各样的密码管理器，并为之付上了费。又或者是一些开源的、不能同步的密码管理工具——毕竟服务器是要钱的。</p>
+<p>然而作为一个程序员，我觉得嘛，他/她们写的代码都不可靠——<strong>愈是通用的软件，愈加危险。</strong>一旦一个地方出现问题，那么其它地方都会有问题。比如说，你的 Master Password 泄露了，那么相应的所有的密码也就相当于泄露了。以致于我又重新设计了自己的密码管理体系，写了一个自己的密码管理器。</p>
+<h2 id="取个密码">取个密码</h2>
+<p>取一个变量很纠结，取一个密码很头痛——更何况，我们要取一堆密码。于是，最好的方式就是写一个规则，来生成不同密码。从安全的角度来看，密码自然是又长又复杂的为好。可又复杂又长的代码，我们这些非机器的人是记不住的。</p>
+<p>根据我的现有模式，我有这么几种模式来管理密码。</p>
+<h3 id="特定平台-固定密码">特定平台 + 固定密码</h3>
+<p>11 年前我使用一个固定的、统一的密码，直到一系列的明文密码泄露事件，我在不同的平台采用了不同的密码。在经历了一系列的忘记密码之后，我开始采用平台限定的密码，即不同的平台，密码是半动态的。如下就是一个简单的，对应于不同平台的代码体系，如：</p>
+<ul>
+<li>京东：<code>jd-1qaz2wsx</code></li>
+<li>淘宝：<code>tb-1qaz2wsx</code></li>
+</ul>
+<p>而这样的密码本身也是不安全的，如果有人知道密码规则的话。那么，这无异于一场灾难。于是，我在设计出规则到现在，仅会<strong>在一些重要的网站上</strong>，采用这种规则。</p>
+<h3 id="密码表-特定平台-固定密码">密码表 + 特定平台 + 固定密码</h3>
+<p>应对于上一种方式，如果我们拥有一个密码表，来稍微变换一下形式，诸如：</p>
+<ul>
+<li>京东：<code>tb-1qaz2wsx</code></li>
+<li>淘宝：<code>jd-1qaz2wsx</code></li>
+</ul>
+<p>那么，我们的密码就显得更加可靠。</p>
+<h3 id="随机密码-固定密码">随机密码 + 固定密码</h3>
+<p>如我们所知道的那样，只要是有规律的代码，都存在被破解的风险。所以在两年前，我写了一个简单的脚本来生成密码：</p>
+<div class="sourceCode" id="cb228"><pre class="sourceCode python"><code class="sourceCode python"><a class="sourceLine" id="cb228-1" title="1"><span class="im">from</span> random <span class="im">import</span> choice</a>
+<a class="sourceLine" id="cb228-2" title="2"><span class="im">from</span> string <span class="im">import</span> hexdigits, punctuation</a>
+<a class="sourceLine" id="cb228-3" title="3"><span class="im">import</span> time</a>
+<a class="sourceLine" id="cb228-4" title="4"></a>
+<a class="sourceLine" id="cb228-5" title="5">base_time <span class="op">=</span> <span class="bu">str</span>(time.time())[<span class="dv">12</span>:<span class="dv">16</span>]</a>
+<a class="sourceLine" id="cb228-6" title="6">base_string <span class="op">=</span> <span class="st">&#39;&#39;</span>.join(choice(hexdigits) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">6</span>))</a>
+<a class="sourceLine" id="cb228-7" title="7">base_punctuation <span class="op">=</span> <span class="st">&#39;&#39;</span>.join(choice(punctuation) <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb228-8" title="8"></a>
+<a class="sourceLine" id="cb228-9" title="9"><span class="bu">print</span>(base_string <span class="op">+</span> base_punctuation <span class="op">+</span> base_time)</a></code></pre></div>
+<p>从时间戳取四个数字，从 16 进制数中取出 6 位，再从特殊字符中取出两位，以此来构成我的密码的主要部分。而剩下的部分则是固定密码，固定的部分存在脑子里——万一密码都看到了，那么问题也不到。</p>
+<p>唯一需要担心的是，键盘上的值可能被记住了。即，有人监听你的输入，又或者是记住了剪贴板上的值——从这个角度上来看，输入法也是一个危险的存在。为此，我们还需要更高级的工具。</p>
+<h3 id="密码管理器">密码管理器</h3>
+<p>使用密码管理器，毫无疑问是目前为止最为通用的一种方式，诸如 1Password 和 LastPass 都是相对比较成熟的方案。它们可以运行在各种平台上，相互之间同步代码，并帮你自动填充密码。</p>
+<p>然而，这些工具都是按年付费的，部分还是私有软件。</p>
+<h3 id="开启-mfa">开启 MFA</h3>
+<p>但是不管怎样，密码的方式仍然是相当的不可靠——一旦泄露了就悲剧了。为此，如果你所用的平台，可以开启 MFA，就开启 MFA 吧。即 Multi-Factor Authentication (MFA) 是一种简单有效的最佳安全实践方法，它能够在用户名和密码之外再额外增加一层安全保护。</p>
+<h2 id="serverless-架构下的密码管理器mopass">Serverless 架构下的密码管理器：MoPass</h2>
+<p>要是我使用的是密码管理器的话，就没有本文的这么多事了。所以，我正在写自己的秘密管理器。</p>
+<p>在编写我的第三本书的时候，同时编写了我的 markdown 编辑器：Phodit。Phodit 的成功实施，让我在定制个人工具上，有了更坚定的信心和丰富的经验，所以我开始编写我的密码管理器——基于 Serverless 架构的密码管理器。</p>
+<figure>
+<img src="images/mopass-c4-context.jpg" alt="MoPass C4 Context" /><figcaption>MoPass C4 Context</figcaption>
+</figure>
+<p>系统的组件和关系相对都比较简单：</p>
+<figure>
+<img src="images/mopass-c4-container.jpg" alt="MoPass C4 Container" /><figcaption>MoPass C4 Container</figcaption>
+</figure>
+<p>大抵就是对于密码的加解密和 CRUD，只是客户端有所不同罢了。</p>
+<p>由于设计的初衷是：<strong>针对于个人的轻量级密码管理器</strong>，所以在最初设计的时候，是根据 Master Password + MD5 来生成后台的授权 Token。当用户数量变多的时候，Master Password 便会出现重复，导致密码重复的问题——由于使用了 Key + Master Password 来对密码进行加密和解密，虽然 Master Password 相同，但是也无法解密别人的密码。</p>
+<h3 id="在终端中使用-cli">在终端中使用 CLI</h3>
+<blockquote>
+<p><strong>一个不习惯用命令行的程序员，不是一个高效的程序员。</strong>——Phodal</p>
+</blockquote>
+<p>一个密码管理器，最好是直接输个命令就能获取了，而不是打开某个软件、输入密码、找到对应的条目，再复制密码。对于 MoPass 来说，获取密码，只需要这么一步：</p>
+<pre><code>➜  mopass git:(master) mopass --get GitHub
+? master password ******
+200: Copied to clipboard!</code></pre>
+<p>而后，我们就可以直接粘贴我们的密码——为了查看所有的条目，只需要 <code>mopass --list</code>。从这等意义上来说，这个工具更适合于程序员使用。而为了使用更加方便，我还是写了一个 Chrome 上的插件——毕竟，输入密码的场景，主要是在网页上，而不是终端里——我可不习惯用 w3m 来浏览网页。</p>
+<h3 id="通过-chrome-插件中使用">通过 Chrome 插件中使用</h3>
+<p>Chrome 插件，只需要输入密码即可——不过，为了安全考虑，不在浏览器上存储密码，而是每次从服务器上获取。这个问题，可以在我稍有余力的时候，再去看看怎么优化——毕竟 CLI 更快。</p>
+<h2 id="结论-3">结论</h2>
+<p>最后，请不到你的密码贴在笔记本上。</p>
+<p>GitHub: https://github.com/phodal/mopass</p>
+<h1 id="serverless-框架-openwhisk-开发指南">Serverless 框架 OpenWhisk 开发指南</h1>
+<p>在尝试了使用 AWS 开发 Serverless 应用之后，我便想尝试使用 OpenWhisk 框架来搭建自己的 Serverless 服务。</p>
+<blockquote>
+<p>Apache OpenWhisk（http://openwhisk.org/）是一个由IBM和Adobe驱动的开源项目，它是一个健壮的FaaS平台，可以部署在云或数据中心内。相比其他serverless项目，OpenWhisk是一个健壮的、可扩展的平台，支持数千并发触发器和调用。</p>
+</blockquote>
+<h2 id="openwhisk-简介">OpenWhisk 简介</h2>
+<p>其系统架构如下所示：</p>
+<figure>
+<img src="images/OpenWhisk_flow_of_processing.png" alt="OpenWhisk 流处理流程" /><figcaption>OpenWhisk 流处理流程</figcaption>
+</figure>
+<p>对应的组件的功能如下：</p>
+<ul>
+<li>Nginx 暴露HTTP（S）端点给客户端。</li>
+<li>Controller 充当系统的守门员、系统的协调者，它将决定请求最终采取的路径。</li>
+<li>CouchDB 护和管理系统的状态。</li>
+<li>Consul 作为系统每个组件可访问的单一数据源。 同时，consul还提供服务发现功能，使控制器发现调用操作的实体。</li>
+<li>Apache Kafka 用于构建实时数据管道和流应用程序。</li>
+<li>Invoker 使用 Scala实现，它是处理执行过程的最后阶段。</li>
+<li>Docker， 几乎所有的 OpenWhisk 组件都打包和部署为容器。</li>
+</ul>
+<h2 id="macos-搭建-openwhisk-环境">macOS 搭建 OpenWhisk 环境</h2>
+<p>官网的指引很简单，但是中间还是遇到一些环境问题。</p>
+<p>首先 clone 代码</p>
+<pre><code>git clone --depth=1 https://github.com/apache/incubator-openwhisk.git openwhisk</code></pre>
+<p>然后于是虚拟机的目录：</p>
+<pre><code>cd openwhisk/tools/vagrant</code></pre>
+<p>接着执行 hello 命令</p>
+<pre><code>$./hello
+
+./hello: line 8: vagrant: command not found</code></pre>
+<p>便提示 vagrant 没有安装。Vagrant 只是一个虚拟机管理和配置工具，为了安装 vagrant，还需要先安装 virtualbox 虚拟机：</p>
+<pre><code>brew cask install virtualbox</code></pre>
+<p>然后安装 vagrant，顺便也 可以安装 vagrant-manager</p>
+<pre><code>$ brew cask install vagrant vagrant-manager
+
+==&gt; Satisfying dependencies
+==&gt; Downloading https://releases.hashicorp.com/vagrant/2.0.1/vagrant_2.0.1_x86_64.dmg
+######################################################################## 100.0%
+==&gt; Verifying checksum for Cask vagrant
+==&gt; Installing Cask vagrant
+==&gt; Running installer for vagrant; your password may be necessary.
+==&gt; Package installers may write to any location; options such as --appdir are ignored.
+Password:
+==&gt; installer: Package name is Vagrant
+==&gt; installer: Installing at base path /
+==&gt; installer: The install was successful.
+🍺  vagrant was successfully installed!
+==&gt; Satisfying dependencies
+==&gt; Downloading https://github.com/lanayotech/vagrant-manager/releases/download/2.6.0/vagrant-manager-2.6.0.dmg
+######################################################################## 100.0%
+==&gt; Verifying checksum for Cask vagrant-manager
+==&gt; Installing Cask vagrant-manager
+==&gt; Moving App &#39;Vagrant Manager.app&#39; to &#39;/Applications/Vagrant Manager.app&#39;.</code></pre>
+<p>再次执行：</p>
+<pre><code>$ ./hello
+Bringing machine &#39;default&#39; up with &#39;virtualbox&#39; provider...
+==&gt; default: Box &#39;ubuntu/trusty64&#39; could not be found. Attempting to find and install...
+    default: Box Provider: virtualbox
+    default: Box Version: &gt;= 0
+==&gt; default: Loading metadata for box &#39;ubuntu/trusty64&#39;
+    default: URL: https://vagrantcloud.com/ubuntu/trusty64
+==&gt; default: Adding box &#39;ubuntu/trusty64&#39; (v20171205.0.1) for provider: virtualbox
+    default: Downloading: https://vagrantcloud.com/ubuntu/boxes/trusty64/versions/20171205.0.1/providers/virtualbox.box
+    default: Progress: 11% (Rate: 2806k/s, Estimated time remaining: 0:04:16)</code></pre>
+<p>然后挑个网速好的时间，比如早上（经过测试晚上的下载速度比较慢），等它下载完。下载完后，便自动开始在虚拟机里搭建 OpenWhisk 环境，如安装 Docker、Git 等等的操作。</p>
+<p>最麻烦的是等待 Docker 安装拉各种镜像。OpenWhisk系统由许多组件构建而成：</p>
+<figure>
+<img src="images/openwhisk-components.png" alt="OpenWhisk 组件" /><figcaption>OpenWhisk 组件</figcaption>
+</figure>
+<p>直至：</p>
+<pre><code>    default: +++ cat /home/vagrant/openwhisk/ansible/files/auth.guest
+    default: ++ wsk property set --apihost 192.168.33.13 --namespace guest --auth 23bc46b1-71f6-4ed5-8c54-816aa4f8c502:123zO3xZCLrMN6v2BKK1dXYFpXlPkccOFqm12CdAsMgRU4VrNZ9lyGVCGuMDGIwP
+    default: ok: whisk auth set. Run &#39;wsk property get --auth&#39; to see the new value.
+    default: ok: whisk API host set to 192.168.33.13
+    default: ok: whisk namespace set to guest
+    default: ++ wsk action invoke /whisk.system/utils/echo -p message hello --result
+    default: {
+    default:     &quot;message&quot;: &quot;hello&quot;
+    default: }
+    default: +++ date
+    default: ++ echo &#39;Mon Dec 11 12:09:23 UTC 2017: build-deploy-end&#39;</code></pre>
+<p>我们就顺利地运行了我们的 hello world。</p>
+<p>你也可以 ssh 到机器上：<code>vagrant ssh</code>，然后运行 <code>wsk</code> 命令试试:</p>
+<pre><code>$ vagrant@vagrant-ubuntu-trusty-64:~/openwhisk/bin$ wsk
+
+        ____      ___                   _    _ _     _     _
+       /\   \    / _ \ _ __   ___ _ __ | |  | | |__ (_)___| | __
+  /\  /__\   \  | | | | &#39;_ \ / _ \ &#39;_ \| |  | | &#39;_ \| / __| |/ /
+ /  \____ \  /  | |_| | |_) |  __/ | | | |/\| | | | | \__ \   &lt;
+ \   \  /  \/    \___/| .__/ \___|_| |_|__/\__|_| |_|_|___/_|\_\
+  \___\/ tm           |_|
+
+Usage:
+  wsk [command]
+
+Available Commands:
+  action      work with actions
+  activation  work with activations
+  api         work with APIs
+  help        Help about any command
+  list        list entities in the current namespace
+  namespace   work with namespaces
+  package     work with packages
+  property    work with whisk properties
+  rule        work with rules
+  sdk         work with the sdk
+  trigger     work with triggers</code></pre>
+<h2 id="serverless-框架-openwhisk-开发指南使用-serverless-framework-开发-openwhisk-应用">Serverless 框架 OpenWhisk 开发指南：使用 Serverless Framework 开发 OpenWhisk 应用</h2>
+<h3 id="serverless-openwhisk">Serverless OpenWhisk</h3>
+<p>在上一篇文章《<a href="https://www.phodal.com/blog/serverless-framework-openwhisk-nodejs-hello-world/">Serverless 框架 OpenWhisk 开发指南：使用 Node.js 编写 hello, world</a> 里，我们介绍了怎么连接客户端与 OpenWhisk 服务器。在这里，我假设读者已经有相关经验了。</p>
+<p>首先，我们需要先安装对应的 Node.js 模块：</p>
+<pre><code>$ npm install --global serverless serverless-openwhisk</code></pre>
+<p>然后使用模板创建：</p>
+<pre><code>serverless create --template openwhisk-nodejs --path my_service
+cd my_service
+npm install</code></pre>
+<p>因为我们是在本地运行的服务，我们需要修改我们的 <code>serverless.yml</code> 文件，添加 <code>ignore_certs</code> 参数以忽略证书：</p>
+<pre><code>provider:
+  name: openwhisk
+  ignore_certs: true</code></pre>
+<p>然后，就可以继续愉快地使用 <code>sls deploy</code> 部署了：</p>
+<pre><code>Serverless: Packaging service...
+Serverless: Excluding development dependencies...
+Serverless: Compiling Functions...
+Serverless: Compiling API Gateway definitions...
+Serverless: Compiling Rules...
+Serverless: Compiling Triggers &amp; Feeds...
+Serverless: Deploying Functions...
+Serverless: Deployment successful!
+
+Service Information
+platform:   http://192.168.33.13:10001
+namespace:  guest
+service:    my_service
+
+actions:
+my_service-dev-hello    hello    node_version
+
+triggers:
+**no triggers deployed**
+
+rules:
+**no rules deployed**
+
+endpoints (api-gw):
+**failed to fetch routes**
+endpoints (web actions):
+**no web actions deployed**</code></pre>
+<h3 id="测试服务">测试服务</h3>
+<p>现在，我们就可以测试我们的 OpenWhisk 函数了：</p>
+<pre><code>$ serverless invoke --function hello
+{
+    &quot;payload&quot;: &quot;Hello, World!&quot;
+}
+$ serverless invoke --function hello --data &#39;{&quot;name&quot;: &quot;OpenWhisk&quot;}&#39;
+{
+    &quot;payload&quot;: &quot;Hello, OpenWhisk!&quot;
+}</code></pre>
+<h2 id="serverless-框架-openwhisk-开发指南使用-node.js-编写-hello-world">Serverless 框架 OpenWhisk 开发指南：使用 Node.js 编写 hello, world</h2>
+<p>我们将介绍：如何将上一节搭建的 OpenWhisk 服务作为服务器，并使用自己的 macOS 作为客户端。然后，在这之上运行我们的 Serverless 应用</p>
+<h2 id="配置-openwhisk-客户端">配置 OpenWhisk 客户端</h2>
+<h3 id="获取-cli">获取 CLI</h3>
+<p>首先，我们需要在我们的电脑上安装 OpenWhisk 的 CLI，可以直接从 Bluemix 上下载二进制的包：<a href="https://openwhisk.ng.bluemix.net/cli/go/download/">https://openwhisk.ng.bluemix.net/cli/go/download/</a></p>
+<p>然后将命令加到环境变量中：</p>
+<pre><code>$ chmod +x ./wsk
+
+$ sudo mv wsk /usr/local/bin</code></pre>
+<h3 id="为客户端获取密钥">为客户端获取密钥</h3>
+<p>接着，我们需要到我们的 vagrant 虚拟机，为客户端分配一下密钥。使用下面的命令登录：</p>
+<pre><code>vagrant ssh</code></pre>
+<p>然后，获取密钥：</p>
+<pre><code>$ wsk property get --auth
+
+whisk auth      23bc46b1-71f6-4ed5-8c54-816aa4f8c502:123zO3xZCLrMN6v2BKK1dXYFpXlPkccOFqm12CdAsMgRU4VrNZ9lyGVCGuMDGIwP</code></pre>
+<h3 id="在客户端设置">在客户端设置</h3>
+<p>先看一下命令：</p>
+<pre><code>wsk property set --apihost http://192.168.33.13:10001 --namespace guest --auth 23bc46b1-71f6-4ed5-8c54-816aa4f8c502:123zO3xZCLrMN6v2BKK1dXYFpXlPkccOFqm12CdAsMgRU4VrNZ9lyGVCGuMDGIwP</code></pre>
+<p>正常情况下 apihost 应该是 <strong>192.168.33.13</strong>，并且没有 10001 端口。但是好像我的配置有问题，2333。</p>
+<p>可以先试试使用能不能列出系统的包：</p>
+<pre><code>$ wsk package list /whisk.system
+
+packages
+/whisk.system/github                                                   shared
+/whisk.system/combinators                                              shared
+/whisk.system/slack                                                    shared
+/whisk.system/watson-textToSpeech                                      shared
+/whisk.system/utils                                                    shared
+/whisk.system/watson-speechToText                                      shared
+/whisk.system/websocket                                                shared
+/whisk.system/weather                                                  shared
+/whisk.system/samples                                                  shared
+/whisk.system/watson-translator                                        shared</code></pre>
+<p>接着，就可以进入下一步了。使用 Node.js 创建一个 hello, world。</p>
+<h3 id="openwhisk-node.js-hello-world">OpenWhisk Node.js Hello, world</h3>
+<p>1.创建我们的 hello.js</p>
+<pre><code>function main() {
+   return {payload: &#39;Hello world&#39;};
+}</code></pre>
+<p>2.创建操作</p>
+<pre><code>$ wsk action create hello hello.js
+
+ok: created action hello</code></pre>
+<p>3.触发事件</p>
+<pre><code>$ wsk action invoke hello
+
+ok: invoked /guest/hello with id a3ea5f68844248e9aa5f68844288e98d</code></pre>
+<p>4.查看返回结果</p>
+<pre><code>wsk activation result a3ea5f68844248e9aa5f68844288e98d</code></pre>
+<p>就这么简单。</p>
+<h3 id="openwhisk-node.js-传递参数">OpenWhisk Node.js 传递参数</h3>
+<p>接下来，让我们看一个参数的例子：</p>
+<pre><code>function main(params) {
+  return {
+    payload:  &#39;Hello, &#39; + params.name
+  };
+}</code></pre>
+<p>然后更新我们的操作：</p>
+<pre><code>$ wsk action update hello hello.js
+
+ok: updated action hello</code></pre>
+<p>接着，就可以触发我们的操作：</p>
+<pre><code>$  wsk action invoke --result hello --param name Phodal
+
+{
+    &quot;payload&quot;: &quot;Hello, Phodal&quot;
+}</code></pre>
+<p>当然，它可以探索的地方仍然有很多。</p>
 <section class="footnotes">
 <hr />
 <ol>
