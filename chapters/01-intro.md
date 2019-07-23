@@ -296,7 +296,7 @@ Serverless Framework 的配置更加简单，采用的是 YAML 格式。在部�
  - Node.js – v4.3.2 和 6.10.3
  - Java - Java 8
  - Python – Python 3.6 和 2.7
- - .NET 内核 – .NET 内核 1.0.1 (C#)
+ - .NET Core – .NET Core 1.0.1 (C#)
 
 对于 Java 和 Python 来说，他们的版本上可能基本都是够用的，我不知道 C# 怎么样。但是 Node.js 的版本显然是有点老旧的，但是都 Node.js 9.2.0 了。不过，话说来说，这可能与版本帝 Chrome 带来的前端版本潮有一点关系。
 
