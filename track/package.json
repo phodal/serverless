@@ -27,6 +27,6 @@
   "dependencies": {
     "aws-sdk": "^2.7.13",
     "bluebird": "^3.4.6",
-    "lodash": "^4.17.2"
+    "lodash": "^4.17.19"
   }
 }
